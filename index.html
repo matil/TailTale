@@ -34,9 +34,9 @@ body{font-family:'Nunito',sans-serif;background:var(--nd);color:var(--tx);-webki
 .hl:nth-child(1){width:500px;height:120px;background:#0F1235;left:-80px}.hl:nth-child(2){width:450px;height:95px;background:#121640;left:180px}.hl:nth-child(3){width:600px;height:105px;background:#0D1030;right:-120px}
 .app{position:relative;z-index:1;height:100%;display:flex;flex-direction:column;max-width:480px;margin:0 auto}
 .hdr{padding:12px 20px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
-.logo{font-family:'Baloo 2',cursive;font-size:22px;font-weight:800;color:var(--moon);display:flex;align-items:center;gap:6px}
-.logo-svg{height:38px;width:38px;flex-shrink:0}
-.logo-welcome{width:140px;height:140px;margin:0 auto 4px}
+.logo{font-family:'Baloo 2',cursive;font-size:22px;font-weight:800;color:var(--moon);display:flex;align-items:center;gap:0}
+.logo-hdr{height:44px;flex-shrink:0}
+.logo-welcome{width:280px;max-width:85vw;margin:0 auto 12px;display:block}
 .hbtn{height:36px;padding:0 14px;border-radius:50px;border:1px solid var(--bd);background:var(--gl);font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:5px;color:var(--txs);font-family:'Nunito',sans-serif;transition:.2s}.hbtn:hover{background:var(--glh)}
 .main{flex:1;overflow-y:auto;overflow-x:hidden;padding:0 20px 20px;-webkit-overflow-scrolling:touch}.main::-webkit-scrollbar{width:0}
 .nav{flex-shrink:0;background:rgba(11,14,45,.92);backdrop-filter:blur(20px);border-radius:22px 22px 0 0;padding:6px 12px 14px;display:flex;justify-content:space-around;border-top:1px solid var(--bd)}
@@ -222,45 +222,88 @@ function BG(){
 }
 function Toast({msg}){return msg?<div className="toast">{msg}</div>:null}
 
-// ══════════ SVG Logo ══════════
-function Logo({size=38,className=''}){
-  return(<svg className={className} width={size} height={size} viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-    {/* Moon */}
-    <circle cx="50" cy="40" r="28" fill="#FFF8DC" opacity=".9"/>
-    <circle cx="60" cy="34" r="22" fill="#0B0E2D"/>
-    {/* Stars */}
-    <circle cx="22" cy="18" r="2" fill="#FFEAA7" opacity=".8"/>
-    <circle cx="78" cy="14" r="1.5" fill="#FFEAA7" opacity=".6"/>
-    <circle cx="85" cy="30" r="1.8" fill="#FFEAA7" opacity=".7"/>
-    <circle cx="15" cy="38" r="1.2" fill="#FFEAA7" opacity=".5"/>
-    {/* Fox body - curled up sleeping */}
-    <ellipse cx="50" cy="75" rx="24" ry="14" fill="#E87B35"/>
-    <ellipse cx="50" cy="75" rx="20" ry="11" fill="#F09548"/>
-    {/* Fox tail curled around */}
-    <path d="M74 72 Q84 60 78 50 Q76 46 72 48 Q68 50 70 56 Q72 62 68 68" fill="#E87B35" stroke="#D06A28" strokeWidth=".5"/>
-    <path d="M78 50 Q76 46 72 48" fill="#FFF8DC" opacity=".6"/>
+// ══════════ SVG Wordmark Logo ══════════
+function LogoFull({className=''}){
+  return(<svg className={className} viewBox="0 0 300 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+    {/* Moon glow behind fox */}
+    <circle cx="150" cy="52" r="44" fill="#FFF8DC" opacity=".08"/>
+    <circle cx="150" cy="50" r="32" fill="#FFF8DC" opacity=".06"/>
+    {/* Stars scattered */}
+    <circle cx="42" cy="22" r="2.5" fill="#FFEAA7" opacity=".7"/><circle cx="258" cy="18" r="2" fill="#FFEAA7" opacity=".5"/>
+    <circle cx="80" cy="8" r="1.8" fill="#FFEAA7" opacity=".6"/><circle cx="220" cy="6" r="2.2" fill="#FFEAA7" opacity=".4"/>
+    <circle cx="270" cy="42" r="1.5" fill="#FFEAA7" opacity=".6"/><circle cx="30" cy="50" r="1.8" fill="#FFEAA7" opacity=".5"/>
+    {/* Fox body curled */}
+    <ellipse cx="150" cy="60" rx="28" ry="16" fill="#E87B35"/>
+    <ellipse cx="150" cy="60" rx="23" ry="12" fill="#F09548"/>
+    {/* Fox tail - big swooping tail that underlines the text */}
+    <path d="M178 56 Q200 40 220 44 Q240 48 248 62 Q252 70 244 72 Q236 74 230 66 Q224 58 210 56 Q196 54 184 60" fill="#E87B35"/>
+    <path d="M240 62 Q248 66 244 72 Q236 74 230 66" fill="#FFF8DC" opacity=".5"/>
     {/* Fox head */}
-    <circle cx="34" cy="68" r="11" fill="#E87B35"/>
-    <circle cx="34" cy="68" r="9" fill="#F09548"/>
+    <circle cx="128" cy="52" r="14" fill="#E87B35"/>
+    <circle cx="128" cy="52" r="11.5" fill="#F09548"/>
     {/* Fox ears */}
-    <polygon points="25,60 28,48 33,58" fill="#E87B35"/>
-    <polygon points="27,58 29,50 32,57" fill="#FFB8B8" opacity=".5"/>
-    <polygon points="38,56 43,46 44,58" fill="#E87B35"/>
-    <polygon points="39,56 42,49 43,57" fill="#FFB8B8" opacity=".5"/>
-    {/* Fox face - closed eyes (sleeping) */}
-    <path d="M29 68 Q31 66 33 68" stroke="#8B4513" strokeWidth="1.2" strokeLinecap="round" fill="none"/>
-    <path d="M36 67 Q38 65 40 67" stroke="#8B4513" strokeWidth="1.2" strokeLinecap="round" fill="none"/>
+    <polygon points="117,42 120,26 127,39" fill="#E87B35"/>
+    <polygon points="119,40 121,30 125,38" fill="#FFB8B8" opacity=".5"/>
+    <polygon points="133,38 140,24 142,40" fill="#E87B35"/>
+    <polygon points="135,38 139,28 141,39" fill="#FFB8B8" opacity=".5"/>
+    {/* Fox eyes - closed sleeping crescents */}
+    <path d="M122 52 Q125 49 128 52" stroke="#6B3410" strokeWidth="1.5" strokeLinecap="round" fill="none"/>
+    <path d="M130 51 Q133 48 136 51" stroke="#6B3410" strokeWidth="1.5" strokeLinecap="round" fill="none"/>
     {/* Fox nose */}
-    <ellipse cx="34" cy="71" rx="2" ry="1.3" fill="#2D1B0E"/>
-    {/* Fox white cheeks */}
-    <ellipse cx="30" cy="72" rx="3.5" ry="2.5" fill="#FFF8DC" opacity=".5"/>
-    <ellipse cx="38" cy="72" rx="3.5" ry="2.5" fill="#FFF8DC" opacity=".5"/>
+    <ellipse cx="128" cy="56" rx="2.5" ry="1.6" fill="#2D1B0E"/>
+    {/* Fox cheeks */}
+    <ellipse cx="123" cy="57" rx="4" ry="3" fill="#FFF8DC" opacity=".4"/>
+    <ellipse cx="133" cy="57" rx="4" ry="3" fill="#FFF8DC" opacity=".4"/>
+    {/* Fox little smile */}
+    <path d="M126 57.5 Q128 59.5 130 57.5" stroke="#6B3410" strokeWidth=".8" strokeLinecap="round" fill="none"/>
     {/* Zzz */}
-    <text x="48" y="56" fill="#C5B3E6" fontSize="8" fontFamily="Baloo 2" fontWeight="700" opacity=".7">z</text>
-    <text x="55" y="49" fill="#C5B3E6" fontSize="10" fontFamily="Baloo 2" fontWeight="700" opacity=".5">z</text>
-    <text x="64" y="40" fill="#C5B3E6" fontSize="12" fontFamily="Baloo 2" fontWeight="700" opacity=".3">z</text>
+    <text x="148" y="36" fill="#C5B3E6" fontSize="9" fontFamily="Baloo 2,cursive" fontWeight="700" opacity=".7">z</text>
+    <text x="158" y="26" fill="#C5B3E6" fontSize="11" fontFamily="Baloo 2,cursive" fontWeight="700" opacity=".5">z</text>
+    <text x="170" y="16" fill="#C5B3E6" fontSize="13" fontFamily="Baloo 2,cursive" fontWeight="700" opacity=".3">z</text>
+    {/* Paw prints near tail */}
+    <text x="252" cy="78" y="80" fill="#C5B3E6" fontSize="10" opacity=".25">🐾</text>
+    <text x="60" y="70" fill="#C5B3E6" fontSize="8" opacity=".2">🐾</text>
+    {/* ═══ TEXT: "Tail a Tale" ═══ */}
+    {/* Main title */}
+    <text x="150" y="112" textAnchor="middle" fontFamily="Baloo 2,cursive" fontWeight="800" fontSize="38" fill="#FFF8DC" letterSpacing="1">
+      T<tspan fill="#F09548">a</tspan>il a T<tspan fill="#F09548">a</tspan>le
+    </text>
+    {/* Subtle tail swoosh underline */}
+    <path d="M62 118 Q100 126 150 122 Q200 118 240 122" stroke="#E87B35" strokeWidth="2.5" strokeLinecap="round" fill="none" opacity=".4"/>
+    {/* Tagline */}
+    <text x="150" y="142" textAnchor="middle" fontFamily="Nunito,sans-serif" fontWeight="600" fontSize="13" fill="#A8A0C0" letterSpacing="2">
+      bedtime stories in your voice
+    </text>
   </svg>);
 }
+
+function LogoHeader(){
+  return(<svg className="logo-hdr" viewBox="0 0 180 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+    {/* Small fox head */}
+    <circle cx="20" cy="24" r="13" fill="#E87B35"/>
+    <circle cx="20" cy="24" r="10.5" fill="#F09548"/>
+    {/* Ears */}
+    <polygon points="11,16 13,4 19,13" fill="#E87B35"/>
+    <polygon points="12.5,14 14,7 17.5,13" fill="#FFB8B8" opacity=".5"/>
+    <polygon points="24,12 29,2 31,14" fill="#E87B35"/>
+    <polygon points="25.5,12 28.5,5 30,13" fill="#FFB8B8" opacity=".5"/>
+    {/* Eyes closed */}
+    <path d="M15 24 Q17.5 21.5 20 24" stroke="#6B3410" strokeWidth="1.3" strokeLinecap="round" fill="none"/>
+    <path d="M22 23.5 Q24.5 21 27 23.5" stroke="#6B3410" strokeWidth="1.3" strokeLinecap="round" fill="none"/>
+    {/* Nose */}
+    <ellipse cx="20" cy="27.5" rx="2" ry="1.3" fill="#2D1B0E"/>
+    {/* Cheeks */}
+    <ellipse cx="16" cy="28.5" rx="3" ry="2.2" fill="#FFF8DC" opacity=".4"/>
+    <ellipse cx="24" cy="28.5" rx="3" ry="2.2" fill="#FFF8DC" opacity=".4"/>
+    {/* Tail swoosh connecting to text */}
+    <path d="M33 24 Q40 16 50 20" stroke="#E87B35" strokeWidth="2.5" strokeLinecap="round" fill="none" opacity=".6"/>
+    {/* Text */}
+    <text x="48" y="33" fontFamily="Baloo 2,cursive" fontWeight="800" fontSize="26" fill="#FFF8DC" letterSpacing=".5">
+      T<tspan fill="#F09548">a</tspan>il a T<tspan fill="#F09548">a</tspan>le
+    </text>
+  </svg>);
+}
+
 
 function Welcome({onDone}){
   const[name,setName]=useState('');
