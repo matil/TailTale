@@ -37,8 +37,8 @@ body{font-family:'Nunito',sans-serif;background:var(--nd);color:var(--tx);-webki
 .hl:nth-child(1){width:500px;height:120px;background:#0F1235;left:-80px}.hl:nth-child(2){width:450px;height:95px;background:#121640;left:180px}.hl:nth-child(3){width:600px;height:105px;background:#0D1030;right:-120px}
 .app{position:relative;z-index:1;height:100%;display:flex;flex-direction:column;max-width:480px;margin:0 auto}
 .hdr{padding:12px 20px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
-.logo{display:flex;align-items:center;gap:0}
-.logo-hdr{height:44px;flex-shrink:0}
+.logo{display:flex;align-items:center;gap:0;min-width:0}
+.logo-hdr{height:44px;width:200px;flex-shrink:0}
 .logo-welcome{width:300px;max-width:90vw;margin:0 auto 8px;display:block}
 .hbtn{height:36px;padding:0 14px;border-radius:50px;border:1px solid var(--bd);background:var(--gl);font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:5px;color:var(--txs);font-family:'Nunito',sans-serif;transition:.2s}.hbtn:hover{background:var(--glh)}
 .main{flex:1;overflow-y:auto;overflow-x:hidden;padding:0 20px 20px;-webkit-overflow-scrolling:touch}.main::-webkit-scrollbar{width:0}
@@ -113,7 +113,7 @@ body{font-family:'Nunito',sans-serif;background:var(--nd);color:var(--tx);-webki
 .ddi{display:flex;align-items:center;gap:8px;padding:10px 14px;border-radius:10px;cursor:pointer;font-size:13px;font-weight:600;color:var(--txs);transition:.15s;width:100%;background:none;border:none;font-family:'Nunito';text-align:left}.ddi:hover{background:var(--gl);color:var(--tx)}
 .ddiv{height:1px;background:var(--bd);margin:4px 8px}
 .langsel{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}.langopt{padding:6px 14px;border-radius:10px;border:1px solid var(--bd);background:var(--gl);font-size:12px;font-weight:700;cursor:pointer;transition:.2s;color:var(--txs);font-family:'Nunito'}.langopt:hover{background:var(--glh)}.langopt.a{background:rgba(167,139,204,.2);color:var(--lav);border-color:rgba(167,139,204,.3)}
-[dir=rtl] .hdr{flex-direction:row-reverse}[dir=rtl] .sr{flex-direction:row-reverse}[dir=rtl] .si{text-align:right}[dir=rtl] .vc{flex-direction:row-reverse}[dir=rtl] .ct{flex-direction:row-reverse}[dir=rtl] .sh{flex-direction:row-reverse}[dir=rtl] .nav{flex-direction:row-reverse}[dir=rtl] .ddmenu{right:auto;left:16px}[dir=rtl] .ddi{flex-direction:row-reverse;text-align:right}[dir=rtl] .ver-btns{flex-direction:row-reverse}[dir=rtl] .pvb{flex-direction:row-reverse}
+[dir=rtl] .sr{flex-direction:row-reverse}[dir=rtl] .si{text-align:right}[dir=rtl] .vc{flex-direction:row-reverse}[dir=rtl] .ct{flex-direction:row-reverse}[dir=rtl] .sh{flex-direction:row-reverse}[dir=rtl] .nav{flex-direction:row-reverse}[dir=rtl] .ddmenu{right:auto;left:16px}[dir=rtl] .ddi{flex-direction:row-reverse;text-align:right}[dir=rtl] .ver-btns{flex-direction:row-reverse}[dir=rtl] .pvb{flex-direction:row-reverse}[dir=rtl] .main{direction:rtl}[dir=rtl] .fi{direction:rtl}[dir=rtl] .ss{text-align:right}[dir=rtl] .ra p{text-align:right;direction:rtl}[dir=rtl] .genst{direction:rtl}[dir=rtl] .card{direction:rtl}[dir=rtl] .prewarm{direction:rtl}[dir=rtl] .info{direction:rtl;text-align:right}[dir=rtl] .flt{direction:rtl}
 .tl-spinner{display:inline-flex;align-items:center;gap:6px;padding:10px 16px;border-radius:10px;background:rgba(139,111,192,.1);color:var(--lav);font-size:12px;font-weight:600;margin:10px 0}
 .tl-spinner .spinner{width:14px;height:14px;border:2px solid rgba(197,179,230,.3);border-top-color:var(--lav);border-radius:50%;animation:spin 1s linear infinite}
 @media(max-width:380px){.hdr{padding:10px 14px}.main{padding:0 14px 16px}}
@@ -185,6 +185,25 @@ const UI={
 };
 function makeT(lang){return(key)=>(UI[lang]&&UI[lang][key])||UI.en[key]||key}
 function getLangDir(lang){const l=LANGS.find(x=>x.c===lang);return l?l.d:'ltr'}
+
+// Translated story titles & authors per language
+const SN={
+s1:{en:'The Three Little Pigs',he:'שלושת החזירונים',es:'Los tres cerditos',fr:'Les trois petits cochons',ar:'الخنازير الثلاثة الصغيرة',ru:'Три поросёнка',pt:'Os três porquinhos',zh:'三只小猪'},
+s2:{en:'Goldilocks and the Three Bears',he:'זהבה ושלושת הדובים',es:'Ricitos de Oro y los tres osos',fr:'Boucle d\'or et les trois ours',ar:'ذات الشعر الذهبي والدببة الثلاثة',ru:'Златовласка и три медведя',pt:'Cachinhos de Ouro e os três ursos',zh:'金发姑娘和三只熊'},
+s3:{en:'The Ugly Duckling',he:'הברווזון המכוער',es:'El patito feo',fr:'Le vilain petit canard',ar:'البطة القبيحة',ru:'Гадкий утёнок',pt:'O patinho feio',zh:'丑小鸭'},
+s4:{en:'Jack and the Beanstalk',he:"ג'ק ועץ השעועית",es:'Juan y las habichuelas mágicas',fr:'Jack et le haricot magique',ar:'جاك وساق الفاصولياء',ru:'Джек и бобовый стебель',pt:'João e o pé de feijão',zh:'杰克与魔豆'},
+s5:{en:'Little Red Riding Hood',he:'כיפה אדומה',es:'Caperucita Roja',fr:'Le Petit Chaperon rouge',ar:'ذات الرداء الأحمر',ru:'Красная Шапочка',pt:'Chapeuzinho Vermelho',zh:'小红帽'},
+s6:{en:'The Tortoise and the Hare',he:'הצב והארנב',es:'La tortuga y la liebre',fr:'Le lièvre et la tortue',ar:'السلحفاة والأرنب',ru:'Черепаха и заяц',pt:'A tartaruga e a lebre',zh:'龟兔赛跑'},
+s7:{en:'The Princess and the Pea',he:'הנסיכה על גרגר האפונה',es:'La princesa y el guisante',fr:'La princesse au petit pois',ar:'الأميرة والبازلاء',ru:'Принцесса на горошине',pt:'A princesa e a ervilha',zh:'豌豆公主'},
+s8:{en:'The Stars That Came to Play',he:'הכוכבים שבאו לשחק',es:'Las estrellas que vinieron a jugar',fr:'Les étoiles venues jouer',ar:'النجوم التي جاءت لتلعب',ru:'Звёзды, которые пришли играть',pt:'As estrelas que vieram brincar',zh:'来玩耍的星星'},
+s9:{en:'Snow White',he:'שלגיה',es:'Blancanieves',fr:'Blanche-Neige',ar:'سنو وايت',ru:'Белоснежка',pt:'Branca de Neve',zh:'白雪公主'},
+s10:{en:'Cinderella',he:'סינדרלה',es:'Cenicienta',fr:'Cendrillon',ar:'سندريلا',ru:'Золушка',pt:'Cinderela',zh:'灰姑娘'},
+s11:{en:'Sleeping Beauty',he:'היפהפייה הנרדמת',es:'La bella durmiente',fr:'La Belle au bois dormant',ar:'الجميلة النائمة',ru:'Спящая красавица',pt:'A Bela Adormecida',zh:'睡美人'},
+s12:{en:'Hansel and Gretel',he:"הנזל וגרטל",es:'Hansel y Gretel',fr:'Hansel et Gretel',ar:'هانسل وغريتل',ru:'Гензель и Гретель',pt:'João e Maria',zh:'韩塞尔与格蕾特'},
+};
+const SA_TR={en:'Traditional',he:'מסורתי',es:'Tradicional',fr:'Traditionnel',ar:'تقليدي',ru:'Традиционная',pt:'Tradicional',zh:'传统'};
+function getStoryTitle(id,lang){return SN[id]?.[lang]||SN[id]?.en||''}
+function getStoryAuthor(a,lang){if(a==='Traditional')return SA_TR[lang]||a;if(a==='Tail a Tale Original')return 'Tail a Tale';return a}
 
 // Story Illustrations - unique square SVG icon per story
 function StoryIcon({id,size=48}){
@@ -646,18 +665,12 @@ function TutVoice({voices,onSave,onSelect,selected,onNext,pw,t}){
         <div><div className="vn">{v.name}</div><div className="vd">{t('aiClone')}</div></div>
         {selected?.id===v.id&&<span style={{marginLeft:'auto'}}><Icon name="check" size={18} color="var(--teal)"/></span>}
       </div>)}</>}
-    <div className="sh" style={{fontSize:16,marginTop:12}}><Icon name="phone" size={18} color="var(--warm)"/> {t('deviceVoices')}</div>
-    {[{id:'b1',name:'Sleepy Narrator'},{id:'b2',name:'Dreamy Storyteller'}].map(v=><div key={v.id} className={`vc ${selected?.id===v.id?'sel':''}`} onClick={()=>onSelect(v)}>
-      <div className="va va-f"><Icon name="moon" size={20} color="var(--warm)"/></div>
-      <div><div className="vn">{v.name}</div><div className="vd">{t('deviceVoice')}</div></div>
-      {selected?.id===v.id&&<span style={{marginLeft:'auto'}}><Icon name="check" size={18} color="var(--teal)"/></span>}
-    </div>)}
     <button className="btn bp bw" style={{marginTop:16}} onClick={onNext} disabled={!selected}>{t('continue')} <Icon name="right" size={18} color="#fff"/></button>
   </div>);
 }
 
 // Tutorial Step 3: Story
-function TutStory({onSelect,selected,onNext,getVer,setVer,t}){
+function TutStory({onSelect,selected,onNext,getVer,setVer,t,lang}){
   const[filter,setFilter]=useState('all');
   const filtered=filter==='all'?S:S.filter(s=>s.c===filter);
   return(<div className="fi"><TutStepper step={2}/>
@@ -667,7 +680,7 @@ function TutStory({onSelect,selected,onNext,getVer,setVer,t}){
       <button key={f.k} className={`fc ${filter===f.k?'a':''}`} onClick={()=>setFilter(f.k)}>{f.l}</button>)}</div>
     <div className="slist">{filtered.map(s=><div key={s.id} className={`sr ${selected?.id===s.id?'sel':''}`} onClick={()=>onSelect(s)}>
       <div className="se"><StoryIcon id={s.id} size={42}/></div>
-      <div className="si"><div className="sn">{s.t}</div><div className="sd">{s.a} · {s.age} · ~{getVer(s.id)==='long'?s.mL:s.mS} min</div>
+      <div className="si"><div className="sn">{getStoryTitle(s.id,lang)}</div><div className="sd">{getStoryAuthor(s.a,lang)} · {s.age} · ~{getVer(s.id)==='long'?s.mL:s.mS} min</div>
       <div className="ver-btns" onClick={e=>e.stopPropagation()}>
         <button className={`vbtn ${getVer(s.id)==='short'?'va2':''}`} onClick={()=>setVer(s.id,'short')}>{t('short')} ~{s.mS}m</button>
         <button className={`vbtn ${getVer(s.id)==='long'?'va2':''}`} onClick={()=>setVer(s.id,'long')}>{t('long')} ~{s.mL}m</button>
@@ -704,7 +717,7 @@ function Recorder({onSave,t}){
 }
 
 // Player with Voice Cloning
-function Player({story,voice,ver,onBack,show,t,text}){
+function Player({story,voice,ver,onBack,show,t,text,lang}){
   const[status,setStatus]=useState('idle');const[genMsg,setGenMsg]=useState('');
   const[progress,setProgress]=useState(0);const[highlight,setHighlight]=useState(-1);
   const[paused,setPaused]=useState(false);const[elapsed,setElapsed]=useState(0);
@@ -737,15 +750,11 @@ function Player({story,voice,ver,onBack,show,t,text}){
     stopped.current=false;pausedRef.current=false;setPaused(false);
     setStatus('generating');setProgress(0);setHighlight(-1);setElapsed(0);
     chunksAudio.current=[];chunkDurations.current=[];currentIdx.current=0;
+    if(!voice?.id?.startsWith('v-')){show(t('noVoiceWarn'));setStatus('idle');return}
     let vb=null;
-    if(voice?.id?.startsWith('v-')){
-      try{const d=await dbGet('voices',voice.id);vb=d?.blob;console.log('Voice blob:',vb?.size,vb?.type)}
-      catch(e){console.warn('Voice DB error:',e)}
-      if(!vb){show(t('voiceFailed'));setStatus('playing');fallbackTTS();return}
-    }else{
-      if(!voice)show(t('noVoiceWarn'));
-      setStatus('playing');fallbackTTS();return;
-    }
+    try{const d=await dbGet('voices',voice.id);vb=d?.blob;console.log('[TTS] Voice blob:',vb?.size,vb?.type)}
+    catch(e){console.warn('Voice DB error:',e)}
+    if(!vb){show(t('voiceFailed'));setStatus('idle');return}
     const chunks=chunkText(content,280);allChunks.current=chunks;let started=false;
     for(let i=0;i<chunks.length;i++){if(stopped.current)return;
       setGenMsg(t('cloningPart')+' '+(i+1)+'/'+chunks.length);
@@ -755,7 +764,7 @@ function Player({story,voice,ver,onBack,show,t,text}){
         if(!started&&!stopped.current){started=true;setStatus('playing');setGenMsg('');playChunk(0)}
       }catch(e){console.error('Gen error',i,':',e);if(i===0){show(t('voiceFailed'));setStatus('playing');fallbackTTS();return}chunksAudio.current[i]=null}}
     if(!started&&!stopped.current){show(t('voiceFailed'));setStatus('playing');fallbackTTS()}
-  },[content,voice,show]);
+  },[content,voice,show,t]);
   const fallbackTTS=()=>{const synth=window.speechSynthesis;synth.cancel();
     const chunks=chunkText(content,250);allChunks.current=chunks;let st=Date.now();
     const next=(idx)=>{if(idx>=chunks.length||stopped.current){setStatus('done');setProgress(100);setHighlight(-1);return}
@@ -786,7 +795,7 @@ function Player({story,voice,ver,onBack,show,t,text}){
     <audio ref={audioRef} style={{display:'none'}}/>
     <button className="btn bg2 bsm" onClick={()=>{stopAll();onBack()}} style={{marginBottom:10}}><Icon name="back" size={16}/> {t('back')}</button>
     <div className="pc"><div className="pb">
-      <div className="pti">{story?.t||t('story')}</div><div className="pau">{story?.a||''}</div>
+      <div className="pti">{getStoryTitle(story?.id,lang)||story?.t||t('story')}</div><div className="pau">{getStoryAuthor(story?.a||'',lang)}</div>
       <div className="pbar" onClick={handleSeek} onTouchEnd={e=>{e.preventDefault();handleSeek(e)}}><div className="pbtr"><div className="pbfl" style={{width:progress+'%'}}><div className="pbth"/></div></div></div>
       <div className="ptm"><span>{fmtSec(elapsed)}</span><span>~{storyMin}:00</span></div>
       <div className="pcc">
@@ -795,7 +804,7 @@ function Player({story,voice,ver,onBack,show,t,text}){
         {status==='playing'&&<><button className="cb" onClick={togglePause}><Icon name={paused?'play':'pause'} size={20} color="rgba(255,255,255,.6)"/></button><button className="cb pp" onClick={stopAll}><Icon name="stop" size={22} color="#fff"/></button></>}
         {status==='done'&&<button className="cb pp" onClick={generateAndPlay}><Icon name="replay" size={22} color="#fff"/></button>}
       </div>
-      <div className="pvb">{t('voice')}: <b>{voice?.name||'Device Default'}</b>{isClone&&<> · <Icon name="brain" size={12} color="var(--wg)"/> AI Clone</>}</div>
+      <div className="pvb">{t('voice')}: <b>{voice?.name||t('noneSelected')}</b>{isClone&&<> · <Icon name="brain" size={12} color="var(--wg)"/> {t('aiClone')}</>}</div>
     </div></div>
     {status==='generating'&&<div className="genst"><span className="spinner"/>{genMsg}<br/><span style={{fontSize:11,color:'var(--txd)'}}>{t('gpuWake')}</span></div>}
     {status==='done'&&<div className="genst"><span className="done"><Icon name="check" size={14} color="var(--teal)"/> {t('storyComplete')}</span></div>}
@@ -824,16 +833,20 @@ function App(){
   const[csTitle,setCsTitle]=useState('');
   const[csText,setCsText]=useState('');
 
-  const t=useMemo(()=>makeT(lang),[lang]);
-  const dir=useMemo(()=>getLangDir(lang),[lang]);
+  const t=makeT(lang);
+  const dir=getLangDir(lang);
 
-  const setLang=(l)=>{setLangState(l);localStorage.setItem('tat_lang',l);document.documentElement.dir=getLangDir(l)};
+  const setLang=(l)=>{setLangState(l);localStorage.setItem('tat_lang',l)};
+
+  useEffect(()=>{document.documentElement.dir=dir;document.documentElement.lang=lang},[lang,dir]);
   const setVer=(sid,ver)=>{const nv={...verPrefs,[sid]:ver};setVerPrefs(nv);localStorage.setItem('tat_verPrefs',JSON.stringify(nv))};
   const getVer=(sid)=>verPrefs[sid]||'short';
 
-  useEffect(()=>{document.documentElement.dir=dir;
-    try{const vl=JSON.parse(localStorage.getItem('sv_voices')||'[]');setVoices(vl);
-    const lv=localStorage.getItem('tat_lastVoice');if(lv){const f=vl.find(v=>v.id===lv);if(f)setSv(f)}}catch{}
+  useEffect(()=>{
+    try{const vl=JSON.parse(localStorage.getItem('sv_voices')||'[]').filter(v=>v.id?.startsWith('v-'));setVoices(vl);
+    localStorage.setItem('sv_voices',JSON.stringify(vl));
+    const lv=localStorage.getItem('tat_lastVoice');if(lv&&lv.startsWith('v-')){const f=vl.find(v=>v.id===lv);if(f)setSv(f)}
+    else{localStorage.removeItem('tat_lastVoice')}}catch{}
     speechSynthesis?.getVoices();if(speechSynthesis)speechSynthesis.onvoiceschanged=()=>speechSynthesis.getVoices();
     initGradio().then(c=>{if(c)setGOk(true)});
     dbGetAll('customStories').then(cs=>setCustomStories(cs||[])).catch(()=>{});
@@ -891,13 +904,13 @@ function App(){
     }else{setTab('player')}};
   const doLogout=()=>{localStorage.removeItem('tat_name');localStorage.removeItem('tat_v');localStorage.removeItem('tat_tut');setName('');setTutDone(false);setTutStep(0);setSv(null);setSs(null);speechSynthesis?.cancel();setMenu(false)};
 
-  if(!name)return<><BG/><div className="app" dir={dir}><TutWelcome onDone={finishName} lang={lang} setLang={setLang} t={t}/></div></>;
+  if(!name)return<><BG/><div className="app" dir={dir} key={lang}><TutWelcome onDone={finishName} lang={lang} setLang={setLang} t={t}/></div></>;
 
-  if(!tutDone)return(<><BG dim/><div className="app" dir={dir}>
+  if(!tutDone)return(<><BG dim/><div className="app" dir={dir} key={lang}>
     <div className="hdr"><div className="logo"><LogoHeader/></div><span style={{fontSize:12,color:'var(--txd)',fontWeight:600}}>{t('hi')}, {name}</span></div>
     <div className="main">
       {tutStep===0&&<TutVoice voices={voices} onSave={saveVoice} onSelect={selectVoice} selected={sv} onNext={()=>setTutStep(1)} pw={pw} t={t}/>}
-      {tutStep===1&&<TutStory onSelect={setSs} selected={ss} onNext={()=>{setTutStep(2);finishTut()}} getVer={getVer} setVer={setVer} t={t}/>}
+      {tutStep===1&&<TutStory onSelect={setSs} selected={ss} onNext={()=>{setTutStep(2);finishTut()}} getVer={getVer} setVer={setVer} t={t} lang={lang}/>}
     </div><Toast msg={toast}/></div></>);
 
   return(<><BG dim/><div className="app" dir={dir}>
@@ -926,9 +939,9 @@ function App(){
           <div style={{display:'flex',gap:8}}><button className="btn bg2 bsm" onClick={()=>{setShowCreateForm(false);setCsTitle('');setCsText('')}}>{t('back')}</button>
             <button className="btn bgr bsm" onClick={saveCustomStory} disabled={!csTitle.trim()||!csText.trim()}><Icon name="check" size={14} color="#0B0E2D"/> {t('saveStory')}</button></div>
         </div>}
-        <div className="slist">{filtered.map(s=><div key={s.id} className={`sr ${ss?.id===s.id?'sel':''}`} onClick={()=>{setSs(s);show(s.t)}} style={{position:'relative'}}>
+        <div className="slist">{filtered.map(s=><div key={s.id} className={`sr ${ss?.id===s.id?'sel':''}`} onClick={()=>{setSs(s);show(getStoryTitle(s.id,lang)||s.t)}} style={{position:'relative'}}>
           <div className="se"><StoryIcon id={s.id} size={42}/></div>
-          <div className="si"><div className="sn">{s.t}</div><div className="sd">{s.a} · {s.age} · ~{getVer(s.id)==='long'?s.mL:s.mS} min</div>
+          <div className="si"><div className="sn">{getStoryTitle(s.id,lang)||s.t}</div><div className="sd">{getStoryAuthor(s.a,lang)} · {s.age} · ~{getVer(s.id)==='long'?s.mL:s.mS} min</div>
           {s.txS!==s.txL&&<div className="ver-btns" onClick={e=>e.stopPropagation()}>
             <button className={`vbtn ${getVer(s.id)==='short'?'va2':''}`} onClick={()=>setVer(s.id,'short')}>{t('short')} ~{s.mS}m</button>
             <button className={`vbtn ${getVer(s.id)==='long'?'va2':''}`} onClick={()=>setVer(s.id,'long')}>{t('long')} ~{s.mL}m</button>
@@ -949,10 +962,7 @@ function App(){
             <div className="va va-u"><Icon name="mic" size={20} color="var(--teal)"/></div><div><div className="vn">{v.name}</div><div className="vd">{t('aiClone')}</div></div>
             {sv?.id===v.id&&<span style={{marginLeft:'auto'}}><Icon name="check" size={18} color="var(--teal)"/></span>}
             <button className="vx" onClick={e=>{e.stopPropagation();delVoice(v.id)}}><Icon name="trash" size={14}/></button></div>)}</>}
-        <div className="sh" style={{fontSize:16,marginTop:16}}><Icon name="phone" size={18} color="var(--warm)"/> {t('deviceVoices')}</div>
-        {[{id:'b1',name:'Sleepy Narrator'},{id:'b2',name:'Dreamy Storyteller'}].map(v=><div key={v.id} className={`vc ${sv?.id===v.id?'sel':''}`} onClick={()=>selectVoice(v)}>
-          <div className="va va-f"><Icon name="moon" size={20} color="var(--warm)"/></div><div><div className="vn">{v.name}</div><div className="vd">{t('deviceVoice')}</div></div>
-          {sv?.id===v.id&&<span style={{marginLeft:'auto'}}><Icon name="check" size={18} color="var(--teal)"/></span>}</div>)}
+        {voices.length===0&&<div className="info" style={{marginTop:8}}>{t('recSub')}</div>}
         </div>
         <div className="info"><b>{t('howClone')}</b> {t('howCloneDesc')}</div></div>}
 
@@ -961,24 +971,24 @@ function App(){
         <div className="steps"><div className={`step ${sv?'d':'a'}`}/><div className={`step ${ss?'d':sv?'a':''}`}/><div className={`step ${sv&&ss?'a':''}`}/></div>
         <div className="card" style={{borderLeft:'3px solid '+(sv?'var(--teal)':'var(--wg)')}}>
           <div style={{display:'flex',alignItems:'center',justifyContent:'space-between'}}>
-            <div><div className="ct"><Icon name={sv?'check':'mic'} size={16} color={sv?'var(--teal)':'var(--txd)'}/> {t('voice')}</div><div className="cs">{sv?sv.name+(sv.id?.startsWith('v-')?' · AI Clone':' · Device'):t('noneSelected')}</div></div>
+            <div><div className="ct"><Icon name={sv?'check':'mic'} size={16} color={sv?'var(--teal)':'var(--txd)'}/> {t('voice')}</div><div className="cs">{sv?sv.name+' · '+t('aiClone'):t('noneSelected')}</div></div>
             <button className="btn bg2 bsm" onClick={()=>setTab('voices')}>{sv?t('change'):t('pick')}</button></div></div>
         <div className="card" style={{borderLeft:'3px solid '+(ss?'var(--teal)':'var(--wg)')}}>
           <div style={{display:'flex',alignItems:'center',justifyContent:'space-between'}}>
-            <div><div className="ct"><Icon name={ss?'check':'book'} size={16} color={ss?'var(--teal)':'var(--txd)'}/> {t('story')}</div><div className="cs">{ss?ss.t:t('noneSelected')}</div>
+            <div><div className="ct"><Icon name={ss?'check':'book'} size={16} color={ss?'var(--teal)':'var(--txd)'}/> {t('story')}</div><div className="cs">{ss?getStoryTitle(ss.id,lang)||ss.t:t('noneSelected')}</div>
             {ss&&<div className="ver-btns" style={{marginTop:4}}>
               <button className={`vbtn ${getVer(ss.id)==='short'?'va2':''}`} onClick={()=>setVer(ss.id,'short')}>{t('short')} ~{ss.mS}m</button>
               <button className={`vbtn ${getVer(ss.id)==='long'?'va2':''}`} onClick={()=>setVer(ss.id,'long')}>{t('long')} ~{ss.mL}m</button>
             </div>}</div>
             <button className="btn bg2 bsm" onClick={()=>setTab('stories')}>{ss?t('change'):t('pick')}</button></div></div>
-        <button className="btn bp bw" onClick={playStory} disabled={!ss} style={{marginTop:8,fontSize:18,padding:'16px 24px'}}><Icon name="play" size={18} color="#fff"/> {t('beginStory')}</button>
+        <button className="btn bp bw" onClick={playStory} disabled={!ss||!sv} style={{marginTop:8,fontSize:18,padding:'16px 24px'}}><Icon name="play" size={18} color="#fff"/> {t('beginStory')}</button>
         {pw.active&&<div className="prewarm" style={{marginTop:10}}><span className="spinner"/> {t('warming')}</div>}
         {pw.done&&!pw.active&&<div className="prewarm" style={{marginTop:10,color:'var(--teal)',borderColor:'rgba(85,230,193,.2)'}}><Icon name="check" size={14} color="var(--teal)"/> {t('cloneReady')}</div>}
         <div className="info" style={{marginTop:12}}><b>{gOk?t('connected'):t('connecting')}</b><br/>
-          {sv?.id?.startsWith('v-')?t('cloneMsg'):t('deviceMsg')}</div></div>}
+          {sv?t('cloneMsg'):t('recSub')}</div></div>}
 
       {tab==='player'&&ss&&<>{translating&&!playerText&&<div className="tl-spinner"><span className="spinner"/> {t('translating')||'Translating story...'}</div>}
-        <Player story={ss} voice={sv} ver={getVer(ss.id)} text={playerText} onBack={()=>{setTab('play');setPlayerText(null)}} show={show} t={t}/></>}
+        <Player story={ss} voice={sv} ver={getVer(ss.id)} text={playerText} onBack={()=>{setTab('play');setPlayerText(null)}} show={show} t={t} lang={lang}/></>}
     </div>
     {tab!=='player'&&<div className="nav">
       <button className={`ni ${tab==='stories'?'a':''}`} onClick={()=>setTab('stories')}><Icon name="book" size={22} color={tab==='stories'?'var(--moon)':'var(--txd)'}/><span className="ni-l">{t('stories')}</span></button>
