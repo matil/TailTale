@@ -143,6 +143,218 @@ function Icon({name,size=24,color='currentColor',className=''}){
   }
 }
 
+// Story Illustrations - unique square SVG icon per story
+function StoryIcon({id,size=48}){
+  const s={width:size,height:size,display:'block'};
+  const p={xmlns:"http://www.w3.org/2000/svg",viewBox:"0 0 48 48",fill:"none",style:s};
+  switch(id){
+    case 's1': // Three Little Pigs - three houses
+      return(<svg {...p}>
+        <rect x="4" y="28" width="11" height="12" rx="1" fill="#F5D6A0" stroke="#C9A96E" strokeWidth=".5"/>
+        <path d="M3 28L9.5 20L16 28" fill="#E8C170" stroke="#C9A96E" strokeWidth=".5"/>
+        <line x1="7" y1="22" x2="12" y2="22" stroke="#C9A96E" strokeWidth=".3" opacity=".5"/>
+        <rect x="7" y="32" width="4" height="5" rx=".5" fill="#8B6914" opacity=".4"/>
+        <rect x="18" y="24" width="12" height="16" rx="1" fill="#B8845A" stroke="#8B6340" strokeWidth=".5"/>
+        <path d="M17 24L24 16L31 24" fill="#9B6B42" stroke="#8B6340" strokeWidth=".5"/>
+        <line x1="20" y1="18" x2="28" y2="18" stroke="#8B6340" strokeWidth=".3" opacity=".3"/>
+        <rect x="21" y="28" width="5" height="6" rx=".5" fill="#5C3D1E" opacity=".4"/>
+        <rect x="33" y="20" width="12" height="20" rx="1" fill="#CC4444" stroke="#993333" strokeWidth=".5"/>
+        <path d="M32 20L39 10L46 20" fill="#AA3333" stroke="#993333" strokeWidth=".5"/>
+        <rect x="36" y="24" width="5" height="6" rx=".5" fill="#FFE4A0" opacity=".5"/>
+        <rect x="37" y="32" width="4" height="6" rx=".5" fill="#5C2020" opacity=".5"/>
+        <line x1="38.5" y1="24" x2="38.5" y2="30" stroke="#993333" strokeWidth=".3"/>
+        <line x1="36" y1="27" x2="41" y2="27" stroke="#993333" strokeWidth=".3"/>
+        <circle cx="8" cy="6" r="2" fill="#FFEAA7" opacity=".5"/>
+        <circle cx="40" cy="5" r="1.5" fill="#FFEAA7" opacity=".4"/>
+      </svg>);
+    case 's2': // Goldilocks - three bowls on a table
+      return(<svg {...p}>
+        <rect x="6" y="26" width="36" height="3" rx="1" fill="#8B6340"/>
+        <rect x="8" y="29" width="3" height="12" fill="#6B4320"/><rect x="37" y="29" width="3" height="12" fill="#6B4320"/>
+        <ellipse cx="13" cy="24" rx="5" ry="3.5" fill="#E8D4B0" stroke="#C9A96E" strokeWidth=".5"/>
+        <ellipse cx="13" cy="22" rx="3.5" ry="1.5" fill="#F5E6C8" opacity=".6"/>
+        <path d="M8 24 Q8 20 10 19" stroke="#C9A96E" strokeWidth=".8" fill="none"/>
+        <ellipse cx="24" cy="23" rx="6" ry="4" fill="#E8D4B0" stroke="#C9A96E" strokeWidth=".5"/>
+        <ellipse cx="24" cy="21" rx="4.5" ry="2" fill="#F5E6C8" opacity=".6"/>
+        <path d="M18 23 Q18 18 20 17" stroke="#C9A96E" strokeWidth=".8" fill="none"/>
+        <ellipse cx="36" cy="22" rx="7" ry="5" fill="#E8D4B0" stroke="#C9A96E" strokeWidth=".5"/>
+        <ellipse cx="36" cy="19.5" rx="5.5" ry="2.5" fill="#F5E6C8" opacity=".6"/>
+        <path d="M29 22 Q29 16 31 15" stroke="#C9A96E" strokeWidth=".8" fill="none"/>
+        <circle cx="13" cy="22" r="1" fill="#FFBE76" opacity=".5"/>
+        <circle cx="24" cy="21" r="1.2" fill="#FFBE76" opacity=".5"/>
+        <circle cx="36" cy="19" r="1.5" fill="#FFBE76" opacity=".5"/>
+        <path d="M20 8 Q22 4 24 8" stroke="#F5A623" strokeWidth="1.5" fill="none"/>
+        <path d="M22 10 Q24 5 26 10" stroke="#F5A623" strokeWidth="1" fill="none" opacity=".5"/>
+        <circle cx="24" cy="3" r="1" fill="#FFEAA7" opacity=".6"/>
+      </svg>);
+    case 's3': // Ugly Duckling - small grey duckling + swan reflection
+      return(<svg {...p}>
+        <path d="M4 34 Q12 30 24 32 Q36 30 44 34 L44 44 L4 44Z" fill="#3D5A80" opacity=".3"/>
+        <path d="M4 36 Q12 33 24 35 Q36 33 44 36 L44 44 L4 44Z" fill="#4A7FB5" opacity=".2"/>
+        <ellipse cx="18" cy="24" rx="7" ry="5" fill="#9E9E9E"/>
+        <circle cx="13" cy="20" r="4.5" fill="#ABABAB"/>
+        <circle cx="11.5" cy="19" r=".8" fill="#333"/>
+        <path d="M9 21 L7 20.5 L9 20" fill="#F5A623" stroke="none"/>
+        <path d="M25 24 Q28 20 26 18" stroke="#9E9E9E" strokeWidth="1.5" fill="none" strokeLinecap="round"/>
+        <path d="M14 38 Q18 36 22 38 Q26 40 30 38" stroke="#FFF" strokeWidth=".8" fill="none" opacity=".3"/>
+        <path d="M22 42 Q24 38 26 36 Q28 34 28 30" stroke="#FFF" strokeWidth="1" fill="none" opacity=".25"/>
+        <ellipse cx="26" cy="42" rx="5" ry="2.5" fill="#FFF" opacity=".15"/>
+        <circle cx="36" cy="8" r="2" fill="#FFEAA7" opacity=".5"/>
+        <circle cx="42" cy="12" r="1" fill="#FFEAA7" opacity=".3"/>
+      </svg>);
+    case 's4': // Jack and the Beanstalk - beanstalk going up into clouds
+      return(<svg {...p}>
+        <rect x="16" y="36" width="16" height="8" rx="2" fill="#8B6340" opacity=".4"/>
+        <path d="M24 40 Q20 30 22 22 Q24 14 20 8 Q18 4 20 0" stroke="#3DC1A3" strokeWidth="3" fill="none" strokeLinecap="round"/>
+        <path d="M24 40 Q28 32 26 24 Q24 16 28 10 Q30 6 28 2" stroke="#55E6C1" strokeWidth="2" fill="none" strokeLinecap="round" opacity=".6"/>
+        <ellipse cx="18" cy="28" rx="4" ry="2.5" fill="#3DC1A3" opacity=".5"/>
+        <ellipse cx="30" cy="20" rx="4" ry="2.5" fill="#55E6C1" opacity=".4"/>
+        <ellipse cx="16" cy="14" rx="3.5" ry="2" fill="#3DC1A3" opacity=".4"/>
+        <ellipse cx="10" cy="4" rx="10" ry="5" fill="#C5B3E6" opacity=".3"/>
+        <ellipse cx="30" cy="3" rx="12" ry="4" fill="#C5B3E6" opacity=".25"/>
+        <ellipse cx="20" cy="6" rx="8" ry="4" fill="#FFF" opacity=".1"/>
+        <circle cx="12" cy="2" r="1.5" fill="#FFEAA7" opacity=".5"/>
+        <circle cx="38" cy="6" r="1.5" fill="#FFEAA7" opacity=".5"/>
+        <circle cx="8" cy="42" r="1" fill="#F5A623" opacity=".5"/>
+        <circle cx="40" cy="38" r="1.5" fill="#F5A623" opacity=".4"/>
+      </svg>);
+    case 's5': // Little Red Riding Hood - red hood in forest path
+      return(<svg {...p}>
+        <rect x="0" y="38" width="48" height="10" fill="#1A3A1A" opacity=".3"/>
+        <path d="M0 38 Q12 34 24 36 Q36 34 48 38" fill="#2A5A2A" opacity=".2"/>
+        <path d="M6 38 L6 10" stroke="#5C3D1E" strokeWidth="3"/><ellipse cx="6" cy="8" rx="8" ry="10" fill="#2E7D32" opacity=".5"/>
+        <path d="M42 38 L42 12" stroke="#5C3D1E" strokeWidth="3"/><ellipse cx="42" cy="10" rx="7" ry="9" fill="#2E7D32" opacity=".4"/>
+        <path d="M16 38 Q24 32 32 38" fill="#D4A76A" opacity=".15"/>
+        <path d="M24 38 L24 26" stroke="none"/>
+        <ellipse cx="24" cy="30" rx="4" ry="3" fill="#CC3333"/>
+        <path d="M20 29 Q24 22 28 29" fill="#CC3333"/>
+        <circle cx="24" cy="32" r="3" fill="#FFD4A2"/>
+        <circle cx="23" cy="31.5" r=".5" fill="#333"/><circle cx="25.5" cy="31.5" r=".5" fill="#333"/>
+        <ellipse cx="24" cy="36" rx="3" ry="4" fill="#CC3333" opacity=".8"/>
+        <rect x="22" y="34" width="4" height="2" rx="1" fill="#FFF" opacity=".3"/>
+        <circle cx="14" cy="4" r="1.5" fill="#FFEAA7" opacity=".6"/>
+      </svg>);
+    case 's6': // Tortoise and the Hare - tortoise crossing finish line
+      return(<svg {...p}>
+        <rect x="0" y="36" width="48" height="12" fill="#3DC1A3" opacity=".1"/>
+        <path d="M36 10 L36 36" stroke="#FF7979" strokeWidth="1.5" strokeDasharray="3 2"/>
+        <path d="M34 8 L38 8" stroke="#FF7979" strokeWidth="2"/>
+        <ellipse cx="16" cy="30" rx="8" ry="6" fill="#5C8A3A"/>
+        <path d="M8 30 Q10 22 16 20 Q22 22 24 30" fill="#4A7530" stroke="#3A5A20" strokeWidth=".5"/>
+        <path d="M10 26 Q16 23 22 26" stroke="#3A5A20" strokeWidth=".4" fill="none"/>
+        <path d="M12 28 Q16 25.5 20 28" stroke="#3A5A20" strokeWidth=".4" fill="none"/>
+        <circle cx="8" cy="28" r="3" fill="#7BA55A"/>
+        <circle cx="7" cy="27.5" r=".6" fill="#222"/>
+        <path d="M5 29 L4 28.5" stroke="#7BA55A" strokeWidth=".5"/>
+        <ellipse cx="11" cy="34" rx="2" ry="1" fill="#7BA55A"/><ellipse cx="21" cy="34" rx="2" ry="1" fill="#7BA55A"/>
+        <ellipse cx="38" cy="20" rx="4" ry="5" fill="#ABABAB" opacity=".3"/>
+        <path d="M36 16 Q38 12 40 16" stroke="#ABABAB" strokeWidth="1" fill="none" opacity=".3"/>
+        <text x="34" y="6" fill="#FFEAA7" fontSize="5" fontFamily="Baloo 2,cursive" fontWeight="700" opacity=".6">1st</text>
+      </svg>);
+    case 's7': // Princess and the Pea - stack of mattresses with pea
+      return(<svg {...p}>
+        <rect x="10" y="38" width="28" height="3" rx="1" fill="#8B6340"/>
+        <rect x="8" y="38" width="2" height="6" fill="#6B4320"/><rect x="38" y="38" width="2" height="6" fill="#6B4320"/>
+        <circle cx="24" cy="37" r="1.5" fill="#55E6C1"/>
+        <circle cx="24" cy="37" r="2.5" fill="#55E6C1" opacity=".2"/>
+        {[0,1,2,3,4,5].map(i=><rect key={i} x={11+i*.3} y={32-i*3} width={26-i*.6} height={2.5} rx="1.2"
+          fill={i%2===0?'#C5B3E6':'#FFB8B8'} stroke={i%2===0?'#A78BCC':'#E8A0A0'} strokeWidth=".3" opacity={.7+i*.05}/>)}
+        <rect x="13" y="13" width="22" height="2" rx="1" fill="#FFF8DC" opacity=".6"/>
+        <ellipse cx="24" cy="12" rx="3" ry="2.5" fill="#FFD4A2"/>
+        <circle cx="23" cy="11.5" r=".5" fill="#333"/><circle cx="25.5" cy="11.5" r=".5" fill="#333"/>
+        <path d="M21 9 Q24 6 27 9" fill="#C5B3E6"/>
+        <circle cx="40" cy="6" r="1.5" fill="#FFEAA7" opacity=".5"/>
+        <circle cx="8" cy="8" r="1" fill="#FFEAA7" opacity=".4"/>
+      </svg>);
+    case 's8': // Stars That Came to Play - playful stars bouncing
+      return(<svg {...p}>
+        <path d="M24 42 Q26 38 24 36 Q22 34 24 30" stroke="#C5B3E6" strokeWidth="1" fill="none" strokeDasharray="2 1" opacity=".3"/>
+        <path d="M12 8 L13.5 13 L18.5 13 L14.5 16 L16 21 L12 18 L8 21 L9.5 16 L5.5 13 L10.5 13Z" fill="#FFEAA7"/>
+        <circle cx="12" cy="14.5" r="7" fill="#FFEAA7" opacity=".1"/>
+        <circle cx="11" cy="14" r=".6" fill="#333"/><circle cx="13.5" cy="14" r=".6" fill="#333"/>
+        <path d="M11 15.5 Q12 16.5 13 15.5" stroke="#333" strokeWidth=".4" fill="none"/>
+        <path d="M32 14 L33 17 L36 17 L33.5 19 L34.5 22 L32 20 L29.5 22 L30.5 19 L28 17 L31 17Z" fill="#FFD4A2" opacity=".7"/>
+        <path d="M40 6 L40.8 8 L43 8 L41.2 9.3 L42 11.5 L40 10 L38 11.5 L38.8 9.3 L37 8 L39.2 8Z" fill="#C5B3E6" opacity=".6"/>
+        <path d="M20 28 L20.6 30 L22.5 30 L21 31 L21.6 33 L20 31.8 L18.4 33 L19 31 L17.5 30 L19.4 30Z" fill="#55E6C1" opacity=".5"/>
+        <rect x="18" y="36" width="12" height="8" rx="1" fill="#2A1F5E" opacity=".3"/>
+        <rect x="20" y="37" width="3" height="5" fill="#4A7FB5" opacity=".2"/><rect x="25" y="37" width="3" height="5" fill="#4A7FB5" opacity=".2"/>
+      </svg>);
+    case 's9': // Snow White - poisoned apple with mirror
+      return(<svg {...p}>
+        <ellipse cx="30" cy="26" rx="10" ry="11" fill="#CC3333"/>
+        <ellipse cx="30" cy="26" rx="9" ry="10" fill="#E84444"/>
+        <path d="M30 16 Q32 12 34 16" stroke="#5C3D1E" strokeWidth="1" fill="none"/>
+        <ellipse cx="30" cy="16.5" rx="2" ry="1" fill="#3DC1A3" opacity=".6"/>
+        <ellipse cx="33" cy="22" rx="3" ry="2" fill="#FF6666" opacity=".4"/>
+        <path d="M26 32 Q30 36 34 32" fill="#AA2222" opacity=".3"/>
+        <ellipse cx="14" cy="20" rx="9" ry="12" fill="#C5B3E6" opacity=".2" stroke="#A78BCC" strokeWidth=".8"/>
+        <ellipse cx="14" cy="20" rx="7" ry="10" fill="#1A1345" opacity=".3"/>
+        <path d="M11 17 Q14 14 17 17" stroke="#FFF" strokeWidth=".5" fill="none" opacity=".3"/>
+        <circle cx="12" cy="20" r=".5" fill="#FFF" opacity=".3"/><circle cx="16" cy="20" r=".5" fill="#FFF" opacity=".3"/>
+        <path d="M12 22 Q14 23.5 16 22" stroke="#FFF" strokeWidth=".4" fill="none" opacity=".3"/>
+        <circle cx="6" cy="6" r="1.5" fill="#FFEAA7" opacity=".5"/>
+        <circle cx="42" cy="8" r="1" fill="#FFEAA7" opacity=".4"/>
+      </svg>);
+    case 's10': // Cinderella - glass slipper with sparkles
+      return(<svg {...p}>
+        <path d="M8 36 Q8 28 16 26 L30 26 Q34 26 36 30 Q38 34 40 36 L44 36 Q44 40 40 40 L12 40 Q8 40 8 36Z" fill="#87CEEB" opacity=".4" stroke="#5BACDB" strokeWidth=".5"/>
+        <path d="M8 36 Q8 28 16 26 L30 26 Q34 26 36 30 Q38 34 40 36" fill="none" stroke="#FFF" strokeWidth=".3" opacity=".5"/>
+        <path d="M16 26 Q20 22 18 18" stroke="#5BACDB" strokeWidth="1" fill="none" strokeLinecap="round"/>
+        <path d="M12 34 Q20 30 28 34" stroke="#FFF" strokeWidth=".3" opacity=".3"/>
+        <ellipse cx="36" cy="38" rx="4" ry="1" fill="#5BACDB" opacity=".15"/>
+        <path d="M14 10 L15 13 L18 13 L15.5 15 L16.5 18 L14 16 L11.5 18 L12.5 15 L10 13 L13 13Z" fill="#FFEAA7" opacity=".7"/>
+        <path d="M34 8 L34.8 10.5 L37 10.5 L35.2 12 L36 14.5 L34 13 L32 14.5 L32.8 12 L31 10.5 L33.2 10.5Z" fill="#C5B3E6" opacity=".6"/>
+        <circle cx="24" cy="6" r="1" fill="#FFF" opacity=".5"/>
+        <circle cx="40" cy="14" r=".8" fill="#FFEAA7" opacity=".4"/>
+        <path d="M26 16 L26.5 17.5 L28 17.5 L27 18.5 L27.3 20 L26 19 L24.7 20 L25 18.5 L24 17.5 L25.5 17.5Z" fill="#55E6C1" opacity=".5"/>
+      </svg>);
+    case 's11': // Sleeping Beauty - rose with thorns and spinning wheel
+      return(<svg {...p}>
+        <circle cx="32" cy="28" r="10" fill="none" stroke="#8B6340" strokeWidth="1.5"/>
+        <circle cx="32" cy="28" r="1.5" fill="#8B6340"/>
+        <line x1="32" y1="18" x2="32" y2="24" stroke="#8B6340" strokeWidth=".8"/>
+        <line x1="32" y1="32" x2="32" y2="38" stroke="#8B6340" strokeWidth=".8"/>
+        <line x1="22" y1="28" x2="28" y2="28" stroke="#8B6340" strokeWidth=".8"/>
+        <line x1="36" y1="28" x2="42" y2="28" stroke="#8B6340" strokeWidth=".8"/>
+        <line x1="25" y1="21" x2="29" y2="25" stroke="#8B6340" strokeWidth=".6"/>
+        <line x1="35" y1="31" x2="39" y2="35" stroke="#8B6340" strokeWidth=".6"/>
+        <line x1="32" y1="14" x2="32" y2="12" stroke="#8B6340" strokeWidth="1"/>
+        <circle cx="32" cy="11" r="1" fill="#C9A96E"/>
+        <circle cx="14" cy="20" r="5" fill="#E84444" opacity=".8"/>
+        <circle cx="12" cy="18" r="3.5" fill="#CC3333"/>
+        <circle cx="16" cy="17" r="3" fill="#E84444" opacity=".6"/>
+        <circle cx="14" cy="22" r="3" fill="#CC3333" opacity=".7"/>
+        <path d="M14 26 Q13 32 14 38" stroke="#3DC1A3" strokeWidth="1.5" fill="none"/>
+        <path d="M13 30 L11 28" stroke="#3DC1A3" strokeWidth=".8"/><path d="M15 34 L17 32" stroke="#3DC1A3" strokeWidth=".8"/>
+        <ellipse cx="14" cy="15" rx="2.5" ry="1.5" fill="#3DC1A3" opacity=".5"/>
+        <circle cx="6" cy="6" r="1" fill="#FFEAA7" opacity=".5"/>
+      </svg>);
+    case 's12': // Hansel and Gretel - gingerbread house
+      return(<svg {...p}>
+        <path d="M8 24 L24 8 L40 24" fill="#C9A96E" stroke="#8B6340" strokeWidth=".5"/>
+        <rect x="10" y="24" width="28" height="18" rx="1" fill="#D4A76A" stroke="#8B6340" strokeWidth=".5"/>
+        <circle cx="16" cy="14" r="2" fill="#FF7979" opacity=".7"/>
+        <circle cx="32" cy="14" r="2" fill="#55E6C1" opacity=".7"/>
+        <circle cx="24" cy="12" r="1.5" fill="#FFEAA7" opacity=".7"/>
+        <path d="M8 24 L24 8 L40 24" fill="none" stroke="#FFF" strokeWidth="1" strokeDasharray="2 2" opacity=".3"/>
+        <rect x="14" y="28" width="6" height="6" rx=".5" fill="#FFB8B8" opacity=".5" stroke="#E8A0A0" strokeWidth=".3"/>
+        <line x1="17" y1="28" x2="17" y2="34" stroke="#E8A0A0" strokeWidth=".3"/>
+        <line x1="14" y1="31" x2="20" y2="31" stroke="#E8A0A0" strokeWidth=".3"/>
+        <rect x="28" y="28" width="6" height="6" rx=".5" fill="#C5B3E6" opacity=".5" stroke="#A78BCC" strokeWidth=".3"/>
+        <line x1="31" y1="28" x2="31" y2="34" stroke="#A78BCC" strokeWidth=".3"/>
+        <line x1="28" y1="31" x2="34" y2="31" stroke="#A78BCC" strokeWidth=".3"/>
+        <rect x="20" y="34" width="8" height="8" rx="4" fill="#8B6340"/>
+        <circle cx="26" cy="37" r="1" fill="#F5A623"/>
+        <circle cx="12" cy="36" r="1.5" fill="#FF7979" opacity=".5"/>
+        <circle cx="36" cy="36" r="1.5" fill="#55E6C1" opacity=".5"/>
+        <circle cx="24" cy="20" r="1" fill="#FFEAA7" opacity=".5"/>
+        <path d="M6 24 Q4 22 6 20" stroke="#3DC1A3" strokeWidth="1" fill="none" opacity=".3"/>
+        <path d="M42 24 Q44 22 42 20" stroke="#3DC1A3" strokeWidth="1" fill="none" opacity=".3"/>
+      </svg>);
+    default: return <Icon name="book" size={size} color="var(--lav)"/>;
+  }
+}
+
 // IndexedDB
 const DB='tailatale';const DBV=2;
 function openDB(){return new Promise((res,rej)=>{const r=indexedDB.open(DB,DBV);r.onupgradeneeded=e=>{const db=e.target.result;if(!db.objectStoreNames.contains('voices'))db.createObjectStore('voices',{keyPath:'id'});if(!db.objectStoreNames.contains('audioCache'))db.createObjectStore('audioCache',{keyPath:'key'})};r.onsuccess=e=>res(e.target.result);r.onerror=e=>rej(e)})}
@@ -326,7 +538,7 @@ function TutStory({onSelect,selected,onNext}){
     <div className="flt">{[{k:'all',l:'All'},{k:'fairytale',l:'Fairytales'},{k:'fable',l:'Fables'},{k:'bedtime',l:'Bedtime'}].map(f=>
       <button key={f.k} className={`fc ${filter===f.k?'a':''}`} onClick={()=>setFilter(f.k)}>{f.l}</button>)}</div>
     {filtered.map(s=><div key={s.id} className={`sr ${selected?.id===s.id?'sel':''}`} onClick={()=>onSelect(s)}>
-      <div className="se"><Icon name={s.c==='fairytale'?'castle':s.c==='fable'?'fox':'moon'} size={28} color={s.c==='fairytale'?'var(--teal)':s.c==='fable'?'var(--warm)':'var(--lav)'}/></div>
+      <div className="se"><StoryIcon id={s.id} size={42}/></div>
       <div className="si"><div className="sn">{s.t}</div><div className="sd">{s.a} · {s.age} · ~{s.m} min</div>
       <span className={`badge b-${s.c==='fairytale'?'ft':s.c==='fable'?'fb':'bt'}`}>{s.c}</span></div>
       {selected?.id===s.id&&<Icon name="check" size={20} color="var(--lav)"/>}
@@ -496,7 +708,7 @@ function App(){
         <div className="ss">Choose tonight's adventure</div>
         <div className="flt">{[{k:'all',l:'All'},{k:'fairytale',l:'Fairytales'},{k:'fable',l:'Fables'},{k:'bedtime',l:'Bedtime'}].map(f=><button key={f.k} className={`fc ${filter===f.k?'a':''}`} onClick={()=>setFilter(f.k)}>{f.l}</button>)}</div>
         {filtered.map(s=><div key={s.id} className={`sr ${ss?.id===s.id?'sel':''}`} onClick={()=>{setSs(s);show(s.t+' selected')}}>
-          <div className="se"><Icon name={s.c==='fairytale'?'castle':s.c==='fable'?'fox':'moon'} size={28} color={s.c==='fairytale'?'var(--teal)':s.c==='fable'?'var(--warm)':'var(--lav)'}/></div>
+          <div className="se"><StoryIcon id={s.id} size={42}/></div>
           <div className="si"><div className="sn">{s.t}</div><div className="sd">{s.a} · {s.age} · ~{s.m} min</div>
           <span className={`badge b-${s.c==='fairytale'?'ft':s.c==='fable'?'fb':'bt'}`}>{s.c}</span></div>
           {ss?.id===s.id&&<Icon name="check" size={20} color="var(--lav)"/>}
