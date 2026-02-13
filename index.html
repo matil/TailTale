@@ -25,7 +25,7 @@ html,body,#root{height:100%;width:100%;overflow:hidden}
 body{font-family:'Nunito',sans-serif;background:var(--nd);color:var(--tx);-webkit-font-smoothing:antialiased}
 .bg{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none;background:linear-gradient(180deg,#070A1F 0%,#0B0E2D 25%,#141845 55%,#1A1F55 75%,#1E2460 100%)}
 .moon{position:absolute;width:80px;height:80px;border-radius:50%;top:30px;right:25px;background:radial-gradient(circle at 38% 38%,#FFFFFF,#FFFEF5 30%,#FFF8DC 60%,#EDE0AA);box-shadow:0 0 20px 5px rgba(255,250,220,.6),0 0 60px 10px rgba(255,248,200,.35),0 0 120px 20px rgba(255,245,180,.15);animation:mg 6s ease-in-out infinite;transition:opacity .5s,transform .5s}
-.bg.dim .moon{opacity:.15;transform:scale(.6);box-shadow:none;animation:none}
+.bg.dim .moon{opacity:0;visibility:hidden;pointer-events:none;transform:scale(.3);box-shadow:none;animation:none;transition:opacity .6s,transform .6s,visibility .6s}
 .moon::after{content:'';position:absolute;top:8px;left:12px;width:14px;height:14px;border-radius:50%;background:radial-gradient(circle,rgba(210,200,160,.25),transparent 70%)}
 .moon::before{content:'';position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 70% 65%,transparent 50%,rgba(200,185,130,.2) 80%)}
 @keyframes mg{0%,100%{box-shadow:0 0 20px 5px rgba(255,250,220,.6),0 0 60px 10px rgba(255,248,200,.35),0 0 120px 20px rgba(255,245,180,.15)}50%{box-shadow:0 0 25px 8px rgba(255,250,220,.7),0 0 70px 15px rgba(255,248,200,.4),0 0 140px 25px rgba(255,245,180,.2)}}
@@ -104,7 +104,11 @@ body{font-family:'Nunito',sans-serif;background:var(--nd);color:var(--tx);-webki
 .ver-btns{display:flex;gap:4px;margin-top:4px}.vbtn{padding:2px 10px;border-radius:8px;border:1px solid var(--bd);background:var(--gl);font-family:'Nunito';font-size:10px;font-weight:700;cursor:pointer;transition:.2s;color:var(--txd)}.vbtn:hover{background:var(--glh)}.vbtn.va2{background:rgba(167,139,204,.18);color:var(--lav);border-color:rgba(167,139,204,.3)}
 .prewarm{display:flex;align-items:center;gap:6px;padding:8px 12px;border-radius:10px;background:rgba(85,230,193,.06);border:1px solid rgba(85,230,193,.12);margin-top:8px;font-size:12px;color:var(--teal);animation:fin .3s ease-out}
 .prewarm .spinner{width:12px;height:12px;border:1.5px solid rgba(85,230,193,.3);border-top-color:var(--teal);border-radius:50%;animation:spin 1s linear infinite;flex-shrink:0}
-.slist{max-height:calc(100vh - 280px);overflow-y:auto;-webkit-overflow-scrolling:touch;padding-right:4px;margin-right:-4px}.slist::-webkit-scrollbar{width:3px}.slist::-webkit-scrollbar-track{background:transparent}.slist::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:3px}
+.slist{max-height:calc(100vh - 300px);overflow-y:auto;-webkit-overflow-scrolling:touch;padding-right:4px;margin-right:-4px;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.12) transparent}.slist::-webkit-scrollbar{width:4px}.slist::-webkit-scrollbar-track{background:transparent}.slist::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12);border-radius:4px}.slist::-webkit-scrollbar-thumb:hover{background:rgba(255,255,255,.2)}
+.vlist{max-height:calc(100vh - 420px);overflow-y:auto;-webkit-overflow-scrolling:touch;padding-right:4px;margin-right:-4px;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.12) transparent}.vlist::-webkit-scrollbar{width:4px}.vlist::-webkit-scrollbar-track{background:transparent}.vlist::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12);border-radius:4px}
+.csbtn{display:flex;align-items:center;gap:8px;width:100%;padding:14px;border-radius:var(--rm);border:1.5px dashed rgba(197,179,230,.3);background:rgba(197,179,230,.04);cursor:pointer;color:var(--lav);font-family:'Baloo 2',cursive;font-size:14px;font-weight:700;transition:.2s;margin-bottom:10px}.csbtn:hover{background:rgba(197,179,230,.1);border-color:rgba(197,179,230,.5)}
+.csform{background:var(--gl);border-radius:var(--rm);padding:18px;border:1px solid var(--bd);margin-bottom:14px;animation:fin .2s ease-out}
+.csdel{position:absolute;top:8px;right:8px;background:none;border:none;cursor:pointer;opacity:.3;color:var(--txd);padding:4px}.csdel:hover{opacity:.7}
 .ddmenu{position:absolute;top:48px;right:16px;background:rgba(20,24,69,.97);backdrop-filter:blur(20px);border:1px solid var(--bd);border-radius:var(--rs);padding:6px;min-width:180px;z-index:50;animation:fin .15s ease-out}
 .ddi{display:flex;align-items:center;gap:8px;padding:10px 14px;border-radius:10px;cursor:pointer;font-size:13px;font-weight:600;color:var(--txs);transition:.15s;width:100%;background:none;border:none;font-family:'Nunito';text-align:left}.ddi:hover{background:var(--gl);color:var(--tx)}
 .ddiv{height:1px;background:var(--bd);margin:4px 8px}
@@ -153,6 +157,7 @@ function Icon({name,size=24,color='currentColor',className=''}){
     case 'user': return(<svg {...p}><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>);
     case 'globe': return(<svg {...p}><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>);
     case 'logout': return(<svg {...p}><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>);
+    case 'plus': return(<svg {...p}><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>);
     default: return null;
   }
 }
@@ -169,7 +174,7 @@ const LANGS=[
   {c:'zh',n:'中文',f:'🇨🇳',d:'ltr'},
 ];
 const UI={
-  en:{whosReading:"Who's reading tonight?",placeholder:"Mom, Dad, Grandma...",getStarted:"Get Started",setupVoice:"Set Up Your Voice",voiceSub:"Record 6-10 seconds reading softly. AI will learn to speak like you!",pickStory:"Pick a Story",storySub:"Choose tonight's bedtime adventure",startReading:"Start Reading",continue:"Continue",stories:"Stories",voices:"Voices",play:"Play",bedtimeStories:"Bedtime Stories",chooseAdventure:"Choose tonight's adventure",yourVoices:"Your Voices",recSub:"Record 6-10 seconds. Chatterbox AI will clone your voice!",recordVoice:"Record Your Voice",readSoftly:"Read softly for 6-10 seconds",tapRecord:"Tap to record",recording:"Recording",recorded:"Recorded!",nameVoice:"Name this voice",voicePlaceholder:"Mom's bedtime voice",redo:"Redo",save:"Save",clonedVoices:"Cloned Voices",aiClone:"AI voice clone",deviceVoices:"Device Voices",deviceVoice:"Device voice",goodnight:"Goodnight",voice:"Voice",story:"Story",noneSelected:"None selected",change:"Change",pick:"Pick",beginStory:"Begin Story",connected:"Chatterbox AI connected",connecting:"Connecting to AI...",cloneMsg:"Story will be read in YOUR cloned voice.",deviceMsg:"Select a recorded voice for AI cloning, or use device voice.",back:"Back",storyComplete:"Story complete! Sweet dreams.",warming:"Warming up AI with your voice...",cloneReady:"Voice clone ready! GPU is warm.",howClone:"How voice cloning works:",howCloneDesc:"Your recording is sent to Chatterbox AI (open-source) running on HuggingFace free GPU. It clones your voice and reads the story.",all:"All",fairytales:"Fairytales",fables:"Fables",bedtime:"Bedtime",short:"Short",long:"Long",switchUser:"Switch User",language:"Language",settings:"Settings",cloningPart:"Cloning voice: part",gpuWake:"First time may take 30-60s (GPU waking up)...",readSample:"The stars twinkled brightly as the little bear drifted off to sleep in the magical forest.",hi:"Hi",translating:"Translating story..."},
+  en:{whosReading:"Who's reading tonight?",placeholder:"Mom, Dad, Grandma...",getStarted:"Get Started",setupVoice:"Set Up Your Voice",voiceSub:"Record 6-10 seconds reading softly. AI will learn to speak like you!",pickStory:"Pick a Story",storySub:"Choose tonight's bedtime adventure",startReading:"Start Reading",continue:"Continue",stories:"Stories",voices:"Voices",play:"Play",bedtimeStories:"Bedtime Stories",chooseAdventure:"Choose tonight's adventure",yourVoices:"Your Voices",recSub:"Record 6-10 seconds. Chatterbox AI will clone your voice!",recordVoice:"Record Your Voice",readSoftly:"Read softly for 6-10 seconds",tapRecord:"Tap to record",recording:"Recording",recorded:"Recorded!",nameVoice:"Name this voice",voicePlaceholder:"Mom's bedtime voice",redo:"Redo",save:"Save",clonedVoices:"Cloned Voices",aiClone:"AI voice clone",deviceVoices:"Device Voices",deviceVoice:"Device voice",goodnight:"Goodnight",voice:"Voice",story:"Story",noneSelected:"None selected",change:"Change",pick:"Pick",beginStory:"Begin Story",connected:"Chatterbox AI connected",connecting:"Connecting to AI...",cloneMsg:"Story will be read in YOUR cloned voice.",deviceMsg:"Select a recorded voice for AI cloning, or use device voice.",back:"Back",storyComplete:"Story complete! Sweet dreams.",warming:"Warming up AI with your voice...",cloneReady:"Voice clone ready! GPU is warm.",howClone:"How voice cloning works:",howCloneDesc:"Your recording is sent to Chatterbox AI (open-source) running on HuggingFace free GPU. It clones your voice and reads the story.",all:"All",fairytales:"Fairytales",fables:"Fables",bedtime:"Bedtime",short:"Short",long:"Long",switchUser:"Switch User",language:"Language",settings:"Settings",cloningPart:"Cloning voice: part",gpuWake:"First time may take 30-60s (GPU waking up)...",readSample:"The stars twinkled brightly as the little bear drifted off to sleep in the magical forest.",hi:"Hi",translating:"Translating story...",createStory:"Create Your Own Story",storyTitle:"Story title",storyText:"Write or paste your story here...",yourStories:"Your Stories",customStory:"My story",deleteStory:"Delete story?",saveStory:"Save Story",noVoiceWarn:"No voice selected — will use device voice.",voiceFailed:"AI voice unavailable — using device voice."},
   he:{whosReading:"מי קורא הלילה?",placeholder:"אמא, אבא, סבתא...",getStarted:"בואו נתחיל",setupVoice:"הגדרת קול",voiceSub:"הקליטו 6-10 שניות של קריאה רכה. הבינה המלאכותית תלמד לדבר כמוכם!",pickStory:"בחרו סיפור",storySub:"בחרו את הרפתקת השינה של הלילה",startReading:"התחל לקרוא",continue:"המשך",stories:"סיפורים",voices:"קולות",play:"נגן",bedtimeStories:"סיפורי שינה",chooseAdventure:"בחרו את הרפתקת הלילה",yourVoices:"הקולות שלכם",recSub:"הקליטו 6-10 שניות. Chatterbox AI ישכפל את הקול שלכם!",recordVoice:"הקליטו את הקול שלכם",readSoftly:"קראו ברכות 6-10 שניות",tapRecord:"לחצו להקלטה",recording:"מקליט",recorded:"הוקלט!",nameVoice:"תנו שם לקול",voicePlaceholder:"קול השינה של אמא",redo:"מחדש",save:"שמור",clonedVoices:"קולות משוכפלים",aiClone:"שכפול קול AI",deviceVoices:"קולות המכשיר",deviceVoice:"קול מכשיר",goodnight:"לילה טוב",voice:"קול",story:"סיפור",noneSelected:"לא נבחר",change:"שנה",pick:"בחר",beginStory:"התחל סיפור",connected:"Chatterbox AI מחובר",connecting:"מתחבר ל-AI...",cloneMsg:"הסיפור ייקרא בקול המשוכפל שלכם.",deviceMsg:"בחרו קול מוקלט לשכפול AI, או השתמשו בקול המכשיר.",back:"חזרה",storyComplete:"הסיפור הסתיים! חלומות מתוקים.",warming:"מחמם את ה-AI עם הקול שלכם...",cloneReady:"שכפול הקול מוכן!",howClone:"איך שכפול קול עובד:",howCloneDesc:"ההקלטה נשלחת ל-Chatterbox AI (קוד פתוח) שרץ על GPU חינמי ב-HuggingFace. הוא משכפל את הקול שלכם וקורא את הסיפור.",all:"הכל",fairytales:"אגדות",fables:"משלים",bedtime:"שינה",short:"קצר",long:"ארוך",switchUser:"החלף משתמש",language:"שפה",settings:"הגדרות",cloningPart:"משכפל קול: חלק",gpuWake:"בפעם הראשונה זה יכול לקחת 30-60 שניות...",readSample:"הכוכבים נצנצו בשקט כשהדוב הקטן נרדם ביער הקסום.",hi:"היי",translating:"מתרגם סיפור..."},
   es:{whosReading:"¿Quién lee esta noche?",placeholder:"Mamá, Papá, Abuela...",getStarted:"Empezar",setupVoice:"Configura tu voz",voiceSub:"Graba 6-10 segundos leyendo suavemente. ¡La IA aprenderá a hablar como tú!",pickStory:"Elige un cuento",storySub:"Elige la aventura de esta noche",startReading:"Empezar a leer",continue:"Continuar",stories:"Cuentos",voices:"Voces",play:"Play",bedtimeStories:"Cuentos para dormir",chooseAdventure:"Elige la aventura de esta noche",yourVoices:"Tus voces",recSub:"Graba 6-10 seg. ¡Chatterbox AI clonará tu voz!",recordVoice:"Graba tu voz",readSoftly:"Lee suavemente 6-10 segundos",tapRecord:"Toca para grabar",recording:"Grabando",recorded:"¡Grabado!",nameVoice:"Nombre de esta voz",voicePlaceholder:"Voz de mamá",redo:"Rehacer",save:"Guardar",clonedVoices:"Voces clonadas",aiClone:"Clon de voz AI",deviceVoices:"Voces del dispositivo",deviceVoice:"Voz del dispositivo",goodnight:"Buenas noches",voice:"Voz",story:"Cuento",noneSelected:"No seleccionado",change:"Cambiar",pick:"Elegir",beginStory:"Empezar cuento",connected:"Chatterbox AI conectado",connecting:"Conectando a AI...",cloneMsg:"El cuento se leerá con TU voz clonada.",deviceMsg:"Selecciona una voz grabada para clonar, o usa la voz del dispositivo.",back:"Volver",storyComplete:"¡Cuento terminado! Dulces sueños.",warming:"Preparando la AI con tu voz...",cloneReady:"¡Clon de voz listo!",howClone:"Cómo funciona la clonación:",howCloneDesc:"Tu grabación se envía a Chatterbox AI en HuggingFace. Clona tu voz y lee el cuento.",all:"Todo",fairytales:"Cuentos de hadas",fables:"Fábulas",bedtime:"Dormir",short:"Corto",long:"Largo",switchUser:"Cambiar usuario",language:"Idioma",settings:"Ajustes",cloningPart:"Clonando voz: parte",gpuWake:"La primera vez puede tardar 30-60s...",readSample:"Las estrellas brillaban suavemente mientras el pequeño oso se dormía en el bosque mágico.",hi:"Hola",translating:"Traduciendo cuento..."},
   fr:{whosReading:"Qui lit ce soir ?",placeholder:"Maman, Papa, Mamie...",getStarted:"Commencer",setupVoice:"Configure ta voix",voiceSub:"Enregistre 6-10 secondes en lisant doucement. L'IA apprendra à parler comme toi !",pickStory:"Choisis une histoire",storySub:"Choisis l'aventure de ce soir",startReading:"Commencer la lecture",continue:"Continuer",stories:"Histoires",voices:"Voix",play:"Jouer",bedtimeStories:"Histoires du soir",chooseAdventure:"Choisis l'aventure de ce soir",yourVoices:"Tes voix",recSub:"Enregistre 6-10 sec. Chatterbox AI clonera ta voix !",recordVoice:"Enregistre ta voix",readSoftly:"Lis doucement 6-10 secondes",tapRecord:"Appuie pour enregistrer",recording:"Enregistrement",recorded:"Enregistré !",nameVoice:"Nom de cette voix",voicePlaceholder:"Voix de maman",redo:"Refaire",save:"Sauvegarder",clonedVoices:"Voix clonées",aiClone:"Clone vocal IA",deviceVoices:"Voix de l'appareil",deviceVoice:"Voix appareil",goodnight:"Bonne nuit",voice:"Voix",story:"Histoire",noneSelected:"Non sélectionné",change:"Changer",pick:"Choisir",beginStory:"Lancer l'histoire",connected:"Chatterbox AI connecté",connecting:"Connexion à l'IA...",cloneMsg:"L'histoire sera lue avec TA voix clonée.",deviceMsg:"Sélectionne une voix enregistrée ou utilise la voix de l'appareil.",back:"Retour",storyComplete:"Histoire terminée ! Fais de beaux rêves.",warming:"Préparation de l'IA avec ta voix...",cloneReady:"Clone vocal prêt !",howClone:"Comment ça marche :",howCloneDesc:"Ton enregistrement est envoyé à Chatterbox AI sur HuggingFace. Il clone ta voix et lit l'histoire.",all:"Tout",fairytales:"Contes de fées",fables:"Fables",bedtime:"Dodo",short:"Court",long:"Long",switchUser:"Changer d'utilisateur",language:"Langue",settings:"Paramètres",cloningPart:"Clonage vocal : partie",gpuWake:"La première fois peut prendre 30-60s...",readSample:"Les étoiles scintillaient doucement tandis que le petit ours s'endormait dans la forêt magique.",hi:"Salut",translating:"Traduction en cours..."},
@@ -389,7 +394,18 @@ function StoryIcon({id,size=48}){
         <path d="M6 24 Q4 22 6 20" stroke="#3DC1A3" strokeWidth="1" fill="none" opacity=".3"/>
         <path d="M42 24 Q44 22 42 20" stroke="#3DC1A3" strokeWidth="1" fill="none" opacity=".3"/>
       </svg>);
-    default: return <Icon name="book" size={size} color="var(--lav)"/>;
+    default:
+      if(id?.startsWith('cs-'))return(<svg {...p}>
+        <rect x="8" y="4" width="24" height="32" rx="3" fill="#C5B3E6" opacity=".2" stroke="#A78BCC" strokeWidth=".5"/>
+        <line x1="14" y1="12" x2="28" y2="12" stroke="#A78BCC" strokeWidth=".5" opacity=".4"/>
+        <line x1="14" y1="17" x2="26" y2="17" stroke="#A78BCC" strokeWidth=".5" opacity=".3"/>
+        <line x1="14" y1="22" x2="24" y2="22" stroke="#A78BCC" strokeWidth=".5" opacity=".3"/>
+        <path d="M34 8 L36 6 L40 10 L38 12Z" fill="#FFEAA7" stroke="#C9A96E" strokeWidth=".3"/>
+        <line x1="38" y1="12" x2="28" y2="22" stroke="#C9A96E" strokeWidth=".8"/>
+        <path d="M12 28 L13.5 32 L17 32 L14.5 34.5 L15.5 38 L12 36 L8.5 38 L9.5 34.5 L7 32 L10.5 32Z" fill="#FFEAA7" opacity=".6"/>
+        <circle cx="38" cy="38" r="1" fill="#FFEAA7" opacity=".4"/>
+      </svg>);
+      return <Icon name="book" size={size} color="var(--lav)"/>;
   }
 }
 
@@ -721,8 +737,15 @@ function Player({story,voice,ver,onBack,show,t,text}){
     stopped.current=false;pausedRef.current=false;setPaused(false);
     setStatus('generating');setProgress(0);setHighlight(-1);setElapsed(0);
     chunksAudio.current=[];chunkDurations.current=[];currentIdx.current=0;
-    let vb=null;if(voice?.id?.startsWith('v-')){const d=await dbGet('voices',voice.id);vb=d?.blob;console.log('Voice blob:',vb?.size,vb?.type)}
-    if(!vb){setStatus('playing');fallbackTTS();return}
+    let vb=null;
+    if(voice?.id?.startsWith('v-')){
+      try{const d=await dbGet('voices',voice.id);vb=d?.blob;console.log('Voice blob:',vb?.size,vb?.type)}
+      catch(e){console.warn('Voice DB error:',e)}
+      if(!vb){show(t('voiceFailed'));setStatus('playing');fallbackTTS();return}
+    }else{
+      if(!voice)show(t('noVoiceWarn'));
+      setStatus('playing');fallbackTTS();return;
+    }
     const chunks=chunkText(content,280);allChunks.current=chunks;let started=false;
     for(let i=0;i<chunks.length;i++){if(stopped.current)return;
       setGenMsg(t('cloningPart')+' '+(i+1)+'/'+chunks.length);
@@ -730,8 +753,8 @@ function Player({story,voice,ver,onBack,show,t,text}){
         const tmp=new Audio(chunksAudio.current[i]);
         await new Promise(r=>{tmp.onloadedmetadata=()=>{chunkDurations.current[i]=tmp.duration;r()};tmp.onerror=r;setTimeout(r,3000)});
         if(!started&&!stopped.current){started=true;setStatus('playing');setGenMsg('');playChunk(0)}
-      }catch(e){console.error('Gen error',i,':',e);if(i===0){show('AI busy - using device voice');setStatus('playing');fallbackTTS();return}chunksAudio.current[i]=null}}
-    if(!started&&!stopped.current){show('AI unavailable - device voice');setStatus('playing');fallbackTTS()}
+      }catch(e){console.error('Gen error',i,':',e);if(i===0){show(t('voiceFailed'));setStatus('playing');fallbackTTS();return}chunksAudio.current[i]=null}}
+    if(!started&&!stopped.current){show(t('voiceFailed'));setStatus('playing');fallbackTTS()}
   },[content,voice,show]);
   const fallbackTTS=()=>{const synth=window.speechSynthesis;synth.cancel();
     const chunks=chunkText(content,250);allChunks.current=chunks;let st=Date.now();
@@ -796,6 +819,10 @@ function App(){
   const[menu,setMenu]=useState(false);
   const[tlCache,setTlCache]=useState({});
   const[translating,setTranslating]=useState(false);
+  const[customStories,setCustomStories]=useState([]);
+  const[showCreateForm,setShowCreateForm]=useState(false);
+  const[csTitle,setCsTitle]=useState('');
+  const[csText,setCsText]=useState('');
 
   const t=useMemo(()=>makeT(lang),[lang]);
   const dir=useMemo(()=>getLangDir(lang),[lang]);
@@ -809,6 +836,7 @@ function App(){
     const lv=localStorage.getItem('tat_lastVoice');if(lv){const f=vl.find(v=>v.id===lv);if(f)setSv(f)}}catch{}
     speechSynthesis?.getVoices();if(speechSynthesis)speechSynthesis.onvoiceschanged=()=>speechSynthesis.getVoices();
     initGradio().then(c=>{if(c)setGOk(true)});
+    dbGetAll('customStories').then(cs=>setCustomStories(cs||[])).catch(()=>{});
     return onPreWarmChange(s=>setPw(s));},[]);
 
   // Translation helper
@@ -816,19 +844,19 @@ function App(){
     if(lang==='en')return null;
     const key=`${storyId}_${ver}_${lang}`;
     if(tlCache[key])return tlCache[key];
-    // Check DB
     const cached=await dbGet('translations',key);
     if(cached){setTlCache(p=>({...p,[key]:cached.text}));return cached.text}
-    // Translate
     setTranslating(true);
     try{
-      const story=S.find(s=>s.id===storyId);if(!story)return null;
-      const src=ver==='long'?story.txL:story.txS;
+      let src;
+      if(storyId.startsWith('cs-')){const cs=customStories.find(s=>s.id===storyId);src=cs?cs.txS:null}
+      else{const story=S.find(s=>s.id===storyId);src=story?(ver==='long'?story.txL:story.txS):null}
+      if(!src){setTranslating(false);return null}
       const result=await translateText(src,'en',lang);
       setTlCache(p=>({...p,[key]:result}));
       setTranslating(false);return result;
     }catch(e){setTranslating(false);return null}
-  },[lang,tlCache]);
+  },[lang,tlCache,customStories]);
 
   // Pre-translate selected story when entering player
   const[playerText,setPlayerText]=useState(null);
@@ -845,7 +873,17 @@ function App(){
     preWarmVoice(id)};
   const selectVoice=(v)=>{setSv(v);localStorage.setItem('tat_lastVoice',v.id)};
   const delVoice=async id=>{await dbDel('voices',id);const nv=voices.filter(v=>v.id!==id);setVoices(nv);localStorage.setItem('sv_voices',JSON.stringify(nv));if(sv?.id===id)setSv(null);show('Removed')};
-  const filtered=filter==='all'?S:S.filter(s=>s.c===filter);
+  const saveCustomStory=async()=>{
+    if(!csTitle.trim()||!csText.trim())return;
+    const id='cs-'+Date.now();const words=csText.trim().split(/\s+/).length;const mins=Math.max(1,Math.round(words/130));
+    const cs={id,t:csTitle.trim(),a:name,c:'custom',age:'All',mS:mins,mL:mins,txS:csText.trim(),txL:csText.trim(),ts:Date.now()};
+    await dbPut('customStories',cs);setCustomStories(prev=>[cs,...prev]);
+    setCsTitle('');setCsText('');setShowCreateForm(false);show(t('saveStory')+'!')};
+  const delCustomStory=async id=>{if(!confirm(t('deleteStory')))return;
+    await dbDel('customStories',id);setCustomStories(prev=>prev.filter(s=>s.id!==id));
+    if(ss?.id===id)setSs(null);show('Removed')};
+  const allStories=useMemo(()=>[...customStories,...S],[customStories]);
+  const filtered=filter==='all'?allStories:filter==='custom'?customStories:allStories.filter(s=>s.c===filter);
   const finishName=(n)=>{setName(n);localStorage.setItem('tat_name',n);localStorage.setItem('tat_v','5')};
   const finishTut=async()=>{setTutDone(true);localStorage.setItem('tat_tut','1');
     if(lang!=='en'&&ss){setTab('player');setPlayerText(null);setTranslating(true);
@@ -864,31 +902,39 @@ function App(){
 
   return(<><BG dim/><div className="app" dir={dir}>
     <div className="hdr"><div className="logo"><LogoHeader/></div>
-      <button className="hbtn" onClick={()=>setMenu(!menu)}><Icon name="user" size={14}/> {name}</button>
-      {menu&&<><div style={{position:'fixed',inset:0,zIndex:40}} onClick={()=>setMenu(false)}/>
-        <div className="ddmenu">
+      <button className="hbtn" onClick={e=>{e.stopPropagation();setMenu(!menu)}}><Icon name="user" size={14}/> {name}</button>
+      {menu&&<><div style={{position:'fixed',inset:0,zIndex:40}} onClick={e=>{e.stopPropagation();setMenu(false)}}/>
+        <div className="ddmenu" onClick={e=>e.stopPropagation()}>
           <div style={{padding:'6px 14px 2px',fontSize:11,color:'var(--txd)',fontWeight:700,textTransform:'uppercase',letterSpacing:1}}>{t('settings')}</div>
           <div className="ddi" style={{cursor:'default',flexDirection:'column',alignItems:'stretch',gap:6}}>
             <div style={{display:'flex',alignItems:'center',gap:6}}><Icon name="globe" size={14}/> {t('language')}</div>
             <div className="langsel" style={{margin:0}}>{LANGS.map(l=><button key={l.c} className={`langopt ${lang===l.c?'a':''}`} onClick={()=>{setLang(l.c);setTlCache({})}}>{l.f} {l.n}</button>)}</div>
           </div>
           <div className="ddiv"/>
-          <button className="ddi" onClick={doLogout}><Icon name="logout" size={16} color="var(--coral)"/> {t('switchUser')}</button>
+          <button className="ddi" onClick={()=>{if(confirm(t('switchUser')+'?'))doLogout()}}><Icon name="logout" size={16} color="var(--coral)"/> {t('switchUser')}</button>
         </div></>}
     </div>
     <div className="main">
       {tab==='stories'&&<div className="fi">
         <div className="sh"><Icon name="book" size={22} color="var(--moon)"/> {t('bedtimeStories')}</div>
         <div className="ss">{t('chooseAdventure')}</div>
-        <div className="flt">{[{k:'all',l:t('all')},{k:'fairytale',l:t('fairytales')},{k:'fable',l:t('fables')},{k:'bedtime',l:t('bedtime')}].map(f=><button key={f.k} className={`fc ${filter===f.k?'a':''}`} onClick={()=>setFilter(f.k)}>{f.l}</button>)}</div>
-        <div className="slist">{filtered.map(s=><div key={s.id} className={`sr ${ss?.id===s.id?'sel':''}`} onClick={()=>{setSs(s);show(s.t)}}>
+        <div className="flt">{[{k:'all',l:t('all')},{k:'fairytale',l:t('fairytales')},{k:'fable',l:t('fables')},{k:'bedtime',l:t('bedtime')},...(customStories.length?[{k:'custom',l:t('yourStories')}]:[])].map(f=><button key={f.k} className={`fc ${filter===f.k?'a':''}`} onClick={()=>setFilter(f.k)}>{f.l}</button>)}</div>
+        {!showCreateForm?<button className="csbtn" onClick={()=>setShowCreateForm(true)}><Icon name="plus" size={18} color="var(--lav)"/> {t('createStory')}</button>
+        :<div className="csform"><div className="ct" style={{marginBottom:8}}><Icon name="sparkle" size={16} color="var(--lav)"/> {t('createStory')}</div>
+          <div className="ig"><label className="il">{t('storyTitle')}</label><input className="inp" value={csTitle} onChange={e=>setCsTitle(e.target.value)} placeholder="The Brave Little Star..."/></div>
+          <div className="ig"><label className="il">{t('storyText')}</label><textarea className="inp" rows={6} value={csText} onChange={e=>setCsText(e.target.value)} placeholder={t('storyText')} style={{resize:'vertical',minHeight:100,lineHeight:1.6}}/></div>
+          <div style={{display:'flex',gap:8}}><button className="btn bg2 bsm" onClick={()=>{setShowCreateForm(false);setCsTitle('');setCsText('')}}>{t('back')}</button>
+            <button className="btn bgr bsm" onClick={saveCustomStory} disabled={!csTitle.trim()||!csText.trim()}><Icon name="check" size={14} color="#0B0E2D"/> {t('saveStory')}</button></div>
+        </div>}
+        <div className="slist">{filtered.map(s=><div key={s.id} className={`sr ${ss?.id===s.id?'sel':''}`} onClick={()=>{setSs(s);show(s.t)}} style={{position:'relative'}}>
           <div className="se"><StoryIcon id={s.id} size={42}/></div>
           <div className="si"><div className="sn">{s.t}</div><div className="sd">{s.a} · {s.age} · ~{getVer(s.id)==='long'?s.mL:s.mS} min</div>
-          <div className="ver-btns" onClick={e=>e.stopPropagation()}>
+          {s.txS!==s.txL&&<div className="ver-btns" onClick={e=>e.stopPropagation()}>
             <button className={`vbtn ${getVer(s.id)==='short'?'va2':''}`} onClick={()=>setVer(s.id,'short')}>{t('short')} ~{s.mS}m</button>
             <button className={`vbtn ${getVer(s.id)==='long'?'va2':''}`} onClick={()=>setVer(s.id,'long')}>{t('long')} ~{s.mL}m</button>
-          </div></div>
+          </div>}</div>
           {ss?.id===s.id&&<Icon name="check" size={20} color="var(--lav)"/>}
+          {s.id?.startsWith('cs-')&&<button className="csdel" onClick={e=>{e.stopPropagation();delCustomStory(s.id)}}><Icon name="trash" size={14}/></button>}
         </div>)}</div></div>}
 
       {tab==='voices'&&<div className="fi">
@@ -897,7 +943,7 @@ function App(){
         <Recorder onSave={saveVoice} t={t}/>
         {pw.active&&<div className="prewarm"><span className="spinner"/> {t('warming')}</div>}
         {pw.done&&<div className="prewarm" style={{color:'var(--teal)',borderColor:'rgba(85,230,193,.2)'}}><Icon name="check" size={14} color="var(--teal)"/> {t('cloneReady')}</div>}
-        <div className="slist">
+        <div className="vlist">
         {voices.length>0&&<><div className="sh" style={{fontSize:16,marginTop:12}}><Icon name="brain" size={18} color="var(--teal)"/> {t('clonedVoices')}</div>
           {voices.map(v=><div key={v.id} className={`vc ${sv?.id===v.id?'sel':''}`} onClick={()=>selectVoice(v)}>
             <div className="va va-u"><Icon name="mic" size={20} color="var(--teal)"/></div><div><div className="vn">{v.name}</div><div className="vd">{t('aiClone')}</div></div>
