@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#0B0E2D">
+<title>StoryVoice</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --nd:#0B0E2D;--nm:#141845;--ns:#1E2460;
+  --moon:#FFF8DC;--star:#FFEAA7;
+  --lav:#C5B3E6;--lavs:#A78BCC;--lavd:#8B6FC0;
+  --warm:#FFD4A2;--wg:#FFBE76;--peach:#FFB8B8;--coral:#FF7979;
+  --teal:#55E6C1;--teald:#3DC1A3;
+  --tx:#E8E4F0;--txs:#A8A0C0;--txd:#706990;
+  --gl:rgba(255,255,255,.06);--glh:rgba(255,255,255,.1);--gls:rgba(255,255,255,.12);
+  --bd:rgba(255,255,255,.08);
+  --rs:14px;--rm:20px;--rl:28px
+}
+html,body,#root{height:100%;width:100%;overflow:hidden}
+body{font-family:'Nunito',sans-serif;background:var(--nd);color:var(--tx);-webkit-font-smoothing:antialiased}
+.bg{position:fixed;inset:0;z-index:0;overflow:hidden;background:linear-gradient(180deg,#070A1F 0%,#0B0E2D 25%,#141845 55%,#1A1F55 75%,#1E2460 100%)}
+.moon{position:absolute;width:80px;height:80px;background:radial-gradient(circle at 35% 35%,#FFFEF5,#FFF8DC 50%,#F0E6B0);border-radius:50%;top:35px;right:30px;box-shadow:0 0 40px rgba(255,248,220,.3),0 0 80px rgba(255,248,220,.15);animation:mg 6s ease-in-out infinite}
+@keyframes mg{0%,100%{box-shadow:0 0 40px rgba(255,248,220,.3)}50%{box-shadow:0 0 55px rgba(255,248,220,.4),0 0 110px rgba(255,248,220,.2)}}
+.star{position:absolute;border-radius:50%;background:#fff;animation:tw ease-in-out infinite}
+@keyframes tw{0%,100%{opacity:.25;transform:scale(.7)}50%{opacity:1;transform:scale(1.2)}}
+.ff{position:absolute;width:4px;height:4px;background:var(--wg);border-radius:50%;animation:ffa ease-in-out infinite;box-shadow:0 0 8px var(--wg)}
+@keyframes ffa{0%,100%{opacity:.15;transform:translate(0,0)}25%{opacity:.7;transform:translate(12px,-18px)}50%{opacity:.3;transform:translate(-8px,-30px)}75%{opacity:.8;transform:translate(16px,-12px)}}
+.hills{position:absolute;bottom:0;width:100%;height:120px}.hl{position:absolute;bottom:0;border-radius:50% 50% 0 0}
+.hl:nth-child(1){width:500px;height:120px;background:#0F1235;left:-80px}.hl:nth-child(2){width:450px;height:95px;background:#121640;left:180px}.hl:nth-child(3){width:600px;height:105px;background:#0D1030;right:-120px}
+.app{position:relative;z-index:1;height:100%;display:flex;flex-direction:column;max-width:480px;margin:0 auto}
+.hdr{padding:12px 20px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.logo{font-family:'Baloo 2',cursive;font-size:22px;font-weight:800;color:var(--moon);display:flex;align-items:center;gap:8px}
+.hbtn{height:36px;padding:0 14px;border-radius:50px;border:1px solid var(--bd);background:var(--gl);font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:5px;color:var(--txs);font-family:'Nunito',sans-serif;transition:.2s}.hbtn:hover{background:var(--glh)}
+.main{flex:1;overflow-y:auto;overflow-x:hidden;padding:0 20px 20px;-webkit-overflow-scrolling:touch}.main::-webkit-scrollbar{width:0}
+.nav{flex-shrink:0;background:rgba(11,14,45,.92);backdrop-filter:blur(20px);border-radius:22px 22px 0 0;padding:6px 12px 14px;display:flex;justify-content:space-around;border-top:1px solid var(--bd)}
+.ni{display:flex;flex-direction:column;align-items:center;gap:2px;background:none;border:none;cursor:pointer;padding:8px 16px;border-radius:14px;transition:.2s;color:var(--txd);font-family:'Nunito'}.ni.a{color:var(--moon);background:rgba(255,248,220,.07)}
+.ni-i{font-size:22px}.ni-l{font-size:10px;font-weight:700}
+.card{background:var(--gl);backdrop-filter:blur(10px);border-radius:var(--rm);padding:18px;margin-bottom:12px;border:1px solid var(--bd)}
+.ct{font-family:'Baloo 2',cursive;font-size:17px;font-weight:700;margin-bottom:3px}.cs{font-size:13px;color:var(--txs)}
+.sr{display:flex;gap:14px;align-items:center;cursor:pointer;padding:14px;border-radius:var(--rm);background:var(--gl);margin-bottom:10px;transition:.25s;border:1px solid var(--bd)}.sr:hover{background:var(--glh)}.sr.sel{border-color:rgba(197,179,230,.4);background:rgba(197,179,230,.08)}
+.se{font-size:34px;width:54px;height:54px;display:flex;align-items:center;justify-content:center;background:rgba(255,248,220,.06);border-radius:14px;flex-shrink:0}.si{flex:1;min-width:0}.sn{font-family:'Baloo 2',cursive;font-size:15px;font-weight:700;line-height:1.2}.sd{font-size:11px;color:var(--txd);margin-top:2px}
+.badge{display:inline-block;padding:1px 7px;border-radius:6px;font-size:9px;font-weight:700;text-transform:uppercase;margin-top:3px}
+.b-ft{background:rgba(85,230,193,.1);color:var(--teal)}.b-fb{background:rgba(255,212,162,.1);color:var(--warm)}.b-bt{background:rgba(197,179,230,.1);color:var(--lav)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:13px 24px;border:none;border-radius:var(--rl);font-family:'Baloo 2',cursive;font-size:16px;font-weight:700;cursor:pointer;transition:.2s;white-space:nowrap}
+.btn:active{transform:scale(.96)}.btn:disabled{opacity:.35;cursor:not-allowed;transform:none}
+.bp{background:linear-gradient(135deg,var(--lavs),var(--lavd));color:#fff;box-shadow:0 5px 20px rgba(167,139,204,.3)}
+.bg2{background:var(--gls);color:var(--tx);border:1px solid var(--bd)}.bgr{background:linear-gradient(135deg,var(--teal),var(--teald));color:#0B0E2D}
+.bw{width:100%}.bsm{padding:9px 18px;font-size:14px}
+.ig{margin-bottom:14px}.il{display:block;font-family:'Baloo 2',cursive;font-size:14px;font-weight:600;margin-bottom:5px;color:var(--txs)}
+.inp{width:100%;padding:12px 16px;border:1px solid rgba(255,255,255,.1);border-radius:var(--rs);font-family:'Nunito',sans-serif;font-size:15px;background:rgba(255,255,255,.05);color:var(--tx);transition:.2s}.inp:focus{outline:none;border-color:var(--lavs)}.inp::placeholder{color:var(--txd)}
+.sh{font-family:'Baloo 2',cursive;font-size:20px;font-weight:800;margin:16px 0 8px;color:var(--moon)}.ss{font-size:13px;color:var(--txd);margin-bottom:14px;line-height:1.4}
+.rb{width:90px;height:90px;border-radius:50%;border:2px solid rgba(255,121,121,.2);background:linear-gradient(135deg,rgba(255,121,121,.6),rgba(255,121,121,.35));color:#fff;font-size:36px;cursor:pointer;box-shadow:0 0 25px rgba(255,121,121,.15);transition:.2s;display:flex;align-items:center;justify-content:center;margin:0 auto}
+.rb:hover{transform:scale(1.05)}.rb.rec{animation:rp 1.5s ease-in-out infinite}
+@keyframes rp{0%{box-shadow:0 0 0 0 rgba(255,121,121,.4)}70%{box-shadow:0 0 0 22px rgba(255,121,121,0)}100%{box-shadow:0 0 0 0 rgba(255,121,121,0)}}
+.wf{display:flex;align-items:center;justify-content:center;gap:3px;height:45px;margin:12px 0}.wb{width:3px;background:var(--lav);border-radius:3px;animation:wa .8s ease-in-out infinite}@keyframes wa{0%,100%{height:6px}50%{height:36px}}
+.vc{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:var(--rs);background:var(--gl);margin-bottom:8px;cursor:pointer;transition:.2s;border:1px solid var(--bd)}.vc:hover{background:var(--glh)}.vc.sel{border-color:rgba(85,230,193,.35);background:rgba(85,230,193,.06)}
+.va{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}.va-u{background:rgba(85,230,193,.1);border:1px solid rgba(85,230,193,.12)}.va-f{background:rgba(255,212,162,.1);border:1px solid rgba(255,212,162,.12)}
+.vn{font-weight:700;font-size:14px}.vd{font-size:11px;color:var(--txd)}
+.vx{margin-left:auto;background:none;border:none;font-size:15px;cursor:pointer;opacity:.3;padding:4px;color:var(--txd)}.vx:hover{opacity:.7}
+.pc{border-radius:28px;overflow:hidden;margin-top:6px}.pb{background:linear-gradient(160deg,#1A0A3E,#120835 40%,#0D0628);padding:28px 20px;position:relative;border:1px solid rgba(255,255,255,.05)}
+.pem{font-size:52px;text-align:center;margin-bottom:8px}.pti{font-family:'Baloo 2',cursive;font-size:22px;font-weight:700;color:var(--moon);text-align:center}.pau{font-size:12px;color:rgba(255,255,255,.3);text-align:center;margin-top:2px}
+.pbar{margin:22px 0 6px;padding:6px 0}.pbtr{width:100%;height:4px;background:rgba(255,255,255,.08);border-radius:2px;position:relative}
+.pbfl{height:100%;background:linear-gradient(90deg,var(--lavs),var(--wg));border-radius:2px;transition:width .2s linear;position:relative}.pbth{position:absolute;right:-6px;top:50%;transform:translateY(-50%);width:14px;height:14px;background:var(--moon);border-radius:50%;box-shadow:0 0 8px rgba(255,248,220,.3)}
+.ptm{display:flex;justify-content:space-between;font-size:11px;color:rgba(255,255,255,.25);font-weight:600;font-variant-numeric:tabular-nums}
+.pcc{display:flex;align-items:center;justify-content:center;gap:20px;margin-top:20px}
+.cb{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.07);color:rgba(255,255,255,.6);width:46px;height:46px;border-radius:50%;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.2s}.cb:hover{background:rgba(255,255,255,.1);color:#fff}.cb:active{transform:scale(.93)}
+.cb.pp{width:64px;height:64px;background:linear-gradient(135deg,var(--lavs),var(--lavd));font-size:26px;color:#fff;box-shadow:0 0 25px rgba(167,139,204,.25);border:none}
+.pvb{text-align:center;margin-top:16px;font-size:11px;color:rgba(255,255,255,.25)}.pvb b{color:var(--wg)}
+.ra{background:rgba(20,24,69,.5);border-radius:var(--rm);padding:20px;margin-top:14px;max-height:280px;overflow-y:auto;font-size:15px;line-height:1.85;color:rgba(232,228,240,.8);border:1px solid var(--bd)}
+.ra p{margin-bottom:14px}.ra p:last-child{margin-bottom:0}.ra p.hl2{color:var(--wg);font-weight:700}
+.genst{background:rgba(139,111,192,.12);border:1px solid rgba(139,111,192,.2);border-radius:var(--rs);padding:14px;margin-top:12px;text-align:center;font-size:13px;color:var(--lav);line-height:1.5}
+.genst .spinner{display:inline-block;width:16px;height:16px;border:2px solid rgba(197,179,230,.3);border-top-color:var(--lav);border-radius:50%;animation:spin 1s linear infinite;vertical-align:middle;margin-right:6px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.genst .done{color:var(--teal)}
+.wel{display:flex;flex-direction:column;justify-content:center;align-items:center;min-height:100%;padding:40px 24px;text-align:center}
+.wic{font-size:64px;margin-bottom:8px}.wit{font-family:'Baloo 2',cursive;font-size:32px;font-weight:800;color:var(--moon)}.wis{font-size:14px;color:var(--txd);margin-bottom:28px}
+.wbx{background:rgba(20,24,69,.8);backdrop-filter:blur(20px);border-radius:var(--rl);padding:24px 20px;width:100%;max-width:340px;border:1px solid var(--bd)}
+.flt{display:flex;gap:7px;overflow-x:auto;padding-bottom:3px;margin-bottom:14px;scrollbar-width:none}.flt::-webkit-scrollbar{display:none}
+.fc{padding:7px 14px;border-radius:50px;border:1px solid var(--bd);background:var(--gl);font-family:'Nunito';font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;transition:.2s;color:var(--txs)}.fc:hover{background:var(--glh)}.fc.a{background:rgba(167,139,204,.18);color:var(--lav);border-color:rgba(167,139,204,.3)}
+.steps{display:flex;gap:7px;margin-bottom:16px}.step{flex:1;height:4px;border-radius:2px;background:rgba(255,255,255,.05);transition:.3s}.step.a{background:var(--lavs)}.step.d{background:var(--teal)}
+.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:rgba(20,24,69,.95);backdrop-filter:blur(12px);color:var(--moon);padding:10px 22px;border-radius:50px;font-size:13px;font-weight:600;z-index:1000;animation:ti .3s ease-out,tto .3s ease-in 2.5s forwards;border:1px solid var(--bd)}
+@keyframes ti{from{opacity:0;transform:translateX(-50%) translateY(16px)}}@keyframes tto{to{opacity:0;transform:translateX(-50%) translateY(16px)}}
+.info{background:rgba(255,212,162,.05);border:1px solid rgba(255,212,162,.12);border-radius:var(--rs);padding:12px 14px;margin-top:14px;font-size:12px;line-height:1.5;color:var(--txs)}.info b{color:var(--warm)}
+.fi{animation:fin .3s ease-out}@keyframes fin{from{opacity:0;transform:translateY(10px)}}
+@media(max-width:380px){.hdr{padding:10px 14px}.main{padding:0 14px 16px}}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
+<script type="module" id="gradio-loader">
+// Load Gradio client and expose globally
+import { Client, handle_file } from "https://cdn.jsdelivr.net/npm/@gradio/client/dist/index.min.js";
+window.__gradio = { Client, handle_file };
+window.dispatchEvent(new Event('gradio-ready'));
+</script>
+<script type="text/babel">
+const{useState,useEffect,useRef,useCallback,useMemo}=React;
+
+// ══════════════ IndexedDB for voice blobs & audio cache ══════════════
+const DB_NAME='storyvoice';const DB_VER=2;
+function openDB(){return new Promise((res,rej)=>{const r=indexedDB.open(DB_NAME,DB_VER);r.onupgradeneeded=e=>{const db=e.target.result;if(!db.objectStoreNames.contains('voices'))db.createObjectStore('voices',{keyPath:'id'});if(!db.objectStoreNames.contains('audioCache'))db.createObjectStore('audioCache',{keyPath:'key'})};r.onsuccess=e=>res(e.target.result);r.onerror=e=>rej(e)})}
+async function dbPut(store,data){const db=await openDB();return new Promise((res,rej)=>{const tx=db.transaction(store,'readwrite');tx.objectStore(store).put(data);tx.oncomplete=()=>res();tx.onerror=e=>rej(e)})}
+async function dbGet(store,key){const db=await openDB();return new Promise((res,rej)=>{const tx=db.transaction(store,'readonly');const r=tx.objectStore(store).get(key);r.onsuccess=()=>res(r.result||null);r.onerror=e=>rej(e)})}
+async function dbDel(store,key){const db=await openDB();return new Promise(res=>{const tx=db.transaction(store,'readwrite');tx.objectStore(store).delete(key);tx.oncomplete=()=>res()})}
+
+// ══════════════ Chatterbox TTS via HuggingFace Gradio API ══════════════
+const HF_SPACE = "ResembleAI/Chatterbox";
+let gradioClient = null;
+let gradioReady = false;
+
+async function initGradio() {
+  if (gradioClient) return gradioClient;
+  if (!window.__gradio) {
+    await new Promise(res => {
+      if (window.__gradio) return res();
+      window.addEventListener('gradio-ready', res, { once: true });
+      setTimeout(res, 8000); // timeout
+    });
+  }
+  if (!window.__gradio) { console.warn('Gradio client not loaded'); return null; }
+  try {
+    gradioClient = await window.__gradio.Client.connect(HF_SPACE);
+    gradioReady = true;
+    console.log('Connected to Chatterbox on HF Spaces');
+    return gradioClient;
+  } catch(e) { console.warn('Could not connect to HF Space:', e); return null; }
+}
+
+// Generate audio for a text chunk using voice clone
+async function generateChunk(text, voiceBlob) {
+  const client = await initGradio();
+  if (!client || !window.__gradio) throw new Error('TTS service unavailable');
+  
+  const audioFile = window.__gradio.handle_file(voiceBlob);
+  
+  // Chatterbox Gradio API: generate(text, ref_wav, exaggeration, cfg_weight, temperature, seed, min_p, top_p, repetition_penalty)
+  const result = await client.predict("/generate", [
+    text,          // text to synthesize (max ~300 chars)
+    audioFile,     // reference audio for voice cloning
+    0.4,           // exaggeration (lower = calmer, good for bedtime)
+    0.4,           // cfg_weight / pace (lower = slower, more deliberate)
+    0.8,           // temperature
+    0,             // seed (0 = random)
+    0.05,          // min_p
+    0.8,           // top_p
+    2.0,           // repetition_penalty
+  ]);
+
+  // Result contains audio file info
+  if (result?.data?.[0]?.url) {
+    const resp = await fetch(result.data[0].url);
+    return await resp.blob();
+  } else if (result?.data?.[0]) {
+    // Might be a direct blob or data URL
+    const audioData = result.data[0];
+    if (audioData instanceof Blob) return audioData;
+    if (typeof audioData === 'string' && audioData.startsWith('http')) {
+      const resp = await fetch(audioData);
+      return await resp.blob();
+    }
+  }
+  throw new Error('No audio in response');
+}
+
+// Split text into chunks of ~280 chars at sentence boundaries
+function chunkText(text, maxLen = 280) {
+  const sentences = text.match(/[^.!?]+[.!?]+[\s"]*/g) || [text];
+  const chunks = [];
+  let current = '';
+  for (const s of sentences) {
+    if ((current + s).length > maxLen && current) {
+      chunks.push(current.trim());
+      current = s;
+    } else {
+      current += s;
+    }
+  }
+  if (current.trim()) chunks.push(current.trim());
+  return chunks;
+}
+
+// ══════════════ Stories ══════════════
+const S=[
+{id:'s1',t:'The Three Little Pigs',a:'Traditional',c:'fairytale',age:'3-6',e:'🐷',m:4,tx:"Once upon a time, there were three little pigs who lived with their mother. One day, their mother said, \"You are all grown up now. It is time for you to go out into the world and build your own houses.\"\n\nThe first little pig was very lazy. He built his house out of straw. \"This will do just fine!\" he said. The second little pig built his house out of sticks. \"Good enough for me!\"\n\nThe third little pig was wise. He built his house out of bricks. It took a long time, but it was strong.\n\nOne day, a big bad wolf came to the straw house. \"Little pig, little pig, let me come in!\" \"Not by the hair on my chinny chin chin!\" So the wolf huffed, and he puffed, and he blew the house down!\n\nThe pig ran to the stick house. The wolf blew that house down too! Both pigs ran to the brick house.\n\nThe wolf huffed and puffed but could NOT blow the brick house down! He tried the chimney, but the wise pig had a pot of hot water ready.\n\nThe wolf ran away and never came back. The three pigs lived happily ever after. The End."},
+{id:'s2',t:'Goldilocks and the Three Bears',a:'Robert Southey',c:'fairytale',age:'3-6',e:'🐻',m:5,tx:"Once upon a time, there was a little girl named Goldilocks with beautiful golden hair. She found a cottage in the forest and went inside.\n\nOn the table were three bowls of porridge. The big bowl was too hot! The medium bowl was too cold! The tiny bowl was just right! She ate it all up.\n\nShe tried three chairs. Too hard! Too soft! Just right! But CRACK, it broke!\n\nUpstairs she found three beds. Too hard! Too soft! Just right! She fell fast asleep.\n\nThe three bears came home. \"Someone's been eating my porridge!\" said Papa Bear. \"Someone's been sitting in my chair!\" said Mama Bear. \"Someone's been sleeping in my bed, and she's still there!\" cried Baby Bear.\n\nGoldilocks woke up, saw the bears, and ran all the way home. She never went into anyone's house without asking again. The End."},
+{id:'s3',t:'The Ugly Duckling',a:'H.C. Andersen',c:'fairytale',age:'4-8',e:'🦢',m:5,tx:"Once upon a time, a mother duck's eggs hatched. Out came fluffy yellow ducklings, except the last one, who was big and grey.\n\n\"He's ugly!\" said the other animals. The poor duckling ran away.\n\nWinter was hard and lonely. But when spring came, the duckling spread his wings and flew to a beautiful lake.\n\nHe saw graceful white swans and bowed his head sadly. But when he looked at his reflection, he saw a beautiful white swan!\n\nThe other swans welcomed him. Children cried, \"The new swan is the most beautiful of all!\"\n\nHe had been a swan all along. The End."},
+{id:'s4',t:'Jack and the Beanstalk',a:'Traditional',c:'fairytale',age:'4-8',e:'🌱',m:6,tx:"Once upon a time, Jack traded his cow for magic beans. His mother was furious and threw them out the window!\n\nBy morning, an enormous beanstalk grew up through the clouds! Jack climbed and found a giant's castle.\n\n\"Fee-fi-fo-fum!\" roared the giant. Jack hid and grabbed a bag of gold!\n\nHe climbed again for a golden egg hen. One more time for a golden harp, but it cried \"Master!\"\n\nThe giant chased Jack down. Jack chopped the beanstalk and it fell. The giant never bothered anyone again.\n\nJack and his mother lived happily ever after. The End."},
+{id:'s5',t:'Little Red Riding Hood',a:'Brothers Grimm',c:'fairytale',age:'4-7',e:'🔴',m:4,tx:"Once upon a time, Little Red Riding Hood took cakes to her sick grandmother.\n\nIn the forest, a wolf asked where she was going. He ran ahead to grandmother's house! Grandmother hid in the closet. The wolf put on her cap and jumped into bed.\n\n\"What big eyes you have!\" \"All the better to see you with!\" \"What big ears you have!\" \"All the better to hear you with!\" \"What big teeth you have!\" \"All the better to catch you with!\"\n\nA brave woodcutter burst in and chased the wolf away! Grandmother was safe.\n\nFrom that day on, Little Red Riding Hood always stayed on the path. The End."},
+{id:'s6',t:'The Tortoise and the Hare',a:'Aesop',c:'fable',age:'3-7',e:'🐢',m:3,tx:"A hare boasted, \"No one can beat me!\" The tortoise said, \"I bet I can.\"\n\nThe race began. The hare zoomed ahead, then took a nap under a tree.\n\nThe tortoise kept walking. Step by step. Slowly but surely.\n\nWhen the hare woke up and ran to the finish, the tortoise was already there!\n\n\"Slow and steady wins the race.\" The End."},
+{id:'s7',t:'The Princess and the Pea',a:'H.C. Andersen',c:'fairytale',age:'4-8',e:'👑',m:4,tx:"A prince searched the world for a real princess.\n\nOne stormy night, a soaking wet girl arrived at the castle. The queen placed a tiny pea under twenty mattresses and twenty quilts.\n\n\"How did you sleep?\" asked the queen. \"Terribly! Something hard was in the bed!\"\n\nOnly a real princess could feel a pea through all that! The prince was overjoyed. They married and lived happily ever after. The End."},
+{id:'s8',t:'The Stars That Came to Play',a:'StoryVoice Original',c:'bedtime',age:'2-5',e:'⭐',m:3,tx:"High in the sky, little star Twinkle didn't want to sleep. \"I want to play!\" She bounced from cloud to cloud, leaving sparkly trails.\n\nThen she looked down and saw a child at a window. \"Where's my favorite star?\"\n\nTwinkle felt warm inside. She flew to her spot and shone as bright as she could.\n\n\"There you are! Goodnight, little star!\" said the child.\n\nTwinkle realized shining for someone who loves you is the best kind of playing.\n\nGoodnight, little ones. Goodnight, stars. Goodnight, moon. The End."},
+{id:'s9',t:'Snow White',a:'Brothers Grimm',c:'fairytale',age:'4-8',e:'🍎',m:6,tx:"Once upon a time, a beautiful princess named Snow White lived in a grand castle. Her stepmother, the Queen, was very vain. Every day she asked her magic mirror, \"Mirror, mirror, on the wall, who is the fairest one of all?\"\n\nOne day the mirror said Snow White was more beautiful. The Queen was furious! She sent a huntsman to take Snow White into the forest. But the kind huntsman let her go.\n\nSnow White found a tiny cottage with seven tiny chairs and seven tiny beds. It belonged to seven dwarfs, Doc, Grumpy, Happy, Sleepy, Bashful, Sneezy, and Dopey. They said, \"You can stay with us!\"\n\nBut the wicked Queen disguised herself and brought a poisoned apple. Snow White took one bite and fell into a deep, deep sleep.\n\nThe heartbroken dwarfs placed her in a glass case. One day, a prince rode by, saw Snow White, and gently kissed her forehead.\n\nSnow White opened her eyes! True love's kiss had broken the spell. She and the prince married, and they all lived happily ever after. The End."},
+{id:'s10',t:'Cinderella',a:'Charles Perrault',c:'fairytale',age:'4-8',e:'👠',m:6,tx:"Once upon a time, a kind girl named Cinderella lived with her mean stepmother and stepsisters. They made her cook and clean while they wore fine dresses.\n\nThe King announced a grand ball! The stepsisters left Cinderella behind, crying.\n\nSuddenly, her Fairy Godmother appeared! A pumpkin became a golden carriage, mice became horses, and Cinderella's rags became the most beautiful gown with sparkling glass slippers.\n\n\"Remember, the magic ends at midnight!\" At the ball, the prince fell in love with Cinderella. They danced all evening.\n\nThen, BONG! BONG! The clock struck twelve! Cinderella ran, leaving behind one glass slipper.\n\nThe prince searched the kingdom. The stepsisters tried the slipper, but it was too small. Then Cinderella tried, and it fit perfectly!\n\nCinderella forgave her stepsisters. She and the prince married, and the whole kingdom celebrated. The End."},
+{id:'s11',t:'Sleeping Beauty',a:'Charles Perrault',c:'fairytale',age:'4-8',e:'🌹',m:5,tx:"Once upon a time, a king and queen had a baby girl. Fairies gave her gifts of beauty, grace, and kindness. But an uninvited fairy cursed her. \"Before her sixteenth birthday, she shall prick her finger on a spinning wheel and fall into an endless sleep!\"\n\nA good fairy softened the curse. \"She shall be awakened by true love's kiss.\"\n\nFor sixteen years, the princess was safe. But on her birthday, she found a hidden spinning wheel. She touched the spindle and fell into a deep sleep.\n\nThe good fairy put the whole castle to sleep. Thorny roses grew around the walls for a hundred years.\n\nOne day, a brave prince came. The thorns parted into flowers. He found the princess and gently kissed her.\n\nShe opened her eyes and smiled. The whole castle woke up! They were married, and everyone celebrated. The End."},
+{id:'s12',t:'Hansel and Gretel',a:'Brothers Grimm',c:'fairytale',age:'5-8',e:'🍬',m:6,tx:"Once upon a time, Hansel and Gretel lived near a great forest. One day they were left alone deep in the woods.\n\nClever Hansel had dropped white pebbles to find the way home. It worked! But the second time, he could only use bread crumbs, and the birds ate them all. The children were lost.\n\nAfter three days, they found an amazing house made of gingerbread, cake, and candy! An old woman invited them in.\n\nBut she was a wicked witch! She locked Hansel in a cage to fatten him up. Every day she said, \"Hold out your finger!\" But clever Hansel held out a thin chicken bone instead.\n\nThe witch grew impatient. She told Gretel to check the oven. Brave Gretel said, \"I don't know how. Show me?\" When the witch leaned in, Gretel pushed her inside and slammed the door!\n\nGretel freed Hansel. They found chests of treasure, filled their pockets, and walked home. Their father was overjoyed.\n\nThey never went hungry again, and lived happily ever after. The End."},
+];
+
+// ══════════════ Background & Toast ══════════════
+function BG(){
+  const stars=useMemo(()=>[...Array(35)].map(()=>({l:`${Math.random()*100}%`,t:`${Math.random()*65}%`,s:Math.random()*2+.5,d:Math.random()*3+2,dl:Math.random()*4})),[]);
+  const flies=useMemo(()=>[...Array(4)].map(()=>({l:`${20+Math.random()*60}%`,t:`${55+Math.random()*35}%`,d:Math.random()*5+4,dl:Math.random()*4})),[]);
+  return(<div className="bg">{stars.map((s,i)=><div key={i} className="star" style={{left:s.l,top:s.t,width:s.s,height:s.s,animationDuration:`${s.d}s`,animationDelay:`${s.dl}s`}}/>)}<div className="moon"/>{flies.map((f,i)=><div key={`f${i}`} className="ff" style={{left:f.l,top:f.t,animationDuration:`${f.d}s`,animationDelay:`${f.dl}s`}}/>)}<div className="hills"><div className="hl"/><div className="hl"/><div className="hl"/></div></div>);
+}
+function Toast({msg}){return msg?<div className="toast">{msg}</div>:null}
+
+// ══════════════ Welcome ══════════════
+function Welcome({onDone}){
+  const[name,setName]=useState('');
+  const go=e=>{e.preventDefault();if(name.trim()){localStorage.setItem('sv_name',name.trim());onDone(name.trim())}};
+  return(<div className="wel fi"><div className="wic">🌙✨</div><div className="wit">StoryVoice</div><div className="wis">Goodnight stories in your own voice</div><div className="wbx"><form onSubmit={go}><div className="ig"><label className="il">Who's reading tonight?</label><input className="inp" placeholder="Mom, Dad, Grandma..." value={name} onChange={e=>setName(e.target.value)} autoFocus/></div><button className="btn bp bw" type="submit" disabled={!name.trim()}>🌟 Enter Dreamland</button></form></div></div>);
+}
+
+// ══════════════ Voice Recorder ══════════════
+function Recorder({onSave}){
+  const[rec,setRec]=useState(false);const[blob,setBlob]=useState(null);const[url,setUrl]=useState(null);const[vname,setVname]=useState('');const[timer,setTimer]=useState(0);
+  const mr=useRef(null);const ch=useRef([]);const tr=useRef(null);
+  const start=async()=>{try{const s=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true}});
+    const mimeType=MediaRecorder.isTypeSupported('audio/webm;codecs=opus')?'audio/webm;codecs=opus':'audio/webm';
+    mr.current=new MediaRecorder(s,{mimeType});ch.current=[];
+    mr.current.ondataavailable=e=>{if(e.data.size>0)ch.current.push(e.data)};
+    mr.current.onstop=()=>{const b=new Blob(ch.current,{type:mimeType});setBlob(b);setUrl(URL.createObjectURL(b));s.getTracks().forEach(t=>t.stop())};
+    mr.current.start(250);setRec(true);setTimer(0);tr.current=setInterval(()=>setTimer(t=>t+1),1000)}catch{alert('Microphone access needed.')}};
+  const stop=()=>{if(mr.current&&rec){mr.current.stop();setRec(false);clearInterval(tr.current)}};
+  const save=()=>{if(blob&&vname.trim()){onSave(vname.trim(),blob);setBlob(null);setUrl(null);setVname('');setTimer(0)}};
+  const reset=()=>{setBlob(null);setUrl(null);setTimer(0)};
+  const fmt=s=>`${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`;
+  return(<div className="card fi"><div className="ct">🎙️ Record Your Voice</div><div className="cs">Read softly for 6-10 seconds. This sample clones your voice!</div><div style={{textAlign:'center',padding:'20px 0'}}>
+    {!blob?<><button className={`rb ${rec?'rec':''}`} onClick={rec?stop:start}>{rec?'⏹':'🎤'}</button>
+      <p style={{marginTop:12,fontSize:13,color:'var(--txs)',fontWeight:600}}>{rec?`Recording ${fmt(timer)}`:'Tap to record'}</p>
+      {rec&&<div className="wf">{[...Array(10)].map((_,i)=><div key={i} className="wb" style={{animationDelay:`${i*.08}s`}}/>)}</div>}
+      {rec&&<p style={{fontSize:12,color:'var(--txd)',maxWidth:260,margin:'0 auto',lineHeight:1.5}}>Read softly: "The stars twinkled brightly as the little bear drifted off to sleep in the magical forest."</p>}
+    </>:<><p style={{fontSize:40,marginBottom:8}}>✨</p>
+      <p style={{fontWeight:700,marginBottom:12,color:'var(--moon)',fontSize:15}}>Recorded! ({fmt(timer)})</p>
+      <audio src={url} controls style={{width:'100%',maxWidth:280,marginBottom:14,filter:'invert(.85) hue-rotate(180deg)',borderRadius:8}}/>
+      <div className="ig" style={{textAlign:'left',maxWidth:280,margin:'0 auto'}}><label className="il">Name this voice</label><input className="inp" placeholder="Mom's bedtime voice" value={vname} onChange={e=>setVname(e.target.value)}/></div>
+      <div style={{display:'flex',gap:8,justifyContent:'center',marginTop:12}}><button className="btn bg2 bsm" onClick={reset}>🔄 Redo</button><button className="btn bgr bsm" onClick={save} disabled={!vname.trim()}>💾 Save</button></div></>}
+  </div></div>);
+}
+
+// ══════════════ Player with Voice Cloning ══════════════
+function Player({story,voice,onBack,show}){
+  const[status,setStatus]=useState('idle'); // idle, generating, playing, done, error
+  const[genProgress,setGenProgress]=useState('');
+  const[progress,setProgress]=useState(0);
+  const[highlight,setHighlight]=useState(-1);
+  const audioRef=useRef(null);
+  const chunksAudio=useRef([]);
+  const currentChunk=useRef(0);
+  const stopped=useRef(false);
+  const content=story?.tx||'';
+  const paragraphs=content.split('\n\n');
+
+  // Find which paragraph index a character position falls in
+  const charToParagraph=(charPos)=>{
+    let pos=0;
+    for(let i=0;i<paragraphs.length;i++){
+      pos+=paragraphs[i].length+2;
+      if(charPos<pos)return i;
+    }
+    return paragraphs.length-1;
+  };
+
+  const generateAndPlay=useCallback(async()=>{
+    stopped.current=false;
+    setStatus('generating');
+    setProgress(0);
+    chunksAudio.current=[];
+    currentChunk.current=0;
+
+    // Get voice blob from IndexedDB
+    let voiceBlob = null;
+    if(voice?.id?.startsWith('v-')){
+      const data = await dbGet('voices', voice.id);
+      voiceBlob = data?.blob;
+    }
+
+    if(!voiceBlob){
+      // Fallback to browser TTS
+      setStatus('playing');
+      fallbackTTS();
+      return;
+    }
+
+    const chunks = chunkText(content, 280);
+    const totalChunks = chunks.length;
+    let firstPlayed = false;
+
+    for(let i=0; i<totalChunks; i++){
+      if(stopped.current) return;
+      setGenProgress(`Generating part ${i+1} of ${totalChunks}...`);
+
+      try{
+        const audioBlob = await generateChunk(chunks[i], voiceBlob);
+        chunksAudio.current[i] = URL.createObjectURL(audioBlob);
+
+        // Start playing as soon as first chunk is ready
+        if(!firstPlayed && !stopped.current){
+          firstPlayed = true;
+          setStatus('playing');
+          playChunk(0, chunks, totalChunks);
+        }
+      }catch(e){
+        console.error('Chunk generation failed:', e);
+        if(i === 0){
+          // First chunk failed — fall back to browser TTS
+          show('⚠️ Voice cloning unavailable, using device voice');
+          setStatus('playing');
+          fallbackTTS();
+          return;
+        }
+        // Skip failed chunk for later ones
+        chunksAudio.current[i] = null;
+      }
+    }
+    if(!firstPlayed && !stopped.current){
+      show('⚠️ Generation failed, using device voice');
+      setStatus('playing');
+      fallbackTTS();
+    }
+  },[content,voice,show]);
+
+  const playChunk=(idx, chunks, total)=>{
+    if(stopped.current || idx >= total){
+      setStatus('done');
+      setProgress(100);
+      setHighlight(-1);
+      return;
+    }
+    currentChunk.current = idx;
+
+    // Calculate which paragraph we're in
+    let charPos = 0;
+    for(let i=0;i<idx;i++) charPos += (chunks[i]?.length || 0);
+    setHighlight(charToParagraph(charPos));
+    setProgress((idx/total)*100);
+
+    const audioUrl = chunksAudio.current[idx];
+    if(!audioUrl){
+      // Skip missing chunk, try next
+      playChunk(idx+1, chunks, total);
+      return;
+    }
+
+    if(audioRef.current){
+      audioRef.current.src = audioUrl;
+      audioRef.current.onended = ()=> playChunk(idx+1, chunks, total);
+      audioRef.current.onerror = ()=> playChunk(idx+1, chunks, total);
+      audioRef.current.play().catch(()=> playChunk(idx+1, chunks, total));
+    }
+  };
+
+  // Browser TTS fallback
+  const fallbackTTS=()=>{
+    const synth=window.speechSynthesis;
+    synth.cancel();
+    const makeChunks=(text)=>{
+      const sents=text.match(/[^.!?]+[.!?]+[\s"]*/g)||[text];
+      const out=[];let cur='';
+      for(const s of sents){if((cur+s).length>250&&cur){out.push(cur.trim());cur=s}else cur+=s}
+      if(cur.trim())out.push(cur.trim());return out;
+    };
+    const ttsChunks=makeChunks(content);
+    let ci=0;
+    const speakNext=(i)=>{
+      if(i>=ttsChunks.length||stopped.current){setStatus('done');setProgress(100);setHighlight(-1);return}
+      let charPos=0;for(let j=0;j<i;j++)charPos+=ttsChunks[j].length;
+      setHighlight(charToParagraph(charPos));
+      setProgress((i/ttsChunks.length)*100);
+      const u=new SpeechSynthesisUtterance(ttsChunks[i]);
+      u.rate=0.88;u.pitch=1.0;
+      const voices=synth.getVoices();
+      const pick=voices.find(v=>/Google.*en/i.test(v.name))||voices.find(v=>v.lang.startsWith('en'))||voices[0];
+      if(pick)u.voice=pick;
+      u.onend=()=>speakNext(i+1);
+      u.onerror=e=>{if(e.error!=='canceled')speakNext(i+1)};
+      synth.speak(u);
+    };
+    speakNext(0);
+  };
+
+  const stopAll=()=>{
+    stopped.current=true;
+    if(audioRef.current){audioRef.current.pause();audioRef.current.src=''}
+    window.speechSynthesis?.cancel();
+    setStatus('idle');setProgress(0);setHighlight(-1);
+  };
+
+  useEffect(()=>()=>{stopped.current=true;window.speechSynthesis?.cancel()},[]);
+
+  const isClone = voice?.id?.startsWith('v-');
+
+  return(<div className="fi">
+    <audio ref={audioRef} style={{display:'none'}}/>
+    <button className="btn bg2 bsm" onClick={()=>{stopAll();onBack()}} style={{marginBottom:10}}>← Back</button>
+    <div className="pc"><div className="pb">
+      <div className="pem">{story?.e||'📖'}</div>
+      <div className="pti">{story?.t||'Story'}</div>
+      <div className="pau">{story?.a||''}</div>
+      <div className="pbar"><div className="pbtr"><div className="pbfl" style={{width:`${progress}%`}}><div className="pbth"/></div></div></div>
+      <div className="ptm"><span>{Math.round(progress)}%</span><span>{story?.m||5} min</span></div>
+      <div className="pcc">
+        {status==='idle'&&<button className="cb pp" onClick={generateAndPlay}>▶</button>}
+        {(status==='generating'||status==='playing')&&<button className="cb pp" onClick={stopAll}>⏹</button>}
+        {status==='done'&&<button className="cb pp" onClick={generateAndPlay}>🔄</button>}
+        {status==='error'&&<button className="cb pp" onClick={generateAndPlay}>▶</button>}
+      </div>
+      <div className="pvb">Voice: <b>{voice?.name||'Device Default'}</b> {isClone?'(AI Clone)':'(Built-in)'}</div>
+    </div></div>
+    {status==='generating'&&<div className="genst"><span className="spinner"/>🧠 {genProgress}<br/><span style={{fontSize:11,color:'var(--txd)'}}>Cloning your voice with Chatterbox AI on HuggingFace...</span></div>}
+    {status==='done'&&<div className="genst"><span className="done">✅ Story complete! Sweet dreams.</span></div>}
+    <div className="ra">{paragraphs.map((p,i)=><p key={i} className={i===highlight?'hl2':''}>{p}</p>)}</div>
+  </div>);
+}
+
+// ══════════════ Main App ══════════════
+function App(){
+  const[name,setName]=useState(localStorage.getItem('sv_name')||'');
+  const[tab,setTab]=useState('stories');
+  const[voices,setVoices]=useState([]);
+  const[sv,setSv]=useState(null);
+  const[ss,setSs]=useState(null);
+  const[filter,setFilter]=useState('all');
+  const[toast,setToast]=useState('');
+  const[gradioOk,setGradioOk]=useState(false);
+
+  useEffect(()=>{
+    try{const v=JSON.parse(localStorage.getItem('sv_voices')||'[]');setVoices(v)}catch{}
+    speechSynthesis?.getVoices();
+    if(speechSynthesis)speechSynthesis.onvoiceschanged=()=>speechSynthesis.getVoices();
+    // Init Gradio client in background
+    initGradio().then(c=>{if(c)setGradioOk(true)});
+  },[]);
+
+  const show=m=>{setToast(m);setTimeout(()=>setToast(''),2800)};
+  const saveVoice=async(vname,blob)=>{
+    const id=`v-${Date.now()}`;
+    await dbPut('voices',{id,blob,ts:Date.now()});
+    const v={id,name:vname,ts:Date.now()};
+    const nv=[v,...voices];setVoices(nv);localStorage.setItem('sv_voices',JSON.stringify(nv));
+    setSv(v);show('✨ Voice saved! It will be used to clone your voice.');
+  };
+  const delVoice=async id=>{
+    await dbDel('voices',id);
+    const nv=voices.filter(v=>v.id!==id);setVoices(nv);localStorage.setItem('sv_voices',JSON.stringify(nv));
+    if(sv?.id===id)setSv(null);show('Voice removed');
+  };
+  const playStory=()=>{if(!ss){show('📖 Pick a story first');return}setTab('player')};
+  const filtered=filter==='all'?S:S.filter(s=>s.c===filter);
+  const builtinVoices=[{id:'b1',name:'Sleepy Narrator',desc:'Device TTS voice',emoji:'🌙'},{id:'b2',name:'Dreamy Storyteller',desc:'Device TTS voice',emoji:'✨'},{id:'b3',name:'Cozy Grandparent',desc:'Device TTS voice',emoji:'🧸'}];
+
+  if(!name)return<><BG/><div className="app"><Welcome onDone={setName}/></div></>;
+
+  return(<><BG/><div className="app">
+    <div className="hdr">
+      <div className="logo"><span>🌙</span>StoryVoice</div>
+      <button className="hbtn" onClick={()=>{localStorage.removeItem('sv_name');setName('');setSv(null);setSs(null);speechSynthesis?.cancel()}}>Hi, {name} 👋</button>
+    </div>
+    <div className="main">
+      {tab==='stories'&&<div className="fi">
+        <div className="sh">Bedtime Stories 📚</div>
+        <div className="ss">Choose tonight's adventure</div>
+        <div className="flt">{[{k:'all',l:'✨ All'},{k:'fairytale',l:'🏰 Fairytales'},{k:'fable',l:'🦊 Fables'},{k:'bedtime',l:'🌙 Bedtime'}].map(f=><button key={f.k} className={`fc ${filter===f.k?'a':''}`} onClick={()=>setFilter(f.k)}>{f.l}</button>)}</div>
+        {filtered.map(s=><div key={s.id} className={`sr ${ss?.id===s.id?'sel':''}`} onClick={()=>{setSs(s);show(`${s.e} ${s.t} selected`)}}>
+          <div className="se">{s.e}</div><div className="si"><div className="sn">{s.t}</div><div className="sd">{s.a} · {s.age} · ~{s.m} min</div>
+          <span className={`badge b-${s.c==='fairytale'?'ft':s.c==='fable'?'fb':'bt'}`}>{s.c}</span></div>
+          {ss?.id===s.id&&<span style={{fontSize:20,color:'var(--lav)'}}>✓</span>}
+        </div>)}
+      </div>}
+
+      {tab==='voices'&&<div className="fi">
+        <div className="sh">Your Voices 🎤</div>
+        <div className="ss">Record 6-10 seconds. Chatterbox AI will clone your voice!</div>
+        <Recorder onSave={saveVoice}/>
+        {voices.length>0&&<><div className="sh" style={{fontSize:16,marginTop:12}}>Saved Voices (AI Clone)</div>
+          {voices.map(v=><div key={v.id} className={`vc ${sv?.id===v.id?'sel':''}`} onClick={()=>{setSv(v);show('Voice selected')}}>
+            <div className="va va-u">🎙️</div><div><div className="vn">{v.name}</div><div className="vd">🧠 AI voice clone via Chatterbox</div></div>
+            {sv?.id===v.id&&<span style={{marginLeft:'auto',color:'var(--teal)',fontWeight:800}}>✓</span>}
+            <button className="vx" onClick={e=>{e.stopPropagation();delVoice(v.id)}}>✕</button>
+          </div>)}</>}
+        <div className="sh" style={{fontSize:16,marginTop:16}}>Built-in Voices (Device TTS)</div>
+        {builtinVoices.map(v=><div key={v.id} className={`vc ${sv?.id===v.id?'sel':''}`} onClick={()=>{setSv(v);show('Voice selected')}}>
+          <div className="va va-f">{v.emoji}</div><div><div className="vn">{v.name}</div><div className="vd">{v.desc}</div></div>
+          {sv?.id===v.id&&<span style={{marginLeft:'auto',color:'var(--teal)',fontWeight:800}}>✓</span>}
+        </div>)}
+        <div className="info"><b>How it works:</b> Your recorded voice is sent to Chatterbox (open-source AI by Resemble AI) running free on HuggingFace. It clones your voice and reads the story in it. Built-in voices use your phone's speech engine instead.</div>
+      </div>}
+
+      {tab==='play'&&<div className="fi">
+        <div className="sh">Goodnight 🌙</div>
+        <div className="steps"><div className={`step ${sv?'d':'a'}`}/><div className={`step ${ss?'d':sv?'a':''}`}/><div className={`step ${sv&&ss?'a':''}`}/></div>
+        <div className="card" style={{borderLeft:`3px solid ${sv?'var(--teal)':'var(--wg)'}`}}>
+          <div style={{display:'flex',alignItems:'center',justifyContent:'space-between'}}>
+            <div><div className="ct">{sv?'✨':'1️⃣'} Voice</div><div className="cs">{sv?`${sv.name} ${sv.id?.startsWith('v-')?'(AI Clone)':'(Device)'}`:' None selected'}</div></div>
+            <button className="btn bg2 bsm" onClick={()=>setTab('voices')}>{sv?'Change':'Pick'}</button>
+          </div>
+        </div>
+        <div className="card" style={{borderLeft:`3px solid ${ss?'var(--teal)':'var(--wg)'}`}}>
+          <div style={{display:'flex',alignItems:'center',justifyContent:'space-between'}}>
+            <div><div className="ct">{ss?'✨':'2️⃣'} Story</div><div className="cs">{ss?`${ss.e} ${ss.t}`:'None selected'}</div></div>
+            <button className="btn bg2 bsm" onClick={()=>setTab('stories')}>{ss?'Change':'Pick'}</button>
+          </div>
+        </div>
+        <button className="btn bp bw" onClick={playStory} disabled={!ss} style={{marginTop:8,fontSize:18,padding:'16px 24px'}}>
+          {!ss?'📖 Pick a story first':'🌙 Begin Story'}
+        </button>
+        <div className="info" style={{marginTop:12}}>
+          <b>{gradioOk?'🟢 Chatterbox AI connected!':'🟡 Connecting to Chatterbox AI...'}</b><br/>
+          {sv?.id?.startsWith('v-')
+            ? 'Your story will be read in YOUR cloned voice via Chatterbox AI (free, runs on HuggingFace GPU).'
+            : 'Select a recorded voice for AI voice cloning, or use built-in voices for device TTS.'}
+          <br/><span style={{fontSize:11}}>Powered by Resemble AI Chatterbox (MIT) on HuggingFace ZeroGPU (free H200).</span>
+        </div>
+      </div>}
+
+      {tab==='player'&&ss&&<Player story={ss} voice={sv} onBack={()=>setTab('play')} show={show}/>}
+    </div>
+
+    {tab!=='player'&&<div className="nav">
+      <button className={`ni ${tab==='stories'?'a':''}`} onClick={()=>setTab('stories')}><span className="ni-i">📚</span><span className="ni-l">Stories</span></button>
+      <button className={`ni ${tab==='voices'?'a':''}`} onClick={()=>setTab('voices')}><span className="ni-i">🎤</span><span className="ni-l">Voices</span></button>
+      <button className={`ni ${tab==='play'?'a':''}`} onClick={()=>setTab('play')}><span className="ni-i">🌙</span><span className="ni-l">Play</span></button>
+    </div>}
+    <Toast msg={toast}/>
+  </div></>);
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>
