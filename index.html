@@ -212,10 +212,48 @@ function BG(){
 function Toast({msg}){return msg?<div className="toast">{msg}</div>:null}
 
 // ══════════════ Welcome ══════════════
-function Welcome({onDone}){
-  const[name,setName]=useState('');
-  const go=e=>{e.preventDefault();if(name.trim()){localStorage.setItem('sv_name',name.trim());onDone(name.trim())}};
-  return(<div className="wel fi"><div className="wic">🌙✨</div><div className="wit">StoryVoice</div><div className="wis">Goodnight stories in your own voice</div><div className="wbx"><form onSubmit={go}><div className="ig"><label className="il">Who's reading tonight?</label><input className="inp" placeholder="Mom, Dad, Grandma..." value={name} onChange={e=>setName(e.target.value)} autoFocus/></div><button className="btn bp bw" type="submit" disabled={!name.trim()}>🌟 Enter Dreamland</button></form></div></div>);
+function Auth({onDone}){
+  const[mode,setMode]=useState('login');
+  const[email,setEmail]=useState('');const[pw,setPw]=useState('');const[name,setName]=useState('');const[err,setErr]=useState('');
+  const go=e=>{
+    e.preventDefault();setErr('');
+    if(!email.trim()||!pw.trim()){setErr('Please fill in all fields');return}
+    if(mode==='register'){
+      if(!name.trim()){setErr('Please enter your name');return}
+      if(pw.length<4){setErr('Password must be at least 4 characters');return}
+      // Check if user already exists
+      const users=JSON.parse(localStorage.getItem('sv_users')||'{}');
+      if(users[email]){setErr('Account already exists. Sign in instead.');return}
+      // Register
+      users[email]={name:name.trim(),pw,created:Date.now()};
+      localStorage.setItem('sv_users',JSON.stringify(users));
+      localStorage.setItem('sv_user',JSON.stringify({email,name:name.trim()}));
+      onDone(name.trim());
+    } else {
+      // Login
+      const users=JSON.parse(localStorage.getItem('sv_users')||'{}');
+      const u=users[email];
+      if(!u){setErr('No account found. Register first.');return}
+      if(u.pw!==pw){setErr('Incorrect password');return}
+      localStorage.setItem('sv_user',JSON.stringify({email,name:u.name}));
+      onDone(u.name);
+    }
+  };
+  return(<div className="wel fi"><div className="wic">🌙✨</div><div className="wit">StoryVoice</div><div className="wis">Goodnight stories in your own voice</div>
+    <div className="wbx">
+      <div style={{display:'flex',gap:0,marginBottom:18,borderRadius:12,overflow:'hidden',border:'1px solid var(--bd)'}}>
+        <button onClick={()=>{setMode('login');setErr('')}} style={{flex:1,padding:'10px 0',border:'none',cursor:'pointer',fontFamily:"'Baloo 2',cursive",fontWeight:700,fontSize:14,background:mode==='login'?'rgba(167,139,204,.2)':'transparent',color:mode==='login'?'var(--lav)':'var(--txd)',transition:'.2s'}}>Sign In</button>
+        <button onClick={()=>{setMode('register');setErr('')}} style={{flex:1,padding:'10px 0',border:'none',cursor:'pointer',fontFamily:"'Baloo 2',cursive",fontWeight:700,fontSize:14,background:mode==='register'?'rgba(167,139,204,.2)':'transparent',color:mode==='register'?'var(--lav)':'var(--txd)',transition:'.2s'}}>Register</button>
+      </div>
+      {err&&<div style={{background:'rgba(255,121,121,.1)',border:'1px solid rgba(255,121,121,.2)',borderRadius:10,padding:'8px 12px',marginBottom:14,fontSize:13,color:'var(--coral)'}}>{err}</div>}
+      <form onSubmit={go}>
+        {mode==='register'&&<div className="ig"><label className="il">Your Name</label><input className="inp" placeholder="Mom, Dad, Grandma..." value={name} onChange={e=>setName(e.target.value)}/></div>}
+        <div className="ig"><label className="il">Email</label><input className="inp" type="email" placeholder="parent@email.com" value={email} onChange={e=>setEmail(e.target.value)} required/></div>
+        <div className="ig"><label className="il">Password</label><input className="inp" type="password" placeholder="••••••••" value={pw} onChange={e=>setPw(e.target.value)} required/></div>
+        <button className="btn bp bw" type="submit">{mode==='login'?'🌟 Enter Dreamland':'✨ Create Account'}</button>
+      </form>
+    </div>
+  </div>);
 }
 
 // ══════════════ Voice Recorder ══════════════
@@ -422,7 +460,9 @@ function Player({story,voice,onBack,show}){
 
 // ══════════════ Main App ══════════════
 function App(){
-  const[name,setName]=useState(localStorage.getItem('sv_name')||'');
+  const stored=localStorage.getItem('sv_user');
+  const parsedUser=stored?JSON.parse(stored):null;
+  const[name,setName]=useState(parsedUser?.name||'');
   const[tab,setTab]=useState('stories');
   const[voices,setVoices]=useState([]);
   const[sv,setSv]=useState(null);
@@ -456,12 +496,12 @@ function App(){
   const filtered=filter==='all'?S:S.filter(s=>s.c===filter);
   const builtinVoices=[{id:'b1',name:'Sleepy Narrator',desc:'Device TTS voice',emoji:'🌙'},{id:'b2',name:'Dreamy Storyteller',desc:'Device TTS voice',emoji:'✨'},{id:'b3',name:'Cozy Grandparent',desc:'Device TTS voice',emoji:'🧸'}];
 
-  if(!name)return<><BG/><div className="app"><Welcome onDone={setName}/></div></>;
+  if(!name)return<><BG/><div className="app"><Auth onDone={setName}/></div></>;
 
   return(<><BG/><div className="app">
     <div className="hdr">
       <div className="logo"><span>🌙</span>StoryVoice</div>
-      <button className="hbtn" onClick={()=>{localStorage.removeItem('sv_name');setName('');setSv(null);setSs(null);speechSynthesis?.cancel()}}>Hi, {name} 👋</button>
+      <button className="hbtn" onClick={()=>{localStorage.removeItem('sv_user');setName('');setSv(null);setSs(null);speechSynthesis?.cancel()}}>Hi, {name} 👋</button>
     </div>
     <div className="main">
       {tab==='stories'&&<div className="fi">
