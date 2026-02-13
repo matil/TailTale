@@ -1,11 +1,11 @@
-# 🌙 StoryVoice — Goodnight Stories in Your Voice
+# 🦊 Tail a Tale — Goodnight Stories in Your Voice
 
 A bedtime story app that **clones your voice** using AI and reads stories to your kids.
 
 ## How it works
-1. Record your voice for ~8 seconds
-2. Pick a bedtime story (Snow White, Cinderella, etc.)
-3. AI clones your voice and reads the story aloud
+1. 🐰 Record your voice for ~8 seconds
+2. 🐻 Pick a bedtime story (Snow White, Cinderella, etc.)
+3. 🦊 AI clones your voice and reads the story aloud
 
 ## Tech
 - **Voice Cloning:** Chatterbox by Resemble AI (MIT, open-source)

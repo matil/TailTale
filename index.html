@@ -6,7 +6,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#0B0E2D">
-<title>TailTale - Bedtime Stories in Your Voice</title>
+<title>Tail a Tale - Bedtime Stories in Your Voice</title>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -89,6 +89,15 @@ body{font-family:'Nunito',sans-serif;background:var(--nd);color:var(--tx);-webki
 @keyframes ti{from{opacity:0;transform:translateX(-50%) translateY(16px)}}@keyframes tto{to{opacity:0;transform:translateX(-50%) translateY(16px)}}
 .info{background:rgba(255,212,162,.05);border:1px solid rgba(255,212,162,.12);border-radius:var(--rs);padding:12px 14px;margin-top:14px;font-size:12px;line-height:1.5;color:var(--txs)}.info b{color:var(--warm)}
 .fi{animation:fin .3s ease-out}@keyframes fin{from{opacity:0;transform:translateY(10px)}}
+.critter{position:absolute;font-size:22px;animation:critterFloat ease-in-out infinite;opacity:.35;pointer-events:none;filter:drop-shadow(0 0 6px rgba(255,248,220,.15))}
+@keyframes critterFloat{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-12px) rotate(3deg)}}
+.mascot{font-size:28px;display:inline-block;animation:mascotBounce 2s ease-in-out infinite;margin:0 3px}
+@keyframes mascotBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+.paw{display:inline-block;font-size:10px;opacity:.2;margin:0 2px}
+.animal-row{display:flex;justify-content:center;gap:10px;margin:10px 0;font-size:28px;opacity:.8}
+.animal-row span{animation:mascotBounce 2s ease-in-out infinite}
+.animal-row span:nth-child(2){animation-delay:.3s}.animal-row span:nth-child(3){animation-delay:.6s}
+.animal-row span:nth-child(4){animation-delay:.9s}.animal-row span:nth-child(5){animation-delay:1.2s}
 @media(max-width:380px){.hdr{padding:10px 14px}.main{padding:0 14px 16px}}
 </style>
 </head>
@@ -106,7 +115,7 @@ window.dispatchEvent(new Event('gradio-ready'));
 const{useState,useEffect,useRef,useCallback,useMemo}=React;
 
 // ══════════ IndexedDB ══════════
-const DB='tailtale';const DBV=2;
+const DB='tailatale';const DBV=2;
 function openDB(){return new Promise((res,rej)=>{const r=indexedDB.open(DB,DBV);r.onupgradeneeded=e=>{const db=e.target.result;if(!db.objectStoreNames.contains('voices'))db.createObjectStore('voices',{keyPath:'id'});if(!db.objectStoreNames.contains('audioCache'))db.createObjectStore('audioCache',{keyPath:'key'})};r.onsuccess=e=>res(e.target.result);r.onerror=e=>rej(e)})}
 async function dbPut(s,d){const db=await openDB();return new Promise((res,rej)=>{const tx=db.transaction(s,'readwrite');tx.objectStore(s).put(d);tx.oncomplete=()=>res();tx.onerror=e=>rej(e)})}
 async function dbGet(s,k){const db=await openDB();return new Promise((res,rej)=>{const tx=db.transaction(s,'readonly');const r=tx.objectStore(s).get(k);r.onsuccess=()=>res(r.result||null);r.onerror=e=>rej(e)})}
@@ -191,7 +200,7 @@ const S=[
 {id:'s5',t:'Little Red Riding Hood',a:'Brothers Grimm',c:'fairytale',age:'4-7',e:'🔴',m:4,tx:"Once upon a time, Little Red Riding Hood took cakes to her sick grandmother.\n\nIn the forest, a wolf asked where she was going. He ran ahead to grandmother's house! Grandmother hid in the closet. The wolf put on her cap and jumped into bed.\n\n\"What big eyes you have!\" \"All the better to see you with!\" \"What big ears you have!\" \"All the better to hear you with!\" \"What big teeth you have!\" \"All the better to catch you with!\"\n\nA brave woodcutter burst in and chased the wolf away! Grandmother was safe.\n\nFrom that day on, Little Red Riding Hood always stayed on the path. The End."},
 {id:'s6',t:'The Tortoise and the Hare',a:'Aesop',c:'fable',age:'3-7',e:'🐢',m:3,tx:"A hare boasted, \"No one can beat me!\" The tortoise said, \"I bet I can.\"\n\nThe race began. The hare zoomed ahead, then took a nap under a tree.\n\nThe tortoise kept walking. Step by step. Slowly but surely.\n\nWhen the hare woke up and ran to the finish, the tortoise was already there!\n\n\"Slow and steady wins the race.\" The End."},
 {id:'s7',t:'The Princess and the Pea',a:'H.C. Andersen',c:'fairytale',age:'4-8',e:'👑',m:4,tx:"A prince searched the world for a real princess.\n\nOne stormy night, a soaking wet girl arrived at the castle. The queen placed a tiny pea under twenty mattresses and twenty quilts.\n\n\"How did you sleep?\" asked the queen. \"Terribly! Something hard was in the bed!\"\n\nOnly a real princess could feel a pea through all that! The prince was overjoyed. They married and lived happily ever after. The End."},
-{id:'s8',t:'The Stars That Came to Play',a:'TailTale Original',c:'bedtime',age:'2-5',e:'⭐',m:3,tx:"High in the sky, little star Twinkle didn't want to sleep. \"I want to play!\" She bounced from cloud to cloud, leaving sparkly trails.\n\nThen she looked down and saw a child at a window. \"Where's my favorite star?\"\n\nTwinkle felt warm inside. She flew to her spot and shone as bright as she could.\n\n\"There you are! Goodnight, little star!\" said the child.\n\nTwinkle realized shining for someone who loves you is the best kind of playing.\n\nGoodnight, little ones. Goodnight, stars. Goodnight, moon. The End."},
+{id:'s8',t:'The Stars That Came to Play',a:'Tail a Tale Original',c:'bedtime',age:'2-5',e:'⭐',m:3,tx:"High in the sky, little star Twinkle didn't want to sleep. \"I want to play!\" She bounced from cloud to cloud, leaving sparkly trails.\n\nThen she looked down and saw a child at a window. \"Where's my favorite star?\"\n\nTwinkle felt warm inside. She flew to her spot and shone as bright as she could.\n\n\"There you are! Goodnight, little star!\" said the child.\n\nTwinkle realized shining for someone who loves you is the best kind of playing.\n\nGoodnight, little ones. Goodnight, stars. Goodnight, moon. The End."},
 {id:'s9',t:'Snow White',a:'Brothers Grimm',c:'fairytale',age:'4-8',e:'🍎',m:6,tx:"Once upon a time, a beautiful princess named Snow White lived in a grand castle. Her stepmother, the Queen, was very vain. Every day she asked her magic mirror, \"Mirror, mirror, on the wall, who is the fairest one of all?\"\n\nOne day the mirror said Snow White was more beautiful. The Queen was furious! She sent a huntsman to take Snow White into the forest. But the kind huntsman let her go.\n\nSnow White found a tiny cottage with seven tiny chairs and seven tiny beds. It belonged to seven dwarfs, Doc, Grumpy, Happy, Sleepy, Bashful, Sneezy, and Dopey. They said, \"You can stay with us!\"\n\nBut the wicked Queen disguised herself and brought a poisoned apple. Snow White took one bite and fell into a deep, deep sleep.\n\nThe heartbroken dwarfs placed her in a glass case. One day, a prince rode by, saw Snow White, and gently kissed her forehead.\n\nSnow White opened her eyes! True love's kiss had broken the spell. She and the prince married, and they all lived happily ever after. The End."},
 {id:'s10',t:'Cinderella',a:'Charles Perrault',c:'fairytale',age:'4-8',e:'👠',m:6,tx:"Once upon a time, a kind girl named Cinderella lived with her mean stepmother and stepsisters. They made her cook and clean while they wore fine dresses.\n\nThe King announced a grand ball! The stepsisters left Cinderella behind, crying.\n\nSuddenly, her Fairy Godmother appeared! A pumpkin became a golden carriage, mice became horses, and Cinderella's rags became the most beautiful gown with sparkling glass slippers.\n\n\"Remember, the magic ends at midnight!\" At the ball, the prince fell in love with Cinderella. They danced all evening.\n\nThen, BONG! BONG! The clock struck twelve! Cinderella ran, leaving behind one glass slipper.\n\nThe prince searched the kingdom. The stepsisters tried the slipper, but it was too small. Then Cinderella tried, and it fit perfectly!\n\nCinderella forgave her stepsisters. She and the prince married, and the whole kingdom celebrated. The End."},
 {id:'s11',t:'Sleeping Beauty',a:'Charles Perrault',c:'fairytale',age:'4-8',e:'🌹',m:5,tx:"Once upon a time, a king and queen had a baby girl. Fairies gave her gifts of beauty, grace, and kindness. But an uninvited fairy cursed her. \"Before her sixteenth birthday, she shall prick her finger on a spinning wheel and fall into an endless sleep!\"\n\nA good fairy softened the curse. \"She shall be awakened by true love's kiss.\"\n\nFor sixteen years, the princess was safe. But on her birthday, she found a hidden spinning wheel. She touched the spindle and fell into a deep sleep.\n\nThe good fairy put the whole castle to sleep. Thorny roses grew around the walls for a hundred years.\n\nOne day, a brave prince came. The thorns parted into flowers. He found the princess and gently kissed her.\n\nShe opened her eyes and smiled. The whole castle woke up! They were married, and everyone celebrated. The End."},
@@ -202,14 +211,19 @@ const S=[
 function BG(){
   const stars=useMemo(()=>[...Array(30)].map(()=>({l:`${Math.random()*100}%`,t:`${Math.random()*55}%`,s:Math.random()*2+.5,d:Math.random()*3+2,dl:Math.random()*4})),[]);
   const flies=useMemo(()=>[...Array(3)].map(()=>({l:`${20+Math.random()*60}%`,t:`${60+Math.random()*30}%`,d:Math.random()*5+4,dl:Math.random()*4})),[]);
-  return(<div className="bg">{stars.map((s,i)=><div key={i} className="star" style={{left:s.l,top:s.t,width:s.s,height:s.s,animationDuration:`${s.d}s`,animationDelay:`${s.dl}s`}}/>)}<div className="moon"/>{flies.map((f,i)=><div key={`f${i}`} className="ff" style={{left:f.l,top:f.t,animationDuration:`${f.d}s`,animationDelay:`${f.dl}s`}}/>)}<div className="hills"><div className="hl"/><div className="hl"/><div className="hl"/></div></div>);
+  const critters=useMemo(()=>[
+    {e:'🐰',l:'8%',t:'18%',d:5,dl:0,sz:20},{e:'🦊',l:'88%',t:'42%',d:6,dl:1.5,sz:18},
+    {e:'🐻',l:'5%',t:'55%',d:7,dl:3,sz:16},{e:'🦉',l:'92%',t:'15%',d:4,dl:0.5,sz:19},
+    {e:'🐾',l:'45%',t:'8%',d:8,dl:2,sz:14},{e:'🦝',l:'78%',t:'65%',d:6.5,dl:4,sz:15},
+  ],[]);
+  return(<div className="bg">{stars.map((s,i)=><div key={i} className="star" style={{left:s.l,top:s.t,width:s.s,height:s.s,animationDuration:`${s.d}s`,animationDelay:`${s.dl}s`}}/>)}<div className="moon"/>{flies.map((f,i)=><div key={`f${i}`} className="ff" style={{left:f.l,top:f.t,animationDuration:`${f.d}s`,animationDelay:`${f.dl}s`}}/>)}{critters.map((c,i)=><div key={`c${i}`} className="critter" style={{left:c.l,top:c.t,fontSize:c.sz,animationDuration:`${c.d}s`,animationDelay:`${c.dl}s`}}>{c.e}</div>)}<div className="hills"><div className="hl"/><div className="hl"/><div className="hl"/></div></div>);
 }
 function Toast({msg}){return msg?<div className="toast">{msg}</div>:null}
 
 function Welcome({onDone}){
   const[name,setName]=useState('');
   const go=e=>{e.preventDefault();if(name.trim()){localStorage.setItem('sv_name',name.trim());onDone(name.trim())}};
-  return(<div className="wel fi"><div className="wic">🌙✨</div><div className="wit">TailTale</div><div className="wis">Goodnight stories in your own voice</div><div className="wbx"><form onSubmit={go}><div className="ig"><label className="il">Who's reading tonight?</label><input className="inp" placeholder="Mom, Dad, Grandma..." value={name} onChange={e=>setName(e.target.value)} autoFocus/></div><button className="btn bp bw" type="submit" disabled={!name.trim()}>🌟 Enter Dreamland</button></form></div></div>);
+  return(<div className="wel fi"><div className="wic">🌙✨</div><div className="animal-row"><span>🐰</span><span>🦊</span><span>🐻</span><span>🦉</span><span>🐾</span></div><div className="wit">Tail a Tale</div><div className="wis">Goodnight stories in your own voice</div><div className="wbx"><form onSubmit={go}><div className="ig"><label className="il">Who's reading tonight?</label><input className="inp" placeholder="Mom, Dad, Grandma..." value={name} onChange={e=>setName(e.target.value)} autoFocus/></div><button className="btn bp bw" type="submit" disabled={!name.trim()}>🐾 Enter Dreamland</button></form></div></div>);
 }
 
 function Recorder({onSave}){
@@ -417,13 +431,13 @@ function App(){
 
   return(<><BG/><div className="app">
     <div className="hdr">
-      <div className="logo"><span>🌙</span>TailTale</div>
+      <div className="logo"><span className="mascot">🦊</span>Tail a Tale</div>
       <button className="hbtn" onClick={()=>{localStorage.removeItem('sv_name');setName('');setSv(null);setSs(null);speechSynthesis?.cancel()}}>Hi, {name} 👋</button>
     </div>
     <div className="main">
       {tab==='stories'&&<div className="fi">
-        <div className="sh">Bedtime Stories 📚</div>
-        <div className="ss">Choose tonight's adventure</div>
+        <div className="sh">Bedtime Stories <span className="mascot">🐻</span></div>
+        <div className="ss">Choose tonight's adventure <span className="paw">🐾</span><span className="paw">🐾</span><span className="paw">🐾</span></div>
         <div className="flt">{[{k:'all',l:'✨ All'},{k:'fairytale',l:'🏰 Fairytales'},{k:'fable',l:'🦊 Fables'},{k:'bedtime',l:'🌙 Bedtime'}].map(f=><button key={f.k} className={`fc ${filter===f.k?'a':''}`} onClick={()=>setFilter(f.k)}>{f.l}</button>)}</div>
         {filtered.map(s=><div key={s.id} className={`sr ${ss?.id===s.id?'sel':''}`} onClick={()=>{setSs(s);show(`${s.e} ${s.t} selected`)}}>
           <div className="se">{s.e}</div><div className="si"><div className="sn">{s.t}</div><div className="sd">{s.a} · {s.age} · ~{s.m} min</div>
@@ -433,7 +447,7 @@ function App(){
       </div>}
 
       {tab==='voices'&&<div className="fi">
-        <div className="sh">Your Voices 🎤</div>
+        <div className="sh">Your Voices <span className="mascot">🐰</span></div>
         <div className="ss">Record 6-10 seconds. Chatterbox AI will clone your voice!</div>
         <Recorder onSave={saveVoice}/>
         {voices.length>0&&<><div className="sh" style={{fontSize:16,marginTop:12}}>Saved Voices (AI Clone)</div>
@@ -451,7 +465,7 @@ function App(){
       </div>}
 
       {tab==='play'&&<div className="fi">
-        <div className="sh">Goodnight 🌙</div>
+        <div className="sh">Goodnight <span className="mascot">🦉</span></div>
         <div className="steps"><div className={`step ${sv?'d':'a'}`}/><div className={`step ${ss?'d':sv?'a':''}`}/><div className={`step ${sv&&ss?'a':''}`}/></div>
         <div className="card" style={{borderLeft:`3px solid ${sv?'var(--teal)':'var(--wg)'}`}}>
           <div style={{display:'flex',alignItems:'center',justifyContent:'space-between'}}>
@@ -466,7 +480,7 @@ function App(){
           </div>
         </div>
         <button className="btn bp bw" onClick={playStory} disabled={!ss} style={{marginTop:8,fontSize:18,padding:'16px 24px'}}>
-          {!ss?'📖 Pick a story first':'🌙 Begin Story'}
+          {!ss?'📖 Pick a story first':'🐾 Begin Story'}
         </button>
         <div className="info" style={{marginTop:12}}>
           <b>{gOk?'🟢 Chatterbox AI connected':'🟡 Connecting to AI...'}</b><br/>
@@ -478,9 +492,9 @@ function App(){
     </div>
 
     {tab!=='player'&&<div className="nav">
-      <button className={`ni ${tab==='stories'?'a':''}`} onClick={()=>setTab('stories')}><span className="ni-i">📚</span><span className="ni-l">Stories</span></button>
-      <button className={`ni ${tab==='voices'?'a':''}`} onClick={()=>setTab('voices')}><span className="ni-i">🎤</span><span className="ni-l">Voices</span></button>
-      <button className={`ni ${tab==='play'?'a':''}`} onClick={()=>setTab('play')}><span className="ni-i">🌙</span><span className="ni-l">Play</span></button>
+      <button className={`ni ${tab==='stories'?'a':''}`} onClick={()=>setTab('stories')}><span className="ni-i">🐻</span><span className="ni-l">Stories</span></button>
+      <button className={`ni ${tab==='voices'?'a':''}`} onClick={()=>setTab('voices')}><span className="ni-i">🐰</span><span className="ni-l">Voices</span></button>
+      <button className={`ni ${tab==='play'?'a':''}`} onClick={()=>setTab('play')}><span className="ni-i">🦊</span><span className="ni-l">Play</span></button>
     </div>}
     <Toast msg={toast}/>
   </div></>);
