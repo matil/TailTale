@@ -36,18 +36,18 @@ body{font-family:'Nunito',sans-serif;background:var(--nd);color:var(--tx);-webki
 .hl:nth-child(1){width:500px;height:120px;background:#0F1235;left:-80px}.hl:nth-child(2){width:450px;height:95px;background:#121640;left:180px}.hl:nth-child(3){width:600px;height:105px;background:#0D1030;right:-120px}
 .app{position:relative;z-index:1;height:100%;display:flex;flex-direction:column;max-width:480px;margin:0 auto}
 .hdr{padding:12px 20px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
-.logo{font-family:'Baloo 2',cursive;font-size:22px;font-weight:800;color:var(--moon);display:flex;align-items:center;gap:0}
+.logo{display:flex;align-items:center;gap:0}
 .logo-hdr{height:44px;flex-shrink:0}
 .logo-welcome{width:300px;max-width:90vw;margin:0 auto 8px;display:block}
 .hbtn{height:36px;padding:0 14px;border-radius:50px;border:1px solid var(--bd);background:var(--gl);font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:5px;color:var(--txs);font-family:'Nunito',sans-serif;transition:.2s}.hbtn:hover{background:var(--glh)}
 .main{flex:1;overflow-y:auto;overflow-x:hidden;padding:0 20px 20px;-webkit-overflow-scrolling:touch}.main::-webkit-scrollbar{width:0}
 .nav{flex-shrink:0;background:rgba(11,14,45,.92);backdrop-filter:blur(20px);border-radius:22px 22px 0 0;padding:6px 12px 14px;display:flex;justify-content:space-around;border-top:1px solid var(--bd)}
-.ni{display:flex;flex-direction:column;align-items:center;gap:2px;background:none;border:none;cursor:pointer;padding:8px 16px;border-radius:14px;transition:.2s;color:var(--txd);font-family:'Nunito'}.ni.a{color:var(--moon);background:rgba(255,248,220,.07)}
-.ni-i{font-size:22px}.ni-l{font-size:10px;font-weight:700}
+.ni{display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:none;cursor:pointer;padding:8px 16px;border-radius:14px;transition:.2s;color:var(--txd);font-family:'Nunito'}.ni.a{color:var(--moon);background:rgba(255,248,220,.07)}
+.ni-l{font-size:10px;font-weight:700}
 .card{background:var(--gl);backdrop-filter:blur(10px);border-radius:var(--rm);padding:18px;margin-bottom:12px;border:1px solid var(--bd)}
-.ct{font-family:'Baloo 2',cursive;font-size:17px;font-weight:700;margin-bottom:3px}.cs{font-size:13px;color:var(--txs)}
+.ct{font-family:'Baloo 2',cursive;font-size:17px;font-weight:700;margin-bottom:3px;display:flex;align-items:center;gap:6px}.cs{font-size:13px;color:var(--txs)}
 .sr{display:flex;gap:14px;align-items:center;cursor:pointer;padding:14px;border-radius:var(--rm);background:var(--gl);margin-bottom:10px;transition:.25s;border:1px solid var(--bd)}.sr:hover{background:var(--glh)}.sr.sel{border-color:rgba(197,179,230,.4);background:rgba(197,179,230,.08)}
-.se{font-size:34px;width:54px;height:54px;display:flex;align-items:center;justify-content:center;background:rgba(255,248,220,.06);border-radius:14px;flex-shrink:0}.si{flex:1;min-width:0}.sn{font-family:'Baloo 2',cursive;font-size:15px;font-weight:700;line-height:1.2}.sd{font-size:11px;color:var(--txd);margin-top:2px}
+.se{width:54px;height:54px;display:flex;align-items:center;justify-content:center;background:rgba(255,248,220,.06);border-radius:14px;flex-shrink:0}.si{flex:1;min-width:0}.sn{font-family:'Baloo 2',cursive;font-size:15px;font-weight:700;line-height:1.2}.sd{font-size:11px;color:var(--txd);margin-top:2px}
 .badge{display:inline-block;padding:1px 7px;border-radius:6px;font-size:9px;font-weight:700;text-transform:uppercase;margin-top:3px}
 .b-ft{background:rgba(85,230,193,.1);color:var(--teal)}.b-fb{background:rgba(255,212,162,.1);color:var(--warm)}.b-bt{background:rgba(197,179,230,.1);color:var(--lav)}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:13px 24px;border:none;border-radius:var(--rl);font-family:'Baloo 2',cursive;font-size:16px;font-weight:700;cursor:pointer;transition:.2s;white-space:nowrap}
@@ -57,34 +57,33 @@ body{font-family:'Nunito',sans-serif;background:var(--nd);color:var(--tx);-webki
 .bw{width:100%}.bsm{padding:9px 18px;font-size:14px}
 .ig{margin-bottom:14px}.il{display:block;font-family:'Baloo 2',cursive;font-size:14px;font-weight:600;margin-bottom:5px;color:var(--txs)}
 .inp{width:100%;padding:12px 16px;border:1px solid rgba(255,255,255,.1);border-radius:var(--rs);font-family:'Nunito',sans-serif;font-size:15px;background:rgba(255,255,255,.05);color:var(--tx);transition:.2s}.inp:focus{outline:none;border-color:var(--lavs)}.inp::placeholder{color:var(--txd)}
-.sh{font-family:'Baloo 2',cursive;font-size:20px;font-weight:800;margin:16px 0 8px;color:var(--moon)}.ss{font-size:13px;color:var(--txd);margin-bottom:14px;line-height:1.4}
-.rb{width:90px;height:90px;border-radius:50%;border:2px solid rgba(255,121,121,.2);background:linear-gradient(135deg,rgba(255,121,121,.6),rgba(255,121,121,.35));color:#fff;font-size:36px;cursor:pointer;box-shadow:0 0 25px rgba(255,121,121,.15);transition:.2s;display:flex;align-items:center;justify-content:center;margin:0 auto}
+.sh{font-family:'Baloo 2',cursive;font-size:20px;font-weight:800;margin:16px 0 8px;color:var(--moon);display:flex;align-items:center;gap:8px}.ss{font-size:13px;color:var(--txd);margin-bottom:14px;line-height:1.4}
+.rb{width:90px;height:90px;border-radius:50%;border:2px solid rgba(255,121,121,.2);background:linear-gradient(135deg,rgba(255,121,121,.6),rgba(255,121,121,.35));color:#fff;cursor:pointer;box-shadow:0 0 25px rgba(255,121,121,.15);transition:.2s;display:flex;align-items:center;justify-content:center;margin:0 auto}
 .rb:hover{transform:scale(1.05)}.rb.rec{animation:rp 1.5s ease-in-out infinite}
 @keyframes rp{0%{box-shadow:0 0 0 0 rgba(255,121,121,.4)}70%{box-shadow:0 0 0 22px rgba(255,121,121,0)}100%{box-shadow:0 0 0 0 rgba(255,121,121,0)}}
 .wf{display:flex;align-items:center;justify-content:center;gap:3px;height:45px;margin:12px 0}.wb{width:3px;background:var(--lav);border-radius:3px;animation:wa .8s ease-in-out infinite}@keyframes wa{0%,100%{height:6px}50%{height:36px}}
 .vc{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:var(--rs);background:var(--gl);margin-bottom:8px;cursor:pointer;transition:.2s;border:1px solid var(--bd)}.vc:hover{background:var(--glh)}.vc.sel{border-color:rgba(85,230,193,.35);background:rgba(85,230,193,.06)}
-.va{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}.va-u{background:rgba(85,230,193,.1);border:1px solid rgba(85,230,193,.12)}.va-f{background:rgba(255,212,162,.1);border:1px solid rgba(255,212,162,.12)}
+.va{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}.va-u{background:rgba(85,230,193,.1);border:1px solid rgba(85,230,193,.12)}.va-f{background:rgba(255,212,162,.1);border:1px solid rgba(255,212,162,.12)}
 .vn{font-weight:700;font-size:14px}.vd{font-size:11px;color:var(--txd)}
-.vx{margin-left:auto;background:none;border:none;font-size:15px;cursor:pointer;opacity:.3;padding:4px;color:var(--txd)}.vx:hover{opacity:.7}
+.vx{margin-left:auto;background:none;border:none;cursor:pointer;opacity:.3;padding:4px;color:var(--txd)}.vx:hover{opacity:.7}
 .pc{border-radius:28px;overflow:hidden;margin-top:6px}.pb{background:linear-gradient(160deg,#1A0A3E,#120835 40%,#0D0628);padding:28px 20px;position:relative;border:1px solid rgba(255,255,255,.05)}
-.pem{font-size:52px;text-align:center;margin-bottom:8px}.pti{font-family:'Baloo 2',cursive;font-size:22px;font-weight:700;color:var(--moon);text-align:center}.pau{font-size:12px;color:rgba(255,255,255,.3);text-align:center;margin-top:2px}
+.pti{font-family:'Baloo 2',cursive;font-size:22px;font-weight:700;color:var(--moon);text-align:center}.pau{font-size:12px;color:rgba(255,255,255,.3);text-align:center;margin-top:2px}
 .pbar{margin:22px 0 6px;padding:6px 0;cursor:pointer;-webkit-tap-highlight-color:transparent}
 .pbtr{width:100%;height:6px;background:rgba(255,255,255,.08);border-radius:3px;position:relative}
 .pbfl{height:100%;background:linear-gradient(90deg,var(--lavs),var(--wg));border-radius:3px;transition:width .05s linear;position:relative;will-change:width}
 .pbth{position:absolute;right:-8px;top:50%;transform:translateY(-50%);width:18px;height:18px;background:var(--moon);border-radius:50%;box-shadow:0 0 8px rgba(255,248,220,.3)}
 .ptm{display:flex;justify-content:space-between;font-size:11px;color:rgba(255,255,255,.25);font-weight:600;font-variant-numeric:tabular-nums}
 .pcc{display:flex;align-items:center;justify-content:center;gap:20px;margin-top:20px}
-.cb{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.07);color:rgba(255,255,255,.6);width:46px;height:46px;border-radius:50%;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.2s}.cb:hover{background:rgba(255,255,255,.1);color:#fff}.cb:active{transform:scale(.93)}
-.cb.pp{width:64px;height:64px;background:linear-gradient(135deg,var(--lavs),var(--lavd));font-size:26px;color:#fff;box-shadow:0 0 25px rgba(167,139,204,.25);border:none}
-.pvb{text-align:center;margin-top:16px;font-size:11px;color:rgba(255,255,255,.25)}.pvb b{color:var(--wg)}
-.ra{background:rgba(20,24,69,.5);border-radius:var(--rm);padding:20px;margin-top:14px;max-height:280px;overflow-y:auto;font-size:15px;line-height:1.85;color:rgba(232,228,240,.8);border:1px solid var(--bd)}
-.ra p{margin-bottom:14px}.ra p:last-child{margin-bottom:0}.ra p.hl2{color:var(--wg);font-weight:700;text-shadow:0 0 12px rgba(255,190,118,.2)}
+.cb{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.07);color:rgba(255,255,255,.6);width:46px;height:46px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.2s}.cb:hover{background:rgba(255,255,255,.1);color:#fff}.cb:active{transform:scale(.93)}
+.cb.pp{width:64px;height:64px;background:linear-gradient(135deg,var(--lavs),var(--lavd));color:#fff;box-shadow:0 0 25px rgba(167,139,204,.25);border:none}
+.pvb{text-align:center;margin-top:16px;font-size:11px;color:rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;gap:4px}.pvb b{color:var(--wg)}
+.ra{background:rgba(20,24,69,.5);border-radius:var(--rm);padding:20px;margin-top:14px;max-height:280px;overflow-y:auto;font-size:15px;line-height:1.85;color:rgba(232,228,240,.8);border:1px solid var(--bd);scroll-behavior:smooth}
+.ra p{margin-bottom:14px;transition:color .3s}.ra p:last-child{margin-bottom:0}.ra p.hl2{color:var(--wg);font-weight:700;text-shadow:0 0 12px rgba(255,190,118,.2)}
 .genst{background:rgba(139,111,192,.12);border:1px solid rgba(139,111,192,.2);border-radius:var(--rs);padding:14px;margin-top:12px;text-align:center;font-size:13px;color:var(--lav);line-height:1.5}
 .genst .spinner{display:inline-block;width:16px;height:16px;border:2px solid rgba(197,179,230,.3);border-top-color:var(--lav);border-radius:50%;animation:spin 1s linear infinite;vertical-align:middle;margin-right:6px}
 @keyframes spin{to{transform:rotate(360deg)}}
-.genst .done{color:var(--teal)}
+.genst .done{color:var(--teal);display:flex;align-items:center;justify-content:center;gap:6px}
 .wel{display:flex;flex-direction:column;justify-content:center;align-items:center;min-height:100%;padding:40px 24px;text-align:center}
-.wic{font-size:64px;margin-bottom:8px}.wit{font-family:'Baloo 2',cursive;font-size:32px;font-weight:800;color:var(--moon)}.wis{font-size:14px;color:var(--txd);margin-bottom:28px}
 .wbx{background:rgba(20,24,69,.8);backdrop-filter:blur(20px);border-radius:var(--rl);padding:24px 20px;width:100%;max-width:340px;border:1px solid var(--bd)}
 .flt{display:flex;gap:7px;overflow-x:auto;padding-bottom:3px;margin-bottom:14px;scrollbar-width:none}.flt::-webkit-scrollbar{display:none}
 .fc{padding:7px 14px;border-radius:50px;border:1px solid var(--bd);background:var(--gl);font-family:'Nunito';font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;transition:.2s;color:var(--txs)}.fc:hover{background:var(--glh)}.fc.a{background:rgba(167,139,204,.18);color:var(--lav);border-color:rgba(167,139,204,.3)}
@@ -93,15 +92,14 @@ body{font-family:'Nunito',sans-serif;background:var(--nd);color:var(--tx);-webki
 @keyframes ti{from{opacity:0;transform:translateX(-50%) translateY(16px)}}@keyframes tto{to{opacity:0;transform:translateX(-50%) translateY(16px)}}
 .info{background:rgba(255,212,162,.05);border:1px solid rgba(255,212,162,.12);border-radius:var(--rs);padding:12px 14px;margin-top:14px;font-size:12px;line-height:1.5;color:var(--txs)}.info b{color:var(--warm)}
 .fi{animation:fin .3s ease-out}@keyframes fin{from{opacity:0;transform:translateY(10px)}}
-.critter{position:absolute;font-size:22px;animation:critterFloat ease-in-out infinite;opacity:.35;pointer-events:none;filter:drop-shadow(0 0 6px rgba(255,248,220,.15))}
-@keyframes critterFloat{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-12px) rotate(3deg)}}
-.mascot{font-size:28px;display:inline-block;animation:mascotBounce 2s ease-in-out infinite;margin:0 3px}
-@keyframes mascotBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
-.paw{display:inline-block;font-size:10px;opacity:.2;margin:0 2px}
-.animal-row{display:flex;justify-content:center;gap:10px;margin:10px 0;font-size:28px;opacity:.8}
-.animal-row span{animation:mascotBounce 2s ease-in-out infinite}
-.animal-row span:nth-child(2){animation-delay:.3s}.animal-row span:nth-child(3){animation-delay:.6s}
-.animal-row span:nth-child(4){animation-delay:.9s}.animal-row span:nth-child(5){animation-delay:1.2s}
+.tut-steps{display:flex;align-items:center;justify-content:center;gap:0;margin:0 auto 24px;width:280px}
+.tut-dot{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;border:2px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);color:var(--txd);transition:.3s;font-family:'Baloo 2',cursive}
+.tut-dot.active{border-color:var(--lavs);background:rgba(167,139,204,.2);color:var(--lav)}
+.tut-dot.done{border-color:var(--teal);background:rgba(85,230,193,.15);color:var(--teal)}
+.tut-line{flex:1;height:2px;background:rgba(255,255,255,.06);transition:.3s}.tut-line.done{background:var(--teal)}
+.tut-title{font-family:'Baloo 2',cursive;font-size:24px;font-weight:800;color:var(--moon);text-align:center;margin-bottom:4px}
+.tut-sub{font-size:13px;color:var(--txd);text-align:center;margin-bottom:20px;line-height:1.5}
+.ico{display:inline-block;vertical-align:middle;flex-shrink:0}
 @media(max-width:380px){.hdr{padding:10px 14px}.main{padding:0 14px 16px}}
 </style>
 </head>
@@ -118,260 +116,157 @@ window.dispatchEvent(new Event('gradio-ready'));
 <script type="text/babel">
 const{useState,useEffect,useRef,useCallback,useMemo}=React;
 
-// ══════════ IndexedDB ══════════
+// Custom Icon Set - consistent 24x24 viewBox, 1.5px stroke, round caps
+function Icon({name,size=24,color='currentColor',className=''}){
+  const s={width:size,height:size,display:'inline-block',verticalAlign:'middle',flexShrink:0};
+  const p={xmlns:"http://www.w3.org/2000/svg",viewBox:"0 0 24 24",fill:"none",stroke:color,strokeWidth:"1.5",strokeLinecap:"round",strokeLinejoin:"round",style:s,className:'ico '+className};
+  switch(name){
+    case 'book': return(<svg {...p}><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><line x1="9" y1="7" x2="16" y2="7"/><line x1="9" y1="11" x2="14" y2="11"/></svg>);
+    case 'mic': return(<svg {...p}><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>);
+    case 'play': return(<svg {...p}><polygon points="5 3 19 12 5 21 5 3" fill={color} stroke="none"/></svg>);
+    case 'pause': return(<svg {...p}><rect x="6" y="4" width="4" height="16" rx="1" fill={color} stroke="none"/><rect x="14" y="4" width="4" height="16" rx="1" fill={color} stroke="none"/></svg>);
+    case 'stop': return(<svg {...p}><rect x="5" y="5" width="14" height="14" rx="2" fill={color} stroke="none"/></svg>);
+    case 'replay': return(<svg {...p}><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>);
+    case 'back': return(<svg {...p}><polyline points="15 18 9 12 15 6"/></svg>);
+    case 'check': return(<svg {...p} fill="none"><polyline points="20 6 9 17 4 12" stroke={color} strokeWidth="2"/></svg>);
+    case 'sparkle': return(<svg {...p}><path d="M12 2l2 6 6 2-6 2-2 6-2-6-6-2 6-2 2-6z" fill={color} stroke="none"/></svg>);
+    case 'moon': return(<svg {...p}><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" fill={color} stroke="none" opacity=".8"/></svg>);
+    case 'castle': return(<svg {...p}><path d="M3 21V11l3-3V5h2v2l4-4 4 4v2h2v3l3 3v10H3z"/><rect x="9" y="14" width="6" height="7" rx="3" stroke={color}/></svg>);
+    case 'fox': return(<svg {...p} stroke="none"><path d="M12 20c-4 0-7-2-7-5s1.5-5 3-6.5L10 3l2 3 2-3 2 5.5c1.5 1.5 3 3.5 3 6.5s-3 5-7 5z" fill={color}/><circle cx="9.5" cy="13" r="1" fill="#0B0E2D"/><circle cx="14.5" cy="13" r="1" fill="#0B0E2D"/><ellipse cx="12" cy="15.5" rx="1.5" ry="1" fill="#2D1B0E"/></svg>);
+    case 'brain': return(<svg {...p}><path d="M12 2C9 2 7 4 7 6.5c0 .5.1 1 .3 1.5C5.9 9 5 10.5 5 12.5c0 1.5.8 3 2 3.8C7 17 7.5 18 9 19c1 .7 2 1 3 1s2-.3 3-1c1.5-1 2-2 2-2.7 1.2-.8 2-2.3 2-3.8 0-2-1-3.5-2.3-4.5.2-.5.3-1 .3-1.5C17 4 15 2 12 2z"/><path d="M12 2v18" strokeDasharray="2 2" opacity=".3"/></svg>);
+    case 'phone': return(<svg {...p}><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18" strokeWidth="2"/></svg>);
+    case 'trash': return(<svg {...p}><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>);
+    case 'right': return(<svg {...p}><polyline points="9 18 15 12 9 6"/></svg>);
+    case 'record': return(<svg {...p}><circle cx="12" cy="12" r="8" fill={color} stroke="none"/></svg>);
+    case 'user': return(<svg {...p}><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>);
+    default: return null;
+  }
+}
+
+// IndexedDB
 const DB='tailatale';const DBV=2;
 function openDB(){return new Promise((res,rej)=>{const r=indexedDB.open(DB,DBV);r.onupgradeneeded=e=>{const db=e.target.result;if(!db.objectStoreNames.contains('voices'))db.createObjectStore('voices',{keyPath:'id'});if(!db.objectStoreNames.contains('audioCache'))db.createObjectStore('audioCache',{keyPath:'key'})};r.onsuccess=e=>res(e.target.result);r.onerror=e=>rej(e)})}
 async function dbPut(s,d){const db=await openDB();return new Promise((res,rej)=>{const tx=db.transaction(s,'readwrite');tx.objectStore(s).put(d);tx.oncomplete=()=>res();tx.onerror=e=>rej(e)})}
 async function dbGet(s,k){const db=await openDB();return new Promise((res,rej)=>{const tx=db.transaction(s,'readonly');const r=tx.objectStore(s).get(k);r.onsuccess=()=>res(r.result||null);r.onerror=e=>rej(e)})}
 async function dbDel(s,k){const db=await openDB();return new Promise(res=>{const tx=db.transaction(s,'readwrite');tx.objectStore(s).delete(k);tx.oncomplete=()=>res()})}
 
-// ══════════ Chatterbox TTS via HuggingFace Gradio ══════════
-const HF_SPACE = "ResembleAI/Chatterbox";
-let gradioClient = null;
-
-async function initGradio() {
-  if (gradioClient) return gradioClient;
-  if (!window.__gradio) {
-    await new Promise(res => {
-      if (window.__gradio) return res();
-      window.addEventListener('gradio-ready', res, { once: true });
-      setTimeout(res, 10000);
-    });
-  }
-  if (!window.__gradio) return null;
-  try {
-    gradioClient = await window.__gradio.Client.connect(HF_SPACE);
-    console.log('✅ Connected to Chatterbox');
-    return gradioClient;
-  } catch(e) { console.warn('Chatterbox connection failed:', e); return null; }
+// Chatterbox TTS
+const HF_SPACE="ResembleAI/Chatterbox";let gradioClient=null;
+async function initGradio(){
+  if(gradioClient)return gradioClient;
+  if(!window.__gradio){await new Promise(res=>{if(window.__gradio)return res();window.addEventListener('gradio-ready',res,{once:true});setTimeout(res,10000)})}
+  if(!window.__gradio)return null;
+  try{gradioClient=await window.__gradio.Client.connect(HF_SPACE);console.log('Connected to Chatterbox');return gradioClient}catch(e){console.warn('Chatterbox fail:',e);return null}
 }
-
-// The ACTUAL Chatterbox Space API (from app.py):
-// generate_tts_audio(text, audio_prompt_path, exaggeration, temperature, seed_num, cfg_weight)
-// Connected via run_btn.click → endpoint auto-named by index
-async function generateChunk(text, voiceBlob) {
-  const client = await initGradio();
-  if (!client || !window.__gradio) throw new Error('TTS unavailable');
-
-  // Ensure voice blob has correct MIME type for Chatterbox
-  const voiceFile = new File([voiceBlob], 'voice.wav', { type: voiceBlob.type || 'audio/wav' });
-  const audioFile = window.__gradio.handle_file(voiceFile);
-
-  console.log('🎤 Sending to Chatterbox:', text.substring(0,50)+'...', 'voice size:', voiceFile.size);
-
-  const result = await client.predict("/generate_tts_audio", [
-    text,       // text to synthesize (max 300 chars)
-    audioFile,  // reference audio for voice cloning
-    0.4,        // exaggeration (lower=calmer for bedtime)
-    0.8,        // temperature
-    0,          // seed (0=random)
-    0.4,        // cfg_weight (lower=slower, calmer)
-  ]);
-
-  console.log('🔊 Chatterbox result:', JSON.stringify(result?.data?.[0]).substring(0,200));
-
-  if (result?.data?.[0]) {
-    const audioData = result.data[0];
-    let audioUrl = null;
-    if (typeof audioData === 'object' && audioData.url) audioUrl = audioData.url;
-    else if (typeof audioData === 'string' && audioData.startsWith('http')) audioUrl = audioData;
-    else if (typeof audioData === 'object' && audioData.path) {
-      // Gradio path - construct full URL from client
-      const base = client.config?.root || `https://huggingface.co/spaces/${HF_SPACE}`;
-      audioUrl = audioData.path.startsWith('http') ? audioData.path : `${base}/file=${audioData.path}`;
-    }
-    
-    if (audioUrl) {
-      console.log('📥 Fetching audio from:', audioUrl);
-      const resp = await fetch(audioUrl);
-      if (!resp.ok) throw new Error(`Audio fetch failed: ${resp.status}`);
-      return await resp.blob();
-    }
-    if (audioData instanceof Blob) return audioData;
+async function generateChunk(text,voiceBlob){
+  const client=await initGradio();if(!client||!window.__gradio)throw new Error('TTS unavailable');
+  const voiceFile=new File([voiceBlob],'voice.wav',{type:voiceBlob.type||'audio/wav'});
+  const audioFile=window.__gradio.handle_file(voiceFile);
+  console.log('Sending to Chatterbox:',text.substring(0,50)+'...');
+  const result=await client.predict("/generate_tts_audio",[text,audioFile,0.4,0.8,0,0.4]);
+  console.log('Chatterbox result:',JSON.stringify(result?.data?.[0]).substring(0,200));
+  if(result?.data?.[0]){
+    const ad=result.data[0];let url=null;
+    if(typeof ad==='object'&&ad.url)url=ad.url;
+    else if(typeof ad==='string'&&ad.startsWith('http'))url=ad;
+    else if(typeof ad==='object'&&ad.path){const base=client.config?.root||'https://huggingface.co/spaces/'+HF_SPACE;url=ad.path.startsWith('http')?ad.path:base+'/file='+ad.path}
+    if(url){const r=await fetch(url);if(!r.ok)throw new Error('Fetch failed');return await r.blob()}
+    if(ad instanceof Blob)return ad;
   }
-  throw new Error('No audio returned from Chatterbox');
+  throw new Error('No audio');
 }
+function chunkText(text,maxLen=280){const sentences=text.match(/[^.!?]+[.!?]+[\s"]*/g)||[text];const chunks=[];let cur='';for(const s of sentences){if((cur+s).length>maxLen&&cur){chunks.push(cur.trim());cur=s}else cur+=s}if(cur.trim())chunks.push(cur.trim());return chunks}
 
-function chunkText(text, maxLen = 280) {
-  const sentences = text.match(/[^.!?]+[.!?]+[\s"]*/g) || [text];
-  const chunks = []; let cur = '';
-  for (const s of sentences) {
-    if ((cur + s).length > maxLen && cur) { chunks.push(cur.trim()); cur = s; }
-    else cur += s;
-  }
-  if (cur.trim()) chunks.push(cur.trim());
-  return chunks;
-}
-
-// ══════════ Stories ══════════
+// Stories
 const S=[
-{id:'s1',t:'The Three Little Pigs',a:'Traditional',c:'fairytale',age:'3-6',e:'🐷',m:4,tx:"Once upon a time, there were three little pigs who lived with their mother. One day, their mother said, \"You are all grown up now. It is time for you to go out into the world and build your own houses.\"\n\nThe first little pig was very lazy. He built his house out of straw. \"This will do just fine!\" he said. The second little pig built his house out of sticks. \"Good enough for me!\"\n\nThe third little pig was wise. He built his house out of bricks. It took a long time, but it was strong.\n\nOne day, a big bad wolf came to the straw house. \"Little pig, little pig, let me come in!\" \"Not by the hair on my chinny chin chin!\" So the wolf huffed, and he puffed, and he blew the house down!\n\nThe pig ran to the stick house. The wolf blew that house down too! Both pigs ran to the brick house.\n\nThe wolf huffed and puffed but could NOT blow the brick house down! He tried the chimney, but the wise pig had a pot of hot water ready.\n\nThe wolf ran away and never came back. The three pigs lived happily ever after. The End."},
-{id:'s2',t:'Goldilocks and the Three Bears',a:'Robert Southey',c:'fairytale',age:'3-6',e:'🐻',m:5,tx:"Once upon a time, there was a little girl named Goldilocks with beautiful golden hair. She found a cottage in the forest and went inside.\n\nOn the table were three bowls of porridge. The big bowl was too hot! The medium bowl was too cold! The tiny bowl was just right! She ate it all up.\n\nShe tried three chairs. Too hard! Too soft! Just right! But CRACK, it broke!\n\nUpstairs she found three beds. Too hard! Too soft! Just right! She fell fast asleep.\n\nThe three bears came home. \"Someone's been eating my porridge!\" said Papa Bear. \"Someone's been sitting in my chair!\" said Mama Bear. \"Someone's been sleeping in my bed, and she's still there!\" cried Baby Bear.\n\nGoldilocks woke up, saw the bears, and ran all the way home. She never went into anyone's house without asking again. The End."},
-{id:'s3',t:'The Ugly Duckling',a:'H.C. Andersen',c:'fairytale',age:'4-8',e:'🦢',m:5,tx:"Once upon a time, a mother duck's eggs hatched. Out came fluffy yellow ducklings, except the last one, who was big and grey.\n\n\"He's ugly!\" said the other animals. The poor duckling ran away.\n\nWinter was hard and lonely. But when spring came, the duckling spread his wings and flew to a beautiful lake.\n\nHe saw graceful white swans and bowed his head sadly. But when he looked at his reflection, he saw a beautiful white swan!\n\nThe other swans welcomed him. Children cried, \"The new swan is the most beautiful of all!\"\n\nHe had been a swan all along. The End."},
-{id:'s4',t:'Jack and the Beanstalk',a:'Traditional',c:'fairytale',age:'4-8',e:'🌱',m:6,tx:"Once upon a time, Jack traded his cow for magic beans. His mother was furious and threw them out the window!\n\nBy morning, an enormous beanstalk grew up through the clouds! Jack climbed and found a giant's castle.\n\n\"Fee-fi-fo-fum!\" roared the giant. Jack hid and grabbed a bag of gold!\n\nHe climbed again for a golden egg hen. One more time for a golden harp, but it cried \"Master!\"\n\nThe giant chased Jack down. Jack chopped the beanstalk and it fell. The giant never bothered anyone again.\n\nJack and his mother lived happily ever after. The End."},
-{id:'s5',t:'Little Red Riding Hood',a:'Brothers Grimm',c:'fairytale',age:'4-7',e:'🔴',m:4,tx:"Once upon a time, Little Red Riding Hood took cakes to her sick grandmother.\n\nIn the forest, a wolf asked where she was going. He ran ahead to grandmother's house! Grandmother hid in the closet. The wolf put on her cap and jumped into bed.\n\n\"What big eyes you have!\" \"All the better to see you with!\" \"What big ears you have!\" \"All the better to hear you with!\" \"What big teeth you have!\" \"All the better to catch you with!\"\n\nA brave woodcutter burst in and chased the wolf away! Grandmother was safe.\n\nFrom that day on, Little Red Riding Hood always stayed on the path. The End."},
-{id:'s6',t:'The Tortoise and the Hare',a:'Aesop',c:'fable',age:'3-7',e:'🐢',m:3,tx:"A hare boasted, \"No one can beat me!\" The tortoise said, \"I bet I can.\"\n\nThe race began. The hare zoomed ahead, then took a nap under a tree.\n\nThe tortoise kept walking. Step by step. Slowly but surely.\n\nWhen the hare woke up and ran to the finish, the tortoise was already there!\n\n\"Slow and steady wins the race.\" The End."},
-{id:'s7',t:'The Princess and the Pea',a:'H.C. Andersen',c:'fairytale',age:'4-8',e:'👑',m:4,tx:"A prince searched the world for a real princess.\n\nOne stormy night, a soaking wet girl arrived at the castle. The queen placed a tiny pea under twenty mattresses and twenty quilts.\n\n\"How did you sleep?\" asked the queen. \"Terribly! Something hard was in the bed!\"\n\nOnly a real princess could feel a pea through all that! The prince was overjoyed. They married and lived happily ever after. The End."},
-{id:'s8',t:'The Stars That Came to Play',a:'Tail a Tale Original',c:'bedtime',age:'2-5',e:'⭐',m:3,tx:"High in the sky, little star Twinkle didn't want to sleep. \"I want to play!\" She bounced from cloud to cloud, leaving sparkly trails.\n\nThen she looked down and saw a child at a window. \"Where's my favorite star?\"\n\nTwinkle felt warm inside. She flew to her spot and shone as bright as she could.\n\n\"There you are! Goodnight, little star!\" said the child.\n\nTwinkle realized shining for someone who loves you is the best kind of playing.\n\nGoodnight, little ones. Goodnight, stars. Goodnight, moon. The End."},
-{id:'s9',t:'Snow White',a:'Brothers Grimm',c:'fairytale',age:'4-8',e:'🍎',m:6,tx:"Once upon a time, a beautiful princess named Snow White lived in a grand castle. Her stepmother, the Queen, was very vain. Every day she asked her magic mirror, \"Mirror, mirror, on the wall, who is the fairest one of all?\"\n\nOne day the mirror said Snow White was more beautiful. The Queen was furious! She sent a huntsman to take Snow White into the forest. But the kind huntsman let her go.\n\nSnow White found a tiny cottage with seven tiny chairs and seven tiny beds. It belonged to seven dwarfs, Doc, Grumpy, Happy, Sleepy, Bashful, Sneezy, and Dopey. They said, \"You can stay with us!\"\n\nBut the wicked Queen disguised herself and brought a poisoned apple. Snow White took one bite and fell into a deep, deep sleep.\n\nThe heartbroken dwarfs placed her in a glass case. One day, a prince rode by, saw Snow White, and gently kissed her forehead.\n\nSnow White opened her eyes! True love's kiss had broken the spell. She and the prince married, and they all lived happily ever after. The End."},
-{id:'s10',t:'Cinderella',a:'Charles Perrault',c:'fairytale',age:'4-8',e:'👠',m:6,tx:"Once upon a time, a kind girl named Cinderella lived with her mean stepmother and stepsisters. They made her cook and clean while they wore fine dresses.\n\nThe King announced a grand ball! The stepsisters left Cinderella behind, crying.\n\nSuddenly, her Fairy Godmother appeared! A pumpkin became a golden carriage, mice became horses, and Cinderella's rags became the most beautiful gown with sparkling glass slippers.\n\n\"Remember, the magic ends at midnight!\" At the ball, the prince fell in love with Cinderella. They danced all evening.\n\nThen, BONG! BONG! The clock struck twelve! Cinderella ran, leaving behind one glass slipper.\n\nThe prince searched the kingdom. The stepsisters tried the slipper, but it was too small. Then Cinderella tried, and it fit perfectly!\n\nCinderella forgave her stepsisters. She and the prince married, and the whole kingdom celebrated. The End."},
-{id:'s11',t:'Sleeping Beauty',a:'Charles Perrault',c:'fairytale',age:'4-8',e:'🌹',m:5,tx:"Once upon a time, a king and queen had a baby girl. Fairies gave her gifts of beauty, grace, and kindness. But an uninvited fairy cursed her. \"Before her sixteenth birthday, she shall prick her finger on a spinning wheel and fall into an endless sleep!\"\n\nA good fairy softened the curse. \"She shall be awakened by true love's kiss.\"\n\nFor sixteen years, the princess was safe. But on her birthday, she found a hidden spinning wheel. She touched the spindle and fell into a deep sleep.\n\nThe good fairy put the whole castle to sleep. Thorny roses grew around the walls for a hundred years.\n\nOne day, a brave prince came. The thorns parted into flowers. He found the princess and gently kissed her.\n\nShe opened her eyes and smiled. The whole castle woke up! They were married, and everyone celebrated. The End."},
-{id:'s12',t:'Hansel and Gretel',a:'Brothers Grimm',c:'fairytale',age:'5-8',e:'🍬',m:6,tx:"Once upon a time, Hansel and Gretel lived near a great forest. One day they were left alone deep in the woods.\n\nClever Hansel had dropped white pebbles to find the way home. It worked! But the second time, he could only use bread crumbs, and the birds ate them all. The children were lost.\n\nAfter three days, they found an amazing house made of gingerbread, cake, and candy! An old woman invited them in.\n\nBut she was a wicked witch! She locked Hansel in a cage to fatten him up. Every day she said, \"Hold out your finger!\" But clever Hansel held out a thin chicken bone instead.\n\nThe witch grew impatient. She told Gretel to check the oven. Brave Gretel said, \"I don't know how. Show me?\" When the witch leaned in, Gretel pushed her inside and slammed the door!\n\nGretel freed Hansel. They found chests of treasure, filled their pockets, and walked home. Their father was overjoyed.\n\nThey never went hungry again, and lived happily ever after. The End."},
+{id:'s1',t:'The Three Little Pigs',a:'Traditional',c:'fairytale',age:'3-6',m:4,tx:"Once upon a time, there were three little pigs who lived with their mother. One day, their mother said, \"You are all grown up now. It is time for you to go out into the world and build your own houses.\"\n\nThe first little pig was very lazy. He built his house out of straw. \"This will do just fine!\" he said. The second little pig built his house out of sticks. \"Good enough for me!\"\n\nThe third little pig was wise. He built his house out of bricks. It took a long time, but it was strong.\n\nOne day, a big bad wolf came to the straw house. \"Little pig, little pig, let me come in!\" \"Not by the hair on my chinny chin chin!\" So the wolf huffed, and he puffed, and he blew the house down!\n\nThe pig ran to the stick house. The wolf blew that house down too! Both pigs ran to the brick house.\n\nThe wolf huffed and puffed but could NOT blow the brick house down! He tried the chimney, but the wise pig had a pot of hot water ready.\n\nThe wolf ran away and never came back. The three pigs lived happily ever after. The End."},
+{id:'s2',t:'Goldilocks and the Three Bears',a:'Robert Southey',c:'fairytale',age:'3-6',m:5,tx:"Once upon a time, there was a little girl named Goldilocks with beautiful golden hair. She found a cottage in the forest and went inside.\n\nOn the table were three bowls of porridge. The big bowl was too hot! The medium bowl was too cold! The tiny bowl was just right! She ate it all up.\n\nShe tried three chairs. Too hard! Too soft! Just right! But CRACK, it broke!\n\nUpstairs she found three beds. Too hard! Too soft! Just right! She fell fast asleep.\n\nThe three bears came home. \"Someone's been eating my porridge!\" said Papa Bear. \"Someone's been sitting in my chair!\" said Mama Bear. \"Someone's been sleeping in my bed, and she's still there!\" cried Baby Bear.\n\nGoldilocks woke up, saw the bears, and ran all the way home. She never went into anyone's house without asking again. The End."},
+{id:'s3',t:'The Ugly Duckling',a:'H.C. Andersen',c:'fairytale',age:'4-8',m:5,tx:"Once upon a time, a mother duck's eggs hatched. Out came fluffy yellow ducklings, except the last one, who was big and grey.\n\n\"He's ugly!\" said the other animals. The poor duckling ran away.\n\nWinter was hard and lonely. But when spring came, the duckling spread his wings and flew to a beautiful lake.\n\nHe saw graceful white swans and bowed his head sadly. But when he looked at his reflection, he saw a beautiful white swan!\n\nThe other swans welcomed him. Children cried, \"The new swan is the most beautiful of all!\"\n\nHe had been a swan all along. The End."},
+{id:'s4',t:'Jack and the Beanstalk',a:'Traditional',c:'fairytale',age:'4-8',m:6,tx:"Once upon a time, Jack traded his cow for magic beans. His mother was furious and threw them out the window!\n\nBy morning, an enormous beanstalk grew up through the clouds! Jack climbed and found a giant's castle.\n\n\"Fee-fi-fo-fum!\" roared the giant. Jack hid and grabbed a bag of gold!\n\nHe climbed again for a golden egg hen. One more time for a golden harp, but it cried \"Master!\"\n\nThe giant chased Jack down. Jack chopped the beanstalk and it fell. The giant never bothered anyone again.\n\nJack and his mother lived happily ever after. The End."},
+{id:'s5',t:'Little Red Riding Hood',a:'Brothers Grimm',c:'fairytale',age:'4-7',m:4,tx:"Once upon a time, Little Red Riding Hood took cakes to her sick grandmother.\n\nIn the forest, a wolf asked where she was going. He ran ahead to grandmother's house! Grandmother hid in the closet. The wolf put on her cap and jumped into bed.\n\n\"What big eyes you have!\" \"All the better to see you with!\" \"What big ears you have!\" \"All the better to hear you with!\" \"What big teeth you have!\" \"All the better to catch you with!\"\n\nA brave woodcutter burst in and chased the wolf away! Grandmother was safe.\n\nFrom that day on, Little Red Riding Hood always stayed on the path. The End."},
+{id:'s6',t:'The Tortoise and the Hare',a:'Aesop',c:'fable',age:'3-7',m:3,tx:"A hare boasted, \"No one can beat me!\" The tortoise said, \"I bet I can.\"\n\nThe race began. The hare zoomed ahead, then took a nap under a tree.\n\nThe tortoise kept walking. Step by step. Slowly but surely.\n\nWhen the hare woke up and ran to the finish, the tortoise was already there!\n\n\"Slow and steady wins the race.\" The End."},
+{id:'s7',t:'The Princess and the Pea',a:'H.C. Andersen',c:'fairytale',age:'4-8',m:4,tx:"A prince searched the world for a real princess.\n\nOne stormy night, a soaking wet girl arrived at the castle. The queen placed a tiny pea under twenty mattresses and twenty quilts.\n\n\"How did you sleep?\" asked the queen. \"Terribly! Something hard was in the bed!\"\n\nOnly a real princess could feel a pea through all that! The prince was overjoyed. They married and lived happily ever after. The End."},
+{id:'s8',t:'The Stars That Came to Play',a:'Tail a Tale Original',c:'bedtime',age:'2-5',m:3,tx:"High in the sky, little star Twinkle didn't want to sleep. \"I want to play!\" She bounced from cloud to cloud, leaving sparkly trails.\n\nThen she looked down and saw a child at a window. \"Where's my favorite star?\"\n\nTwinkle felt warm inside. She flew to her spot and shone as bright as she could.\n\n\"There you are! Goodnight, little star!\" said the child.\n\nTwinkle realized shining for someone who loves you is the best kind of playing.\n\nGoodnight, little ones. Goodnight, stars. Goodnight, moon. The End."},
+{id:'s9',t:'Snow White',a:'Brothers Grimm',c:'fairytale',age:'4-8',m:6,tx:"Once upon a time, a beautiful princess named Snow White lived in a grand castle. Her stepmother, the Queen, was very vain. Every day she asked her magic mirror, \"Mirror, mirror, on the wall, who is the fairest one of all?\"\n\nOne day the mirror said Snow White was more beautiful. The Queen was furious! She sent a huntsman to take Snow White into the forest. But the kind huntsman let her go.\n\nSnow White found a tiny cottage with seven tiny chairs and seven tiny beds. It belonged to seven dwarfs, Doc, Grumpy, Happy, Sleepy, Bashful, Sneezy, and Dopey. They said, \"You can stay with us!\"\n\nBut the wicked Queen disguised herself and brought a poisoned apple. Snow White took one bite and fell into a deep, deep sleep.\n\nThe heartbroken dwarfs placed her in a glass case. One day, a prince rode by, saw Snow White, and gently kissed her forehead.\n\nSnow White opened her eyes! True love's kiss had broken the spell. She and the prince married, and they all lived happily ever after. The End."},
+{id:'s10',t:'Cinderella',a:'Charles Perrault',c:'fairytale',age:'4-8',m:6,tx:"Once upon a time, a kind girl named Cinderella lived with her mean stepmother and stepsisters. They made her cook and clean while they wore fine dresses.\n\nThe King announced a grand ball! The stepsisters left Cinderella behind, crying.\n\nSuddenly, her Fairy Godmother appeared! A pumpkin became a golden carriage, mice became horses, and Cinderella's rags became the most beautiful gown with sparkling glass slippers.\n\n\"Remember, the magic ends at midnight!\" At the ball, the prince fell in love with Cinderella. They danced all evening.\n\nThen, BONG! BONG! The clock struck twelve! Cinderella ran, leaving behind one glass slipper.\n\nThe prince searched the kingdom. The stepsisters tried the slipper, but it was too small. Then Cinderella tried, and it fit perfectly!\n\nCinderella forgave her stepsisters. She and the prince married, and the whole kingdom celebrated. The End."},
+{id:'s11',t:'Sleeping Beauty',a:'Charles Perrault',c:'fairytale',age:'4-8',m:5,tx:"Once upon a time, a king and queen had a baby girl. Fairies gave her gifts of beauty, grace, and kindness. But an uninvited fairy cursed her. \"Before her sixteenth birthday, she shall prick her finger on a spinning wheel and fall into an endless sleep!\"\n\nA good fairy softened the curse. \"She shall be awakened by true love's kiss.\"\n\nFor sixteen years, the princess was safe. But on her birthday, she found a hidden spinning wheel. She touched the spindle and fell into a deep sleep.\n\nThe good fairy put the whole castle to sleep. Thorny roses grew around the walls for a hundred years.\n\nOne day, a brave prince came. The thorns parted into flowers. He found the princess and gently kissed her.\n\nShe opened her eyes and smiled. The whole castle woke up! They were married, and everyone celebrated. The End."},
+{id:'s12',t:'Hansel and Gretel',a:'Brothers Grimm',c:'fairytale',age:'5-8',m:6,tx:"Once upon a time, Hansel and Gretel lived near a great forest. One day they were left alone deep in the woods.\n\nClever Hansel had dropped white pebbles to find the way home. It worked! But the second time, he could only use bread crumbs, and the birds ate them all. The children were lost.\n\nAfter three days, they found an amazing house made of gingerbread, cake, and candy! An old woman invited them in.\n\nBut she was a wicked witch! She locked Hansel in a cage to fatten him up. Every day she said, \"Hold out your finger!\" But clever Hansel held out a thin chicken bone instead.\n\nThe witch grew impatient. She told Gretel to check the oven. Brave Gretel said, \"I don't know how. Show me?\" When the witch leaned in, Gretel pushed her inside and slammed the door!\n\nGretel freed Hansel. They found chests of treasure, filled their pockets, and walked home. Their father was overjoyed.\n\nThey never went hungry again, and lived happily ever after. The End."},
 ];
 
-// ══════════ UI Components ══════════
+// UI Components
 function BG(){
   const stars=useMemo(()=>[...Array(30)].map(()=>({l:`${Math.random()*100}%`,t:`${Math.random()*55}%`,s:Math.random()*2+.5,d:Math.random()*3+2,dl:Math.random()*4})),[]);
-  const flies=useMemo(()=>[...Array(3)].map(()=>({l:`${20+Math.random()*60}%`,t:`${60+Math.random()*30}%`,d:Math.random()*5+4,dl:Math.random()*4})),[]);
-  const critters=useMemo(()=>[
-    {e:'🐰',l:'8%',t:'18%',d:5,dl:0,sz:20},{e:'🦊',l:'88%',t:'42%',d:6,dl:1.5,sz:18},
-    {e:'🐻',l:'5%',t:'55%',d:7,dl:3,sz:16},{e:'🦉',l:'92%',t:'15%',d:4,dl:0.5,sz:19},
-    {e:'🐾',l:'45%',t:'8%',d:8,dl:2,sz:14},{e:'🦝',l:'78%',t:'65%',d:6.5,dl:4,sz:15},
-  ],[]);
-  return(<div className="bg">{stars.map((s,i)=><div key={i} className="star" style={{left:s.l,top:s.t,width:s.s,height:s.s,animationDuration:`${s.d}s`,animationDelay:`${s.dl}s`}}/>)}<div className="moon"/>{flies.map((f,i)=><div key={`f${i}`} className="ff" style={{left:f.l,top:f.t,animationDuration:`${f.d}s`,animationDelay:`${f.dl}s`}}/>)}{critters.map((c,i)=><div key={`c${i}`} className="critter" style={{left:c.l,top:c.t,fontSize:c.sz,animationDuration:`${c.d}s`,animationDelay:`${c.dl}s`}}>{c.e}</div>)}<div className="hills"><div className="hl"/><div className="hl"/><div className="hl"/></div></div>);
+  const flies=useMemo(()=>[...Array(6)].map(()=>({l:`${Math.random()*100}%`,t:`${10+Math.random()*50}%`,d:Math.random()*4+3,dl:Math.random()*5})),[]);
+  return(<div className="bg">{stars.map((s,i)=><div key={i} className="star" style={{left:s.l,top:s.t,width:s.s,height:s.s,animationDuration:`${s.d}s`,animationDelay:`${s.dl}s`}}/>)}<div className="moon"/>{flies.map((f,i)=><div key={`f${i}`} className="ff" style={{left:f.l,top:f.t,animationDuration:`${f.d}s`,animationDelay:`${f.dl}s`}}/>)}<div className="hills"><div className="hl"/><div className="hl"/><div className="hl"/></div></div>);
 }
 function Toast({msg}){return msg?<div className="toast">{msg}</div>:null}
 
-// ══════════ SVG Wordmark Logo ══════════
+// SVG Logos
 function LogoFull({className=''}){
   return(<svg className={className} viewBox="0 0 320 200" fill="none" xmlns="http://www.w3.org/2000/svg">
     <defs>
-      <radialGradient id="moonGlow" cx="50%" cy="50%" r="50%"><stop offset="0%" stopColor="#FFF8DC" stopOpacity=".25"/><stop offset="100%" stopColor="#FFF8DC" stopOpacity="0"/></radialGradient>
-      <linearGradient id="aurora1" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stopColor="#8B6FC0" stopOpacity="0"/><stop offset="30%" stopColor="#8B6FC0" stopOpacity=".15"/><stop offset="70%" stopColor="#55E6C1" stopOpacity=".1"/><stop offset="100%" stopColor="#55E6C1" stopOpacity="0"/></linearGradient>
-      <linearGradient id="aurora2" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stopColor="#55E6C1" stopOpacity="0"/><stop offset="40%" stopColor="#C5B3E6" stopOpacity=".12"/><stop offset="100%" stopColor="#FFD4A2" stopOpacity="0"/></linearGradient>
-      <linearGradient id="bookCover" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="#2A1F5E"/><stop offset="100%" stopColor="#1A1345"/></linearGradient>
-      <linearGradient id="tailGrad" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stopColor="#E87B35"/><stop offset="100%" stopColor="#F5A623"/></linearGradient>
-      <filter id="starGlow"><feGaussianBlur stdDeviation="1.5" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+      <radialGradient id="mG" cx="50%" cy="50%" r="50%"><stop offset="0%" stopColor="#FFF8DC" stopOpacity=".25"/><stop offset="100%" stopColor="#FFF8DC" stopOpacity="0"/></radialGradient>
+      <linearGradient id="a1" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stopColor="#8B6FC0" stopOpacity="0"/><stop offset="30%" stopColor="#8B6FC0" stopOpacity=".15"/><stop offset="70%" stopColor="#55E6C1" stopOpacity=".1"/><stop offset="100%" stopColor="#55E6C1" stopOpacity="0"/></linearGradient>
+      <linearGradient id="a2" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stopColor="#55E6C1" stopOpacity="0"/><stop offset="40%" stopColor="#C5B3E6" stopOpacity=".12"/><stop offset="100%" stopColor="#FFD4A2" stopOpacity="0"/></linearGradient>
+      <linearGradient id="bC" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="#2A1F5E"/><stop offset="100%" stopColor="#1A1345"/></linearGradient>
+      <linearGradient id="tG" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stopColor="#E87B35"/><stop offset="100%" stopColor="#F5A623"/></linearGradient>
+      <filter id="sG"><feGaussianBlur stdDeviation="1.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
     </defs>
-    {/* Aurora wisps */}
-    <path d="M20 35 Q80 15 160 30 Q240 45 300 20" stroke="url(#aurora1)" strokeWidth="12" fill="none" opacity=".6"/>
-    <path d="M0 50 Q100 25 200 45 Q280 58 320 35" stroke="url(#aurora2)" strokeWidth="8" fill="none" opacity=".5"/>
-    {/* Moon glow */}
-    <circle cx="160" cy="36" r="50" fill="url(#moonGlow)"/>
-    {/* Crescent moon */}
-    <circle cx="160" cy="30" r="22" fill="#FFF8DC"/>
-    <circle cx="160" cy="30" r="21" fill="#FFFEF5"/>
-    <circle cx="170" cy="24" r="17" fill="#070A1F"/>
-    {/* Moon crater details */}
-    <circle cx="152" cy="28" r="2.5" fill="#F0E6B0" opacity=".4"/>
-    <circle cx="158" cy="36" r="1.8" fill="#F0E6B0" opacity=".3"/>
-    <circle cx="148" cy="34" r="1.2" fill="#F0E6B0" opacity=".25"/>
-    {/* Stars with glow - varied sizes */}
-    <g filter="url(#starGlow)">
+    <path d="M20 35 Q80 15 160 30 Q240 45 300 20" stroke="url(#a1)" strokeWidth="12" fill="none" opacity=".6"/>
+    <path d="M0 50 Q100 25 200 45 Q280 58 320 35" stroke="url(#a2)" strokeWidth="8" fill="none" opacity=".5"/>
+    <circle cx="160" cy="36" r="50" fill="url(#mG)"/>
+    <circle cx="160" cy="30" r="22" fill="#FFF8DC"/><circle cx="160" cy="30" r="21" fill="#FFFEF5"/><circle cx="170" cy="24" r="17" fill="#070A1F"/>
+    <circle cx="152" cy="28" r="2.5" fill="#F0E6B0" opacity=".4"/><circle cx="158" cy="36" r="1.8" fill="#F0E6B0" opacity=".3"/>
+    <g filter="url(#sG)">
       <circle cx="52" cy="18" r="2" fill="#FFEAA7"/><circle cx="268" cy="12" r="2.5" fill="#FFEAA7"/>
       <circle cx="88" cy="8" r="1.5" fill="#FFF"/><circle cx="232" cy="5" r="1.8" fill="#FFF"/>
       <circle cx="40" cy="42" r="1.2" fill="#FFEAA7"/><circle cx="280" cy="38" r="1.5" fill="#FFEAA7"/>
       <circle cx="120" cy="12" r="1" fill="#FFF" opacity=".8"/><circle cx="200" cy="8" r="1.3" fill="#FFF" opacity=".7"/>
-      <circle cx="295" cy="22" r="1" fill="#FFEAA7" opacity=".6"/><circle cx="25" cy="28" r="1.3" fill="#FFEAA7" opacity=".5"/>
     </g>
-    {/* Twinkling star - 4-point */}
     <path d="M70 28 L71.5 24 L73 28 L77 29.5 L73 31 L71.5 35 L70 31 L66 29.5Z" fill="#FFF" opacity=".7"/>
     <path d="M245 30 L246 27 L247 30 L250 31 L247 32 L246 35 L245 32 L242 31Z" fill="#FFF" opacity=".5"/>
-    {/* Open book */}
-    <path d="M95 85 Q160 95 160 78 Q160 95 225 85 L225 102 Q160 112 160 96 Q160 112 95 102Z" fill="url(#bookCover)" stroke="#3D2E7E" strokeWidth=".8"/>
-    {/* Book pages */}
-    <path d="M98 86 Q160 94 160 80" stroke="#C5B3E6" strokeWidth=".3" fill="none" opacity=".4"/>
-    <path d="M222 86 Q160 94 160 80" stroke="#C5B3E6" strokeWidth=".3" fill="none" opacity=".4"/>
-    {/* Page lines */}
+    <path d="M95 85 Q160 95 160 78 Q160 95 225 85 L225 102 Q160 112 160 96 Q160 112 95 102Z" fill="url(#bC)" stroke="#3D2E7E" strokeWidth=".8"/>
     <line x1="108" y1="88" x2="150" y2="84" stroke="#C5B3E6" strokeWidth=".3" opacity=".2"/>
-    <line x1="112" y1="91" x2="148" y2="87" stroke="#C5B3E6" strokeWidth=".3" opacity=".15"/>
     <line x1="170" y1="84" x2="212" y2="88" stroke="#C5B3E6" strokeWidth=".3" opacity=".2"/>
-    <line x1="172" y1="87" x2="208" y2="91" stroke="#C5B3E6" strokeWidth=".3" opacity=".15"/>
-    {/* Book spine glow */}
     <line x1="160" y1="78" x2="160" y2="96" stroke="#C5B3E6" strokeWidth=".5" opacity=".3"/>
-    {/* Fox body curled on the book */}
-    <ellipse cx="155" cy="78" rx="22" ry="11" fill="#E87B35"/>
-    <ellipse cx="155" cy="78" rx="18" ry="8.5" fill="#F09548"/>
-    {/* Belly patch */}
+    <ellipse cx="155" cy="78" rx="22" ry="11" fill="#E87B35"/><ellipse cx="155" cy="78" rx="18" ry="8.5" fill="#F09548"/>
     <ellipse cx="155" cy="80" rx="12" ry="5" fill="#FFD4A2" opacity=".3"/>
-    {/* Fox tail - large flowing swoosh */}
-    <path d="M177 74 Q195 58 215 60 Q235 62 245 78 Q248 84 240 86 Q232 88 226 80 Q220 72 206 70 Q192 68 182 76" fill="url(#tailGrad)"/>
+    <path d="M177 74 Q195 58 215 60 Q235 62 245 78 Q248 84 240 86 Q232 88 226 80 Q220 72 206 70 Q192 68 182 76" fill="url(#tG)"/>
     <path d="M238 78 Q245 82 240 86 Q232 88 226 80" fill="#FFF8DC" opacity=".45"/>
-    {/* Fox head */}
-    <circle cx="136" cy="72" r="11.5" fill="#E87B35"/>
-    <circle cx="136" cy="72" r="9.5" fill="#F09548"/>
-    {/* Fox ears */}
-    <polygon points="126,64 128,50 134,62" fill="#E87B35"/>
-    <polygon points="128,62 129,54 132,61" fill="#FFB8B8" opacity=".5"/>
-    <polygon points="141,60 147,48 148,62" fill="#E87B35"/>
-    <polygon points="142.5,60 146,52 147,61" fill="#FFB8B8" opacity=".5"/>
-    {/* Fox eyes - closed sleeping */}
+    <circle cx="136" cy="72" r="11.5" fill="#E87B35"/><circle cx="136" cy="72" r="9.5" fill="#F09548"/>
+    <polygon points="126,64 128,50 134,62" fill="#E87B35"/><polygon points="128,62 129,54 132,61" fill="#FFB8B8" opacity=".5"/>
+    <polygon points="141,60 147,48 148,62" fill="#E87B35"/><polygon points="142.5,60 146,52 147,61" fill="#FFB8B8" opacity=".5"/>
     <path d="M130 72 Q133 69.5 136 72" stroke="#6B3410" strokeWidth="1.2" strokeLinecap="round" fill="none"/>
     <path d="M137.5 71.5 Q140.5 69 143.5 71.5" stroke="#6B3410" strokeWidth="1.2" strokeLinecap="round" fill="none"/>
-    {/* Fox eyelashes */}
-    <line x1="130" y1="71.5" x2="129" y2="70" stroke="#6B3410" strokeWidth=".5" strokeLinecap="round"/>
-    <line x1="143.5" y1="71" x2="144.5" y2="69.5" stroke="#6B3410" strokeWidth=".5" strokeLinecap="round"/>
-    {/* Fox nose */}
     <ellipse cx="136" cy="75.5" rx="2.2" ry="1.4" fill="#2D1B0E"/>
-    {/* Fox whiskers */}
-    <line x1="126" y1="74" x2="120" y2="72" stroke="#6B3410" strokeWidth=".3" opacity=".3"/>
-    <line x1="126" y1="75.5" x2="119" y2="75.5" stroke="#6B3410" strokeWidth=".3" opacity=".3"/>
-    <line x1="146" y1="74" x2="152" y2="72" stroke="#6B3410" strokeWidth=".3" opacity=".3"/>
-    <line x1="146" y1="75.5" x2="153" y2="75.5" stroke="#6B3410" strokeWidth=".3" opacity=".3"/>
-    {/* Fox cheeks */}
     <ellipse cx="131.5" cy="76" rx="3.5" ry="2.5" fill="#FFF8DC" opacity=".35"/>
     <ellipse cx="140.5" cy="76" rx="3.5" ry="2.5" fill="#FFF8DC" opacity=".35"/>
-    {/* Fox smile */}
     <path d="M134 76 Q136 78 138 76" stroke="#6B3410" strokeWidth=".7" strokeLinecap="round" fill="none"/>
-    {/* Zzz floating up */}
     <text x="152" y="58" fill="#C5B3E6" fontSize="8" fontFamily="Baloo 2,cursive" fontWeight="700" opacity=".65">z</text>
     <text x="160" y="48" fill="#C5B3E6" fontSize="10" fontFamily="Baloo 2,cursive" fontWeight="700" opacity=".45">z</text>
     <text x="170" y="38" fill="#C5B3E6" fontSize="12" fontFamily="Baloo 2,cursive" fontWeight="700" opacity=".25">z</text>
-    {/* Sparkle particles from book */}
-    <circle cx="100" cy="90" r="1" fill="#C5B3E6" opacity=".4"/>
-    <circle cx="220" cy="88" r=".8" fill="#FFEAA7" opacity=".3"/>
-    <circle cx="115" cy="95" r=".6" fill="#55E6C1" opacity=".3"/>
-    <circle cx="205" cy="96" r=".7" fill="#FFD4A2" opacity=".35"/>
-    {/* ═══ TEXT ═══ */}
     <text x="160" y="140" textAnchor="middle" fontFamily="Baloo 2,cursive" fontWeight="800" fontSize="40" letterSpacing="2">
       <tspan fill="#FFF8DC">T</tspan><tspan fill="#F5A623">a</tspan><tspan fill="#FFF8DC">il </tspan>
       <tspan fill="#C5B3E6" fontSize="28" dy="2">a</tspan><tspan dy="-2"> </tspan>
       <tspan fill="#FFF8DC">T</tspan><tspan fill="#F5A623">a</tspan><tspan fill="#FFF8DC">le</tspan>
     </text>
-    {/* Decorative tail swoosh underline */}
-    <path d="M70 146 Q110 155 160 150 Q210 145 250 150 Q260 152 255 148" stroke="url(#tailGrad)" strokeWidth="2.5" strokeLinecap="round" fill="none" opacity=".5"/>
-    <circle cx="255" cy="148" r="1.5" fill="#F5A623" opacity=".5"/>
-    {/* Tagline */}
-    <text x="160" y="170" textAnchor="middle" fontFamily="Nunito,sans-serif" fontWeight="600" fontSize="12" fill="#A8A0C0" letterSpacing="3">
-      BEDTIME STORIES IN YOUR VOICE
-    </text>
-    {/* Subtle bottom stars */}
-    <circle cx="60" cy="175" r="1" fill="#FFEAA7" opacity=".2"/>
-    <circle cx="260" cy="178" r=".8" fill="#FFEAA7" opacity=".15"/>
+    <path d="M70 146 Q110 155 160 150 Q210 145 250 150" stroke="url(#tG)" strokeWidth="2.5" strokeLinecap="round" fill="none" opacity=".5"/>
+    <text x="160" y="170" textAnchor="middle" fontFamily="Nunito,sans-serif" fontWeight="600" fontSize="12" fill="#A8A0C0" letterSpacing="3">BEDTIME STORIES IN YOUR VOICE</text>
   </svg>);
 }
-
 function LogoHeader(){
   return(<svg className="logo-hdr" viewBox="0 0 200 44" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <defs>
-      <linearGradient id="htailG" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stopColor="#E87B35"/><stop offset="100%" stopColor="#F5A623"/></linearGradient>
-    </defs>
-    {/* Crescent moon */}
-    <circle cx="18" cy="16" r="9" fill="#FFF8DC"/>
-    <circle cx="22" cy="13" r="7" fill="#0B0E2D"/>
-    {/* Tiny stars */}
-    <circle cx="6" cy="8" r="1" fill="#FFEAA7" opacity=".7"/>
-    <circle cx="32" cy="6" r=".8" fill="#FFEAA7" opacity=".5"/>
-    <circle cx="10" cy="24" r=".7" fill="#FFF" opacity=".4"/>
-    {/* Fox head - small */}
-    <circle cx="20" cy="30" r="8" fill="#E87B35"/>
-    <circle cx="20" cy="30" r="6.5" fill="#F09548"/>
-    {/* Ears */}
-    <polygon points="13,25 14.5,17 18,24" fill="#E87B35"/>
-    <polygon points="14.5,24 15.5,19 17,23.5" fill="#FFB8B8" opacity=".5"/>
-    <polygon points="24,23 28,16 28.5,24" fill="#E87B35"/>
-    <polygon points="25,23 27,18 27.5,23.5" fill="#FFB8B8" opacity=".5"/>
-    {/* Eyes closed */}
+    <defs><linearGradient id="htG" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stopColor="#E87B35"/><stop offset="100%" stopColor="#F5A623"/></linearGradient></defs>
+    <circle cx="18" cy="16" r="9" fill="#FFF8DC"/><circle cx="22" cy="13" r="7" fill="#0B0E2D"/>
+    <circle cx="6" cy="8" r="1" fill="#FFEAA7" opacity=".7"/><circle cx="32" cy="6" r=".8" fill="#FFEAA7" opacity=".5"/>
+    <circle cx="20" cy="30" r="8" fill="#E87B35"/><circle cx="20" cy="30" r="6.5" fill="#F09548"/>
+    <polygon points="13,25 14.5,17 18,24" fill="#E87B35"/><polygon points="14.5,24 15.5,19 17,23.5" fill="#FFB8B8" opacity=".5"/>
+    <polygon points="24,23 28,16 28.5,24" fill="#E87B35"/><polygon points="25,23 27,18 27.5,23.5" fill="#FFB8B8" opacity=".5"/>
     <path d="M16 30 Q18 28 20 30" stroke="#6B3410" strokeWidth="1" strokeLinecap="round" fill="none"/>
     <path d="M21.5 29.5 Q23.5 27.5 25.5 29.5" stroke="#6B3410" strokeWidth="1" strokeLinecap="round" fill="none"/>
-    {/* Nose */}
     <ellipse cx="20" cy="32.5" rx="1.5" ry="1" fill="#2D1B0E"/>
-    {/* Cheeks */}
-    <ellipse cx="17" cy="33" rx="2.2" ry="1.6" fill="#FFF8DC" opacity=".3"/>
-    <ellipse cx="23" cy="33" rx="2.2" ry="1.6" fill="#FFF8DC" opacity=".3"/>
-    {/* Tail swoosh to text */}
-    <path d="M28 30 Q36 22 44 26" stroke="url(#htailG)" strokeWidth="2" strokeLinecap="round" fill="none" opacity=".5"/>
-    {/* Text */}
+    <ellipse cx="17" cy="33" rx="2.2" ry="1.6" fill="#FFF8DC" opacity=".3"/><ellipse cx="23" cy="33" rx="2.2" ry="1.6" fill="#FFF8DC" opacity=".3"/>
+    <path d="M28 30 Q36 22 44 26" stroke="url(#htG)" strokeWidth="2" strokeLinecap="round" fill="none" opacity=".5"/>
     <text x="48" y="32" fontFamily="Baloo 2,cursive" fontWeight="800" fontSize="24" letterSpacing=".5">
       <tspan fill="#FFF8DC">T</tspan><tspan fill="#F5A623">a</tspan><tspan fill="#FFF8DC">il </tspan>
       <tspan fill="#C5B3E6" fontSize="18" dy="1">a</tspan><tspan dy="-1"> </tspan>
@@ -380,361 +275,275 @@ function LogoHeader(){
   </svg>);
 }
 
-
-function Welcome({onDone}){
-  const[name,setName]=useState('');
-  const go=e=>{e.preventDefault();if(name.trim()){localStorage.setItem('tat_name',name.trim());localStorage.setItem('tat_v','4');onDone(name.trim())}};
-  return(<div className="wel fi"><LogoFull className="logo-welcome"/><div className="wbx"><form onSubmit={go}><div className="ig"><label className="il">Who's reading tonight?</label><input className="inp" placeholder="Mom, Dad, Grandma..." value={name} onChange={e=>setName(e.target.value)} autoFocus/></div><button className="btn bp bw" type="submit" disabled={!name.trim()}>✨ Enter Dreamland</button></form></div></div>);
+// Tutorial Stepper
+function TutStepper({step}){
+  const labels=['Account','Voice','Story','Play'];
+  return(<div className="tut-steps">{labels.map((l,i)=><React.Fragment key={i}>
+    {i>0&&<div className={`tut-line ${i<=step?'done':''}`}/>}
+    <div className={`tut-dot ${i===step?'active':i<step?'done':''}`}>{i<step?<Icon name="check" size={14} color="var(--teal)"/>:i+1}</div>
+  </React.Fragment>)}</div>);
 }
 
+// Tutorial Step 1: Welcome
+function TutWelcome({onDone}){
+  const[name,setName]=useState('');
+  const go=e=>{e.preventDefault();if(name.trim())onDone(name.trim())};
+  return(<div className="wel fi"><LogoFull className="logo-welcome"/>
+    <div className="wbx"><form onSubmit={go}><div className="ig"><label className="il">Who's reading tonight?</label>
+    <input className="inp" placeholder="Mom, Dad, Grandma..." value={name} onChange={e=>setName(e.target.value)} autoFocus/></div>
+    <button className="btn bp bw" type="submit" disabled={!name.trim()}><Icon name="sparkle" size={18} color="#fff"/> Get Started</button></form></div></div>);
+}
+
+// Tutorial Step 2: Voice
+function TutVoice({voices,onSave,onSelect,selected,onNext}){
+  return(<div className="fi"><TutStepper step={1}/>
+    <div className="tut-title">Set Up Your Voice</div>
+    <div className="tut-sub">Record 6-10 seconds reading softly. AI will learn to speak like you!</div>
+    <Recorder onSave={onSave}/>
+    {voices.length>0&&<><div className="sh" style={{fontSize:16,marginTop:12}}><Icon name="brain" size={18} color="var(--teal)"/> Cloned Voices</div>
+      {voices.map(v=><div key={v.id} className={`vc ${selected?.id===v.id?'sel':''}`} onClick={()=>onSelect(v)}>
+        <div className="va va-u"><Icon name="mic" size={20} color="var(--teal)"/></div>
+        <div><div className="vn">{v.name}</div><div className="vd">AI voice clone</div></div>
+        {selected?.id===v.id&&<span style={{marginLeft:'auto'}}><Icon name="check" size={18} color="var(--teal)"/></span>}
+      </div>)}</>}
+    <div className="sh" style={{fontSize:16,marginTop:12}}><Icon name="phone" size={18} color="var(--warm)"/> Device Voices</div>
+    {[{id:'b1',name:'Sleepy Narrator'},{id:'b2',name:'Dreamy Storyteller'}].map(v=><div key={v.id} className={`vc ${selected?.id===v.id?'sel':''}`} onClick={()=>onSelect(v)}>
+      <div className="va va-f"><Icon name="moon" size={20} color="var(--warm)"/></div>
+      <div><div className="vn">{v.name}</div><div className="vd">Device voice</div></div>
+      {selected?.id===v.id&&<span style={{marginLeft:'auto'}}><Icon name="check" size={18} color="var(--teal)"/></span>}
+    </div>)}
+    <button className="btn bp bw" style={{marginTop:16}} onClick={onNext} disabled={!selected}>Continue <Icon name="right" size={18} color="#fff"/></button>
+  </div>);
+}
+
+// Tutorial Step 3: Story
+function TutStory({onSelect,selected,onNext}){
+  const[filter,setFilter]=useState('all');
+  const filtered=filter==='all'?S:S.filter(s=>s.c===filter);
+  return(<div className="fi"><TutStepper step={2}/>
+    <div className="tut-title">Pick a Story</div>
+    <div className="tut-sub">Choose tonight's bedtime adventure</div>
+    <div className="flt">{[{k:'all',l:'All'},{k:'fairytale',l:'Fairytales'},{k:'fable',l:'Fables'},{k:'bedtime',l:'Bedtime'}].map(f=>
+      <button key={f.k} className={`fc ${filter===f.k?'a':''}`} onClick={()=>setFilter(f.k)}>{f.l}</button>)}</div>
+    {filtered.map(s=><div key={s.id} className={`sr ${selected?.id===s.id?'sel':''}`} onClick={()=>onSelect(s)}>
+      <div className="se"><Icon name={s.c==='fairytale'?'castle':s.c==='fable'?'fox':'moon'} size={28} color={s.c==='fairytale'?'var(--teal)':s.c==='fable'?'var(--warm)':'var(--lav)'}/></div>
+      <div className="si"><div className="sn">{s.t}</div><div className="sd">{s.a} · {s.age} · ~{s.m} min</div>
+      <span className={`badge b-${s.c==='fairytale'?'ft':s.c==='fable'?'fb':'bt'}`}>{s.c}</span></div>
+      {selected?.id===s.id&&<Icon name="check" size={20} color="var(--lav)"/>}
+    </div>)}
+    <button className="btn bp bw" style={{marginTop:8}} onClick={onNext} disabled={!selected}><Icon name="play" size={16} color="#fff"/> Start Reading</button>
+  </div>);
+}
+
+// Recorder
 function Recorder({onSave}){
-  const[rec,setRec]=useState(false);const[blob,setBlob]=useState(null);const[url,setUrl]=useState(null);const[vname,setVname]=useState('');const[timer,setTimer]=useState(0);
-  const mr=useRef(null);const ch=useRef([]);const tr=useRef(null);
-  const start=async()=>{try{const s=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true}});
-    const mimeType=MediaRecorder.isTypeSupported('audio/webm;codecs=opus')?'audio/webm;codecs=opus':'audio/webm';
-    mr.current=new MediaRecorder(s,{mimeType});ch.current=[];
-    mr.current.ondataavailable=e=>{if(e.data.size>0)ch.current.push(e.data)};
-    mr.current.onstop=()=>{const b=new Blob(ch.current,{type:mimeType});setBlob(b);setUrl(URL.createObjectURL(b));s.getTracks().forEach(t=>t.stop())};
-    mr.current.start(250);setRec(true);setTimer(0);tr.current=setInterval(()=>setTimer(t=>t+1),1000)}catch{alert('Microphone access needed')}};
+  const[rec,setRec]=useState(false);const[blob,setBlob]=useState(null);const[url,setUrl]=useState(null);
+  const[vname,setVname]=useState('');const[timer,setTimer]=useState(0);
+  const mr=useRef(null);const chunks=useRef([]);const tr=useRef(null);
+  const start=async()=>{try{const s=await navigator.mediaDevices.getUserMedia({audio:true});mr.current=new MediaRecorder(s);chunks.current=[];mr.current.ondataavailable=e=>chunks.current.push(e.data);
+    mr.current.onstop=()=>{const b=new Blob(chunks.current,{type:'audio/webm'});setBlob(b);setUrl(URL.createObjectURL(b))};
+    mr.current.start();setRec(true);setTimer(0);tr.current=setInterval(()=>setTimer(t=>t+1),1000)}catch(e){alert('Microphone access needed')}};
   const stop=()=>{if(mr.current&&rec){mr.current.stop();setRec(false);clearInterval(tr.current)}};
   const save=()=>{if(blob&&vname.trim()){onSave(vname.trim(),blob);setBlob(null);setUrl(null);setVname('');setTimer(0)}};
   const reset=()=>{setBlob(null);setUrl(null);setTimer(0)};
   const fmt=s=>`${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`;
-  return(<div className="card fi"><div className="ct">🎙️ Record Your Voice</div><div className="cs">Read softly for 6-10 seconds. AI will clone your voice!</div><div style={{textAlign:'center',padding:'20px 0'}}>
-    {!blob?<><button className={`rb ${rec?'rec':''}`} onClick={rec?stop:start}>{rec?'⏹':'🎤'}</button>
+  return(<div className="card fi"><div className="ct"><Icon name="mic" size={18} color="var(--coral)"/> Record Your Voice</div><div className="cs">Read softly for 6-10 seconds</div><div style={{textAlign:'center',padding:'20px 0'}}>
+    {!blob?<><button className={`rb ${rec?'rec':''}`} onClick={rec?stop:start}>{rec?<Icon name="stop" size={28} color="#fff"/>:<Icon name="record" size={28} color="#fff"/>}</button>
       <p style={{marginTop:12,fontSize:13,color:'var(--txs)',fontWeight:600}}>{rec?`Recording ${fmt(timer)}`:'Tap to record'}</p>
       {rec&&<div className="wf">{[...Array(10)].map((_,i)=><div key={i} className="wb" style={{animationDelay:`${i*.08}s`}}/>)}</div>}
       {rec&&<p style={{fontSize:12,color:'var(--txd)',maxWidth:260,margin:'0 auto',lineHeight:1.5}}>Read softly: "The stars twinkled brightly as the little bear drifted off to sleep in the magical forest."</p>}
-    </>:<><p style={{fontSize:40,marginBottom:8}}>✨</p>
+    </>:<><p style={{marginBottom:12}}><Icon name="sparkle" size={32} color="var(--wg)"/></p>
       <p style={{fontWeight:700,marginBottom:12,color:'var(--moon)',fontSize:15}}>Recorded! ({fmt(timer)})</p>
       <audio src={url} controls style={{width:'100%',maxWidth:280,marginBottom:14,filter:'invert(.85) hue-rotate(180deg)',borderRadius:8}}/>
       <div className="ig" style={{textAlign:'left',maxWidth:280,margin:'0 auto'}}><label className="il">Name this voice</label><input className="inp" placeholder="Mom's bedtime voice" value={vname} onChange={e=>setVname(e.target.value)}/></div>
-      <div style={{display:'flex',gap:8,justifyContent:'center',marginTop:12}}><button className="btn bg2 bsm" onClick={reset}>🔄 Redo</button><button className="btn bgr bsm" onClick={save} disabled={!vname.trim()}>💾 Save</button></div></>}
+      <div style={{display:'flex',gap:8,justifyContent:'center',marginTop:12}}><button className="btn bg2 bsm" onClick={reset}><Icon name="replay" size={14}/> Redo</button><button className="btn bgr bsm" onClick={save} disabled={!vname.trim()}><Icon name="check" size={14} color="#0B0E2D"/> Save</button></div></>}
   </div></div>);
 }
 
-// ══════════ Player with Voice Cloning ══════════
+// Player with Voice Cloning
 function Player({story,voice,onBack,show}){
-  const[status,setStatus]=useState('idle');
-  const[genMsg,setGenMsg]=useState('');
-  const[progress,setProgress]=useState(0);
-  const[highlight,setHighlight]=useState(-1);
-  const[paused,setPaused]=useState(false);
-  const[elapsed,setElapsed]=useState(0);
-  const audioRef=useRef(null);
-  const chunksAudio=useRef([]);
-  const chunkDurations=useRef([]);
-  const stopped=useRef(false);
-  const pausedRef=useRef(false);
-  const currentIdx=useRef(0);
-  const allChunks=useRef([]);
-  const rafRef=useRef(null);
-  const readingRef=useRef(null);
-  const content=story?.tx||'';
-  const paragraphs=content.split('\n\n');
-  const totalEstSec=(story?.m||4)*60;
-
+  const[status,setStatus]=useState('idle');const[genMsg,setGenMsg]=useState('');
+  const[progress,setProgress]=useState(0);const[highlight,setHighlight]=useState(-1);
+  const[paused,setPaused]=useState(false);const[elapsed,setElapsed]=useState(0);
+  const audioRef=useRef(null);const chunksAudio=useRef([]);const chunkDurations=useRef([]);
+  const stopped=useRef(false);const pausedRef=useRef(false);const currentIdx=useRef(0);
+  const allChunks=useRef([]);const rafRef=useRef(null);const readingRef=useRef(null);
+  const content=story?.tx||'';const paragraphs=content.split('\n\n');
   const charToPara=(pos)=>{let p=0;for(let i=0;i<paragraphs.length;i++){p+=paragraphs[i].length+2;if(pos<p)return i}return paragraphs.length-1};
-
-  // Smooth progress update via requestAnimationFrame
   const updateProgress=useCallback(()=>{
-    if(stopped.current||!audioRef.current)return;
-    const audio=audioRef.current;
-    const total=allChunks.current.length;
-    if(!total)return;
-    const idx=currentIdx.current;
-    // Calculate elapsed durations of completed chunks
-    let completedTime=0;
-    for(let i=0;i<idx;i++) completedTime+=(chunkDurations.current[i]||3);
-    // Add current chunk progress
-    const curDur=audio.duration||3;
-    const curTime=audio.currentTime||0;
-    completedTime+=curTime;
-    // Total known duration
-    let totalDur=0;
-    for(let i=0;i<total;i++) totalDur+=(chunkDurations.current[i]||(i<idx?3:curDur));
-    const pct=Math.min(99.5,(completedTime/totalDur)*100);
-    setProgress(pct);
-    setElapsed(Math.round(completedTime));
-    // Update highlighted paragraph
+    if(stopped.current||!audioRef.current)return;const audio=audioRef.current;const total=allChunks.current.length;if(!total)return;
+    const idx=currentIdx.current;let ct=0;for(let i=0;i<idx;i++)ct+=(chunkDurations.current[i]||3);
+    const cd=audio.duration||3;const cc=audio.currentTime||0;ct+=cc;
+    let td=0;for(let i=0;i<total;i++)td+=(chunkDurations.current[i]||(i<idx?3:cd));
+    setProgress(Math.min(99.5,(ct/td)*100));setElapsed(Math.round(ct));
     let cp=0;for(let i=0;i<idx;i++)cp+=(allChunks.current[i]?.length||0);
-    const charFrac=curDur>0?(curTime/curDur):0;
-    cp+=Math.round((allChunks.current[idx]?.length||0)*charFrac);
-    const paraIdx=charToPara(cp);
-    setHighlight(paraIdx);
+    cp+=Math.round((allChunks.current[idx]?.length||0)*(cd>0?cc/cd:0));setHighlight(charToPara(cp));
     rafRef.current=requestAnimationFrame(updateProgress);
   },[]);
-
   const stopRAF=()=>{if(rafRef.current){cancelAnimationFrame(rafRef.current);rafRef.current=null}};
-
   const playChunk=(idx)=>{
     if(stopped.current||idx>=allChunks.current.length){setStatus('done');setProgress(100);setHighlight(-1);stopRAF();return}
-    currentIdx.current=idx;
-    const url=chunksAudio.current[idx];
-    if(!url){playChunk(idx+1);return}
-    if(audioRef.current){
-      audioRef.current.src=url;
+    currentIdx.current=idx;const url=chunksAudio.current[idx];if(!url){playChunk(idx+1);return}
+    if(audioRef.current){audioRef.current.src=url;
       audioRef.current.onloadedmetadata=()=>{chunkDurations.current[idx]=audioRef.current.duration};
-      audioRef.current.onended=()=>playChunk(idx+1);
-      audioRef.current.onerror=()=>playChunk(idx+1);
-      audioRef.current.play().then(()=>{stopRAF();rafRef.current=requestAnimationFrame(updateProgress)}).catch(()=>playChunk(idx+1));
-    }
+      audioRef.current.onended=()=>playChunk(idx+1);audioRef.current.onerror=()=>playChunk(idx+1);
+      audioRef.current.play().then(()=>{stopRAF();rafRef.current=requestAnimationFrame(updateProgress)}).catch(()=>playChunk(idx+1))}
   };
-
   const generateAndPlay=useCallback(async()=>{
     stopped.current=false;pausedRef.current=false;setPaused(false);
     setStatus('generating');setProgress(0);setHighlight(-1);setElapsed(0);
     chunksAudio.current=[];chunkDurations.current=[];currentIdx.current=0;
-
-    let voiceBlob=null;
-    if(voice?.id?.startsWith('v-')){
-      const d=await dbGet('voices',voice.id);
-      voiceBlob=d?.blob;
-      console.log('🎤 Voice blob loaded:', voiceBlob?.size, voiceBlob?.type);
-    }
-    if(!voiceBlob){setStatus('playing');fallbackTTS();return}
-
-    const chunks=chunkText(content,280);
-    allChunks.current=chunks;
-    const total=chunks.length;
-    let started=false;
-
-    for(let i=0;i<total;i++){
-      if(stopped.current)return;
-      setGenMsg(`Cloning voice: part ${i+1}/${total}`);
-      try{
-        const blob=await generateChunk(chunks[i],voiceBlob);
-        chunksAudio.current[i]=URL.createObjectURL(blob);
-        // Pre-load to get duration
-        const tmpAudio=new Audio(chunksAudio.current[i]);
-        await new Promise(r=>{tmpAudio.onloadedmetadata=()=>{chunkDurations.current[i]=tmpAudio.duration;r()};tmpAudio.onerror=r;setTimeout(r,3000)});
+    let vb=null;if(voice?.id?.startsWith('v-')){const d=await dbGet('voices',voice.id);vb=d?.blob;console.log('Voice blob:',vb?.size,vb?.type)}
+    if(!vb){setStatus('playing');fallbackTTS();return}
+    const chunks=chunkText(content,280);allChunks.current=chunks;let started=false;
+    for(let i=0;i<chunks.length;i++){if(stopped.current)return;
+      setGenMsg('Cloning voice: part '+(i+1)+'/'+chunks.length);
+      try{const blob=await generateChunk(chunks[i],vb);chunksAudio.current[i]=URL.createObjectURL(blob);
+        const tmp=new Audio(chunksAudio.current[i]);
+        await new Promise(r=>{tmp.onloadedmetadata=()=>{chunkDurations.current[i]=tmp.duration;r()};tmp.onerror=r;setTimeout(r,3000)});
         if(!started&&!stopped.current){started=true;setStatus('playing');setGenMsg('');playChunk(0)}
-      }catch(e){
-        console.error('Gen error chunk',i,':',e);
-        if(i===0){show('⚠️ AI busy — using device voice');setStatus('playing');fallbackTTS();return}
-        chunksAudio.current[i]=null;
-      }
-    }
-    if(!started&&!stopped.current){show('⚠️ AI unavailable — using device voice');setStatus('playing');fallbackTTS()}
+      }catch(e){console.error('Gen error',i,':',e);if(i===0){show('AI busy - using device voice');setStatus('playing');fallbackTTS();return}chunksAudio.current[i]=null}}
+    if(!started&&!stopped.current){show('AI unavailable - device voice');setStatus('playing');fallbackTTS()}
   },[content,voice,show]);
-
-  const fallbackTTS=()=>{
-    const synth=window.speechSynthesis;synth.cancel();
-    const chunks=chunkText(content,250);allChunks.current=chunks;
-    let startTime=Date.now();
-    const next=(idx)=>{
-      if(idx>=chunks.length||stopped.current){setStatus('done');setProgress(100);setHighlight(-1);return}
-      let cp=0;for(let j=0;j<idx;j++)cp+=chunks[j].length;
-      setHighlight(charToPara(cp));setProgress((idx/chunks.length)*100);
-      setElapsed(Math.round((Date.now()-startTime)/1000));
+  const fallbackTTS=()=>{const synth=window.speechSynthesis;synth.cancel();
+    const chunks=chunkText(content,250);allChunks.current=chunks;let st=Date.now();
+    const next=(idx)=>{if(idx>=chunks.length||stopped.current){setStatus('done');setProgress(100);setHighlight(-1);return}
+      let cp=0;for(let j=0;j<idx;j++)cp+=chunks[j].length;setHighlight(charToPara(cp));setProgress((idx/chunks.length)*100);
+      setElapsed(Math.round((Date.now()-st)/1000));
       const u=new SpeechSynthesisUtterance(chunks[idx]);u.rate=0.88;u.pitch=1.0;
-      const voices=synth.getVoices();
-      const pick=voices.find(v=>/Google.*en/i.test(v.name))||voices.find(v=>v.lang.startsWith('en'))||voices[0];
-      if(pick)u.voice=pick;
-      u.onend=()=>next(idx+1);u.onerror=e=>{if(e.error!=='canceled')next(idx+1)};
-      synth.speak(u);
-    };
-    next(0);
-  };
-
-  const togglePause=()=>{
-    if(status!=='playing')return;
-    if(pausedRef.current){
-      pausedRef.current=false;setPaused(false);
-      if(audioRef.current&&audioRef.current.paused){audioRef.current.play();rafRef.current=requestAnimationFrame(updateProgress)}
-      else window.speechSynthesis?.resume();
-    }else{
-      pausedRef.current=true;setPaused(true);stopRAF();
-      if(audioRef.current&&!audioRef.current.paused)audioRef.current.pause();
-      else window.speechSynthesis?.pause();
-    }
-  };
-
-  const stopAll=()=>{
-    stopped.current=true;stopRAF();
-    if(audioRef.current){audioRef.current.pause();audioRef.current.src=''}
-    window.speechSynthesis?.cancel();
-    setStatus('idle');setProgress(0);setHighlight(-1);setPaused(false);setElapsed(0);
-  };
-
-  // Seek via progress bar click/touch
-  const handleSeek=(e)=>{
-    if(status!=='playing'||!allChunks.current.length)return;
-    const rect=e.currentTarget.getBoundingClientRect();
-    const clientX=e.touches?e.touches[0].clientX:e.clientX;
-    const pct=Math.max(0,Math.min(1,(clientX-rect.left)/rect.width));
-    // Find which chunk this corresponds to
-    let totalDur=0;
-    for(let i=0;i<allChunks.current.length;i++) totalDur+=(chunkDurations.current[i]||3);
-    const targetTime=pct*totalDur;
-    let accum=0;let targetIdx=0;let seekTime=0;
-    for(let i=0;i<allChunks.current.length;i++){
-      const d=chunkDurations.current[i]||3;
-      if(accum+d>targetTime){targetIdx=i;seekTime=targetTime-accum;break}
-      accum+=d;targetIdx=i;seekTime=0;
-    }
-    stopRAF();
-    if(audioRef.current){audioRef.current.pause();audioRef.current.src=''}
-    window.speechSynthesis?.cancel();
-    if(chunksAudio.current[targetIdx]){
-      currentIdx.current=targetIdx;
-      audioRef.current.src=chunksAudio.current[targetIdx];
-      audioRef.current.onloadedmetadata=()=>{
-        audioRef.current.currentTime=Math.min(seekTime,audioRef.current.duration-0.1);
-        audioRef.current.play().then(()=>{rafRef.current=requestAnimationFrame(updateProgress)});
-      };
-      audioRef.current.onended=()=>playChunk(targetIdx+1);
-      audioRef.current.onerror=()=>playChunk(targetIdx+1);
-      audioRef.current.load();
-    }else{
-      playChunk(targetIdx);
-    }
-  };
-
-  // Auto-scroll reading area to highlighted paragraph
-  useEffect(()=>{
-    if(highlight>=0&&readingRef.current){
-      const ps=readingRef.current.querySelectorAll('p');
-      if(ps[highlight]){ps[highlight].scrollIntoView({behavior:'smooth',block:'center'})}
-    }
-  },[highlight]);
-
+      const vs=synth.getVoices();const pk=vs.find(v=>/Google.*en/i.test(v.name))||vs.find(v=>v.lang.startsWith('en'))||vs[0];
+      if(pk)u.voice=pk;u.onend=()=>next(idx+1);u.onerror=e=>{if(e.error!=='canceled')next(idx+1)};synth.speak(u)};next(0)};
+  const togglePause=()=>{if(status!=='playing')return;
+    if(pausedRef.current){pausedRef.current=false;setPaused(false);if(audioRef.current?.paused){audioRef.current.play();rafRef.current=requestAnimationFrame(updateProgress)}else window.speechSynthesis?.resume()}
+    else{pausedRef.current=true;setPaused(true);stopRAF();if(audioRef.current&&!audioRef.current.paused)audioRef.current.pause();else window.speechSynthesis?.pause()}};
+  const stopAll=()=>{stopped.current=true;stopRAF();if(audioRef.current){audioRef.current.pause();audioRef.current.src=''}window.speechSynthesis?.cancel();setStatus('idle');setProgress(0);setHighlight(-1);setPaused(false);setElapsed(0)};
+  const handleSeek=(e)=>{if(status!=='playing'||!allChunks.current.length)return;
+    const rect=e.currentTarget.getBoundingClientRect();const cx=e.touches?e.touches[0].clientX:e.clientX;
+    const pct=Math.max(0,Math.min(1,(cx-rect.left)/rect.width));
+    let td=0;for(let i=0;i<allChunks.current.length;i++)td+=(chunkDurations.current[i]||3);
+    const tt=pct*td;let ac=0;let ti=0;let st=0;
+    for(let i=0;i<allChunks.current.length;i++){const d=chunkDurations.current[i]||3;if(ac+d>tt){ti=i;st=tt-ac;break}ac+=d;ti=i;st=0}
+    stopRAF();if(audioRef.current){audioRef.current.pause();audioRef.current.src=''}window.speechSynthesis?.cancel();
+    if(chunksAudio.current[ti]){currentIdx.current=ti;audioRef.current.src=chunksAudio.current[ti];
+      audioRef.current.onloadedmetadata=()=>{audioRef.current.currentTime=Math.min(st,audioRef.current.duration-0.1);audioRef.current.play().then(()=>{rafRef.current=requestAnimationFrame(updateProgress)})};
+      audioRef.current.onended=()=>playChunk(ti+1);audioRef.current.onerror=()=>playChunk(ti+1);audioRef.current.load()}else playChunk(ti)};
+  useEffect(()=>{if(highlight>=0&&readingRef.current){const ps=readingRef.current.querySelectorAll('p');if(ps[highlight])ps[highlight].scrollIntoView({behavior:'smooth',block:'center'})}},[highlight]);
   useEffect(()=>()=>{stopped.current=true;stopRAF();window.speechSynthesis?.cancel()},[]);
-
-  const isClone=voice?.id?.startsWith('v-');
-  const fmtSec=(s)=>`${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`;
-
+  const isClone=voice?.id?.startsWith('v-');const fmtSec=(s)=>Math.floor(s/60)+':'+String(s%60).padStart(2,'0');
   return(<div className="fi">
     <audio ref={audioRef} style={{display:'none'}}/>
-    <button className="btn bg2 bsm" onClick={()=>{stopAll();onBack()}} style={{marginBottom:10}}>← Back</button>
+    <button className="btn bg2 bsm" onClick={()=>{stopAll();onBack()}} style={{marginBottom:10}}><Icon name="back" size={16}/> Back</button>
     <div className="pc"><div className="pb">
-      <div className="pem">{story?.e||'📖'}</div>
-      <div className="pti">{story?.t||'Story'}</div>
-      <div className="pau">{story?.a||''}</div>
-      <div className="pbar" onClick={handleSeek} onTouchEnd={e=>{e.preventDefault();handleSeek(e)}}><div className="pbtr"><div className="pbfl" style={{width:`${progress}%`}}><div className="pbth"/></div></div></div>
+      <div className="pti">{story?.t||'Story'}</div><div className="pau">{story?.a||''}</div>
+      <div className="pbar" onClick={handleSeek} onTouchEnd={e=>{e.preventDefault();handleSeek(e)}}><div className="pbtr"><div className="pbfl" style={{width:progress+'%'}}><div className="pbth"/></div></div></div>
       <div className="ptm"><span>{fmtSec(elapsed)}</span><span>~{story?.m||4}:00</span></div>
       <div className="pcc">
-        {status==='idle'&&<button className="cb pp" onClick={generateAndPlay}>▶</button>}
-        {status==='generating'&&<span className="spinner" style={{width:20,height:20,border:'2px solid rgba(197,179,230,.3)',borderTopColor:'var(--lav)',borderRadius:'50%',animation:'spin 1s linear infinite',display:'inline-block'}}/>}
-        {status==='playing'&&<>
-          <button className="cb" onClick={togglePause}>{paused?'▶':'⏸'}</button>
-          <button className="cb pp" onClick={stopAll}>⏹</button>
-        </>}
-        {status==='done'&&<button className="cb pp" onClick={generateAndPlay}>🔄</button>}
+        {status==='idle'&&<button className="cb pp" onClick={generateAndPlay}><Icon name="play" size={26} color="#fff"/></button>}
+        {status==='generating'&&<span className="spinner" style={{width:24,height:24,border:'2px solid rgba(197,179,230,.3)',borderTopColor:'var(--lav)',borderRadius:'50%',animation:'spin 1s linear infinite',display:'inline-block'}}/>}
+        {status==='playing'&&<><button className="cb" onClick={togglePause}><Icon name={paused?'play':'pause'} size={20} color="rgba(255,255,255,.6)"/></button><button className="cb pp" onClick={stopAll}><Icon name="stop" size={22} color="#fff"/></button></>}
+        {status==='done'&&<button className="cb pp" onClick={generateAndPlay}><Icon name="replay" size={22} color="#fff"/></button>}
       </div>
-      <div className="pvb">Voice: <b>{voice?.name||'Device Default'}</b> {isClone?' 🧠 AI Clone':' 📱 Device'}</div>
+      <div className="pvb">Voice: <b>{voice?.name||'Device Default'}</b>{isClone&&<> · <Icon name="brain" size={12} color="var(--wg)"/> AI Clone</>}</div>
     </div></div>
     {status==='generating'&&<div className="genst"><span className="spinner"/>{genMsg}<br/><span style={{fontSize:11,color:'var(--txd)'}}>First time may take 30-60s (GPU waking up)...</span></div>}
-    {status==='done'&&<div className="genst"><span className="done">✅ Story complete! Sweet dreams.</span></div>}
+    {status==='done'&&<div className="genst"><span className="done"><Icon name="check" size={14} color="var(--teal)"/> Story complete! Sweet dreams.</span></div>}
     <div className="ra" ref={readingRef}>{paragraphs.map((p,i)=><p key={i} className={i===highlight?'hl2':''}>{p}</p>)}</div>
   </div>);
 }
 
-// ══════════ Main App ══════════
+// Main App
 function App(){
   const[name,setName]=useState(()=>{
-    // Show login screen for new app version
-    if(localStorage.getItem('tat_v')!=='4'){localStorage.removeItem('sv_name');localStorage.removeItem('tat_name');localStorage.removeItem('tat_v');return ''}
-    return localStorage.getItem('tat_name')||'';
-  });
+    if(localStorage.getItem('tat_v')!=='5'){localStorage.removeItem('sv_name');localStorage.removeItem('tat_name');localStorage.removeItem('tat_v');return ''}
+    return localStorage.getItem('tat_name')||''});
+  const[tutDone,setTutDone]=useState(()=>localStorage.getItem('tat_tut')==='1');
+  const[tutStep,setTutStep]=useState(0);
   const[tab,setTab]=useState('stories');
-  const[voices,setVoices]=useState([]);
-  const[sv,setSv]=useState(null);
-  const[ss,setSs]=useState(null);
-  const[filter,setFilter]=useState('all');
-  const[toast,setToast]=useState('');
-  const[gOk,setGOk]=useState(false);
+  const[voices,setVoices]=useState([]);const[sv,setSv]=useState(null);const[ss,setSs]=useState(null);
+  const[filter,setFilter]=useState('all');const[toast,setToast]=useState('');const[gOk,setGOk]=useState(false);
 
-  useEffect(()=>{
-    try{setVoices(JSON.parse(localStorage.getItem('sv_voices')||'[]'))}catch{}
-    speechSynthesis?.getVoices();
-    if(speechSynthesis)speechSynthesis.onvoiceschanged=()=>speechSynthesis.getVoices();
-    initGradio().then(c=>{if(c)setGOk(true)});
-  },[]);
+  useEffect(()=>{try{const vl=JSON.parse(localStorage.getItem('sv_voices')||'[]');setVoices(vl);
+    const lv=localStorage.getItem('tat_lastVoice');if(lv){const f=vl.find(v=>v.id===lv);if(f)setSv(f)}}catch{}
+    speechSynthesis?.getVoices();if(speechSynthesis)speechSynthesis.onvoiceschanged=()=>speechSynthesis.getVoices();
+    initGradio().then(c=>{if(c)setGOk(true)});},[]);
 
   const show=m=>{setToast(m);setTimeout(()=>setToast(''),2800)};
-  const saveVoice=async(vn,blob)=>{
-    const id=`v-${Date.now()}`;await dbPut('voices',{id,blob,ts:Date.now()});
+  const saveVoice=async(vn,blob)=>{const id='v-'+Date.now();await dbPut('voices',{id,blob,ts:Date.now()});
     const v={id,name:vn,ts:Date.now()};const nv=[v,...voices];setVoices(nv);
-    localStorage.setItem('sv_voices',JSON.stringify(nv));setSv(v);show('✨ Voice saved!');
-  };
+    localStorage.setItem('sv_voices',JSON.stringify(nv));setSv(v);localStorage.setItem('tat_lastVoice',id);show('Voice saved!')};
+  const selectVoice=(v)=>{setSv(v);localStorage.setItem('tat_lastVoice',v.id)};
   const delVoice=async id=>{await dbDel('voices',id);const nv=voices.filter(v=>v.id!==id);setVoices(nv);localStorage.setItem('sv_voices',JSON.stringify(nv));if(sv?.id===id)setSv(null);show('Voice removed')};
-  const playStory=()=>{if(!ss){show('📖 Pick a story first');return}setTab('player')};
+  const playStory=()=>{if(!ss){show('Pick a story first');return}setTab('player')};
   const filtered=filter==='all'?S:S.filter(s=>s.c===filter);
+  const finishName=(n)=>{setName(n);localStorage.setItem('tat_name',n);localStorage.setItem('tat_v','5')};
+  const finishTut=()=>{setTutDone(true);localStorage.setItem('tat_tut','1');setTab('player')};
 
-  if(!name)return<><BG/><div className="app"><Welcome onDone={setName}/></div></>;
+  if(!name)return<><BG/><div className="app"><TutWelcome onDone={finishName}/></div></>;
+
+  if(!tutDone)return(<><BG/><div className="app">
+    <div className="hdr"><div className="logo"><LogoHeader/></div><span style={{fontSize:12,color:'var(--txd)',fontWeight:600}}>Hi, {name}</span></div>
+    <div className="main">
+      {tutStep===0&&<TutVoice voices={voices} onSave={saveVoice} onSelect={selectVoice} selected={sv} onNext={()=>setTutStep(1)}/>}
+      {tutStep===1&&<TutStory onSelect={setSs} selected={ss} onNext={()=>{setTutStep(2);finishTut()}}/>}
+    </div><Toast msg={toast}/></div></>);
 
   return(<><BG/><div className="app">
-    <div className="hdr">
-      <div className="logo"><LogoHeader/></div>
-      <button className="hbtn" onClick={()=>{localStorage.removeItem('tat_name');localStorage.removeItem('tat_v');setName('');setSv(null);setSs(null);speechSynthesis?.cancel()}}>Hi, {name} 👋</button>
-    </div>
+    <div className="hdr"><div className="logo"><LogoHeader/></div>
+      <button className="hbtn" onClick={()=>{localStorage.removeItem('tat_name');localStorage.removeItem('tat_v');localStorage.removeItem('tat_tut');setName('');setTutDone(false);setTutStep(0);setSv(null);setSs(null);speechSynthesis?.cancel()}}><Icon name="user" size={14}/> {name}</button></div>
     <div className="main">
       {tab==='stories'&&<div className="fi">
-        <div className="sh">Bedtime Stories</div>
+        <div className="sh"><Icon name="book" size={22} color="var(--moon)"/> Bedtime Stories</div>
         <div className="ss">Choose tonight's adventure</div>
-        <div className="flt">{[{k:'all',l:'✨ All'},{k:'fairytale',l:'🏰 Fairytales'},{k:'fable',l:'🦊 Fables'},{k:'bedtime',l:'🌙 Bedtime'}].map(f=><button key={f.k} className={`fc ${filter===f.k?'a':''}`} onClick={()=>setFilter(f.k)}>{f.l}</button>)}</div>
-        {filtered.map(s=><div key={s.id} className={`sr ${ss?.id===s.id?'sel':''}`} onClick={()=>{setSs(s);show(`${s.e} ${s.t} selected`)}}>
-          <div className="se">{s.e}</div><div className="si"><div className="sn">{s.t}</div><div className="sd">{s.a} · {s.age} · ~{s.m} min</div>
+        <div className="flt">{[{k:'all',l:'All'},{k:'fairytale',l:'Fairytales'},{k:'fable',l:'Fables'},{k:'bedtime',l:'Bedtime'}].map(f=><button key={f.k} className={`fc ${filter===f.k?'a':''}`} onClick={()=>setFilter(f.k)}>{f.l}</button>)}</div>
+        {filtered.map(s=><div key={s.id} className={`sr ${ss?.id===s.id?'sel':''}`} onClick={()=>{setSs(s);show(s.t+' selected')}}>
+          <div className="se"><Icon name={s.c==='fairytale'?'castle':s.c==='fable'?'fox':'moon'} size={28} color={s.c==='fairytale'?'var(--teal)':s.c==='fable'?'var(--warm)':'var(--lav)'}/></div>
+          <div className="si"><div className="sn">{s.t}</div><div className="sd">{s.a} · {s.age} · ~{s.m} min</div>
           <span className={`badge b-${s.c==='fairytale'?'ft':s.c==='fable'?'fb':'bt'}`}>{s.c}</span></div>
-          {ss?.id===s.id&&<span style={{fontSize:20,color:'var(--lav)'}}>✓</span>}
-        </div>)}
-      </div>}
+          {ss?.id===s.id&&<Icon name="check" size={20} color="var(--lav)"/>}
+        </div>)}</div>}
 
       {tab==='voices'&&<div className="fi">
-        <div className="sh">Your Voices</div>
+        <div className="sh"><Icon name="mic" size={22} color="var(--moon)"/> Your Voices</div>
         <div className="ss">Record 6-10 seconds. Chatterbox AI will clone your voice!</div>
         <Recorder onSave={saveVoice}/>
-        {voices.length>0&&<><div className="sh" style={{fontSize:16,marginTop:12}}>Saved Voices (AI Clone)</div>
-          {voices.map(v=><div key={v.id} className={`vc ${sv?.id===v.id?'sel':''}`} onClick={()=>{setSv(v);show('Voice selected')}}>
-            <div className="va va-u">🎙️</div><div><div className="vn">{v.name}</div><div className="vd">🧠 AI voice clone</div></div>
-            {sv?.id===v.id&&<span style={{marginLeft:'auto',color:'var(--teal)',fontWeight:800}}>✓</span>}
-            <button className="vx" onClick={e=>{e.stopPropagation();delVoice(v.id)}}>✕</button>
-          </div>)}</>}
-        <div className="sh" style={{fontSize:16,marginTop:16}}>Built-in (Device TTS)</div>
-        {[{id:'b1',name:'Sleepy Narrator',emoji:'🌙'},{id:'b2',name:'Dreamy Storyteller',emoji:'✨'}].map(v=><div key={v.id} className={`vc ${sv?.id===v.id?'sel':''}`} onClick={()=>{setSv(v);show('Voice selected')}}>
-          <div className="va va-f">{v.emoji}</div><div><div className="vn">{v.name}</div><div className="vd">📱 Device voice</div></div>
-          {sv?.id===v.id&&<span style={{marginLeft:'auto',color:'var(--teal)',fontWeight:800}}>✓</span>}
-        </div>)}
-        <div className="info"><b>How voice cloning works:</b> Your recording is sent to Chatterbox AI (open-source, by Resemble AI) running on HuggingFace's free GPU. It clones your voice and reads the story. Built-in voices use your phone's speech engine.</div>
-      </div>}
+        {voices.length>0&&<><div className="sh" style={{fontSize:16,marginTop:12}}><Icon name="brain" size={18} color="var(--teal)"/> Cloned Voices</div>
+          {voices.map(v=><div key={v.id} className={`vc ${sv?.id===v.id?'sel':''}`} onClick={()=>selectVoice(v)}>
+            <div className="va va-u"><Icon name="mic" size={20} color="var(--teal)"/></div><div><div className="vn">{v.name}</div><div className="vd">AI voice clone</div></div>
+            {sv?.id===v.id&&<span style={{marginLeft:'auto'}}><Icon name="check" size={18} color="var(--teal)"/></span>}
+            <button className="vx" onClick={e=>{e.stopPropagation();delVoice(v.id)}}><Icon name="trash" size={14}/></button></div>)}</>}
+        <div className="sh" style={{fontSize:16,marginTop:16}}><Icon name="phone" size={18} color="var(--warm)"/> Device Voices</div>
+        {[{id:'b1',name:'Sleepy Narrator'},{id:'b2',name:'Dreamy Storyteller'}].map(v=><div key={v.id} className={`vc ${sv?.id===v.id?'sel':''}`} onClick={()=>selectVoice(v)}>
+          <div className="va va-f"><Icon name="moon" size={20} color="var(--warm)"/></div><div><div className="vn">{v.name}</div><div className="vd">Device voice</div></div>
+          {sv?.id===v.id&&<span style={{marginLeft:'auto'}}><Icon name="check" size={18} color="var(--teal)"/></span>}</div>)}
+        <div className="info"><b>How voice cloning works:</b> Your recording is sent to Chatterbox AI (open-source) running on HuggingFace free GPU. It clones your voice and reads the story.</div></div>}
 
       {tab==='play'&&<div className="fi">
-        <div className="sh">Goodnight</div>
+        <div className="sh"><Icon name="sparkle" size={22} color="var(--moon)"/> Goodnight</div>
         <div className="steps"><div className={`step ${sv?'d':'a'}`}/><div className={`step ${ss?'d':sv?'a':''}`}/><div className={`step ${sv&&ss?'a':''}`}/></div>
-        <div className="card" style={{borderLeft:`3px solid ${sv?'var(--teal)':'var(--wg)'}`}}>
+        <div className="card" style={{borderLeft:'3px solid '+(sv?'var(--teal)':'var(--wg)')}}>
           <div style={{display:'flex',alignItems:'center',justifyContent:'space-between'}}>
-            <div><div className="ct">{sv?'✨':'1️⃣'} Voice</div><div className="cs">{sv?`${sv.name} ${sv.id?.startsWith('v-')?'🧠 AI Clone':'📱 Device'}`:'None selected'}</div></div>
-            <button className="btn bg2 bsm" onClick={()=>setTab('voices')}>{sv?'Change':'Pick'}</button>
-          </div>
-        </div>
-        <div className="card" style={{borderLeft:`3px solid ${ss?'var(--teal)':'var(--wg)'}`}}>
+            <div><div className="ct"><Icon name={sv?'check':'mic'} size={16} color={sv?'var(--teal)':'var(--txd)'}/> Voice</div><div className="cs">{sv?sv.name+(sv.id?.startsWith('v-')?' · AI Clone':' · Device'):'None selected'}</div></div>
+            <button className="btn bg2 bsm" onClick={()=>setTab('voices')}>{sv?'Change':'Pick'}</button></div></div>
+        <div className="card" style={{borderLeft:'3px solid '+(ss?'var(--teal)':'var(--wg)')}}>
           <div style={{display:'flex',alignItems:'center',justifyContent:'space-between'}}>
-            <div><div className="ct">{ss?'✨':'2️⃣'} Story</div><div className="cs">{ss?`${ss.e} ${ss.t}`:'None selected'}</div></div>
-            <button className="btn bg2 bsm" onClick={()=>setTab('stories')}>{ss?'Change':'Pick'}</button>
-          </div>
-        </div>
-        <button className="btn bp bw" onClick={playStory} disabled={!ss} style={{marginTop:8,fontSize:18,padding:'16px 24px'}}>
-          {!ss?'Pick a story first':'▶ Begin Story'}
-        </button>
-        <div className="info" style={{marginTop:12}}>
-          <b>{gOk?'🟢 Chatterbox AI connected':'🟡 Connecting to AI...'}</b><br/>
-          {sv?.id?.startsWith('v-')?'Story will be read in YOUR cloned voice.':'Select a recorded voice for AI cloning, or use built-in device voice.'}
-        </div>
-      </div>}
+            <div><div className="ct"><Icon name={ss?'check':'book'} size={16} color={ss?'var(--teal)':'var(--txd)'}/> Story</div><div className="cs">{ss?ss.t:'None selected'}</div></div>
+            <button className="btn bg2 bsm" onClick={()=>setTab('stories')}>{ss?'Change':'Pick'}</button></div></div>
+        <button className="btn bp bw" onClick={playStory} disabled={!ss} style={{marginTop:8,fontSize:18,padding:'16px 24px'}}><Icon name="play" size={18} color="#fff"/> Begin Story</button>
+        <div className="info" style={{marginTop:12}}><b>{gOk?'Chatterbox AI connected':'Connecting to AI...'}</b><br/>
+          {sv?.id?.startsWith('v-')?'Story will be read in YOUR cloned voice.':'Select a recorded voice for AI cloning, or use device voice.'}</div></div>}
 
       {tab==='player'&&ss&&<Player story={ss} voice={sv} onBack={()=>setTab('play')} show={show}/>}
     </div>
-
     {tab!=='player'&&<div className="nav">
-      <button className={`ni ${tab==='stories'?'a':''}`} onClick={()=>setTab('stories')}><span className="ni-i">📖</span><span className="ni-l">Stories</span></button>
-      <button className={`ni ${tab==='voices'?'a':''}`} onClick={()=>setTab('voices')}><span className="ni-i">🎙️</span><span className="ni-l">Voices</span></button>
-      <button className={`ni ${tab==='play'?'a':''}`} onClick={()=>setTab('play')}><span className="ni-i">▶️</span><span className="ni-l">Play</span></button>
+      <button className={`ni ${tab==='stories'?'a':''}`} onClick={()=>setTab('stories')}><Icon name="book" size={22} color={tab==='stories'?'var(--moon)':'var(--txd)'}/><span className="ni-l">Stories</span></button>
+      <button className={`ni ${tab==='voices'?'a':''}`} onClick={()=>setTab('voices')}><Icon name="mic" size={22} color={tab==='voices'?'var(--moon)':'var(--txd)'}/><span className="ni-l">Voices</span></button>
+      <button className={`ni ${tab==='play'?'a':''}`} onClick={()=>setTab('play')}><Icon name="play" size={22} color={tab==='play'?'var(--moon)':'var(--txd)'}/><span className="ni-l">Play</span></button>
     </div>}
     <Toast msg={toast}/>
   </div></>);
 }
 ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+
 </script>
 </body>
 </html>
