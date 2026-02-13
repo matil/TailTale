@@ -383,7 +383,7 @@ function LogoHeader(){
 
 function Welcome({onDone}){
   const[name,setName]=useState('');
-  const go=e=>{e.preventDefault();if(name.trim()){localStorage.setItem('tat_name',name.trim());localStorage.setItem('tat_v','3');onDone(name.trim())}};
+  const go=e=>{e.preventDefault();if(name.trim()){localStorage.setItem('tat_name',name.trim());localStorage.setItem('tat_v','4');onDone(name.trim())}};
   return(<div className="wel fi"><LogoFull className="logo-welcome"/><div className="wbx"><form onSubmit={go}><div className="ig"><label className="il">Who's reading tonight?</label><input className="inp" placeholder="Mom, Dad, Grandma..." value={name} onChange={e=>setName(e.target.value)} autoFocus/></div><button className="btn bp bw" type="submit" disabled={!name.trim()}>✨ Enter Dreamland</button></form></div></div>);
 }
 
@@ -634,7 +634,7 @@ function Player({story,voice,onBack,show}){
 function App(){
   const[name,setName]=useState(()=>{
     // Show login screen for new app version
-    if(localStorage.getItem('tat_v')!=='3'){localStorage.removeItem('sv_name');localStorage.removeItem('tat_name');localStorage.removeItem('tat_v');return ''}
+    if(localStorage.getItem('tat_v')!=='4'){localStorage.removeItem('sv_name');localStorage.removeItem('tat_name');localStorage.removeItem('tat_v');return ''}
     return localStorage.getItem('tat_name')||'';
   });
   const[tab,setTab]=useState('stories');
