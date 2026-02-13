@@ -24,8 +24,10 @@
 html,body,#root{height:100%;width:100%;overflow:hidden}
 body{font-family:'Nunito',sans-serif;background:var(--nd);color:var(--tx);-webkit-font-smoothing:antialiased}
 .bg{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none;background:linear-gradient(180deg,#070A1F 0%,#0B0E2D 25%,#141845 55%,#1A1F55 75%,#1E2460 100%)}
-.moon{position:absolute;width:60px;height:60px;background:radial-gradient(circle at 35% 35%,#FFFEF5,#FFF8DC 50%,#F0E6B0);border-radius:50%;top:10px;right:14px;box-shadow:0 0 30px rgba(255,248,220,.25);opacity:.5;animation:mg 6s ease-in-out infinite}
-@keyframes mg{0%,100%{opacity:.4}50%{opacity:.6}}
+.moon{position:absolute;width:80px;height:80px;border-radius:50%;top:30px;right:25px;background:radial-gradient(circle at 38% 38%,#FFFFFF,#FFFEF5 30%,#FFF8DC 60%,#EDE0AA);box-shadow:0 0 20px 5px rgba(255,250,220,.6),0 0 60px 10px rgba(255,248,200,.35),0 0 120px 20px rgba(255,245,180,.15);animation:mg 6s ease-in-out infinite}
+.moon::after{content:'';position:absolute;top:8px;left:12px;width:14px;height:14px;border-radius:50%;background:radial-gradient(circle,rgba(210,200,160,.25),transparent 70%)}
+.moon::before{content:'';position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 70% 65%,transparent 50%,rgba(200,185,130,.2) 80%)}
+@keyframes mg{0%,100%{box-shadow:0 0 20px 5px rgba(255,250,220,.6),0 0 60px 10px rgba(255,248,200,.35),0 0 120px 20px rgba(255,245,180,.15)}50%{box-shadow:0 0 25px 8px rgba(255,250,220,.7),0 0 70px 15px rgba(255,248,200,.4),0 0 140px 25px rgba(255,245,180,.2)}}
 .star{position:absolute;border-radius:50%;background:#fff;animation:tw ease-in-out infinite}
 @keyframes tw{0%,100%{opacity:.2;transform:scale(.7)}50%{opacity:.8;transform:scale(1.2)}}
 .ff{position:absolute;width:4px;height:4px;background:var(--wg);border-radius:50%;animation:ffa ease-in-out infinite;box-shadow:0 0 8px var(--wg)}
