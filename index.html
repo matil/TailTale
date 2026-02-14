@@ -146,22 +146,7 @@ body{font-family:var(--ff);background:var(--nd);color:var(--tx);-webkit-font-smo
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/onnxruntime-web@1.22.0/dist/ort.min.js" crossorigin="anonymous" onerror="console.error('[ORT] Failed to load onnxruntime-web from CDN')"></script>
-<script>
-// Configure ONNX Runtime WASM paths
-if(window.ort){
-  ort.env.wasm.wasmPaths='https://cdn.jsdelivr.net/npm/onnxruntime-web@1.22.0/dist/';
-  // Mobile browsers lack SharedArrayBuffer (needs COOP/COEP headers), so use single thread
-  const hasSharedArrayBuffer=typeof SharedArrayBuffer!=='undefined';
-  ort.env.wasm.numThreads=hasSharedArrayBuffer?Math.min(navigator.hardwareConcurrency||2,8):1;
-  // WebGPU is inherently async (GPU execution), so proxy=false is fine
-  // For WASM-only, proxy=true moves blocking computation to a worker (prevents UI freeze)
-  // But proxy can interfere with WebGPU session creation, so detect early
-  const gpuAvailable=!!navigator.gpu;
-  ort.env.wasm.proxy=!gpuAvailable; // WASM-only: use worker. WebGPU: GPU is already async
-  console.log('[ORT] Configured: threads='+ort.env.wasm.numThreads+', SharedArrayBuffer='+hasSharedArrayBuffer+', proxy='+ort.env.wasm.proxy+', gpuHint='+gpuAvailable);
-}else{console.error('[ORT] onnxruntime-web NOT loaded — window.ort is undefined')}
-</script>
+<!-- Chatterbox TTS runs server-side on Modal — no local ONNX needed -->
 <script type="text/babel">
 const{useState,useEffect,useRef,useCallback,useMemo}=React;
 
@@ -210,7 +195,7 @@ const LANGS=[
   {c:'zh',n:'中文',f:'🇨🇳',d:'ltr'},
 ];
 const UI={
-  en:{whosReading:"Who's reading tonight?",placeholder:"Mom, Dad, Grandma...",getStarted:"Get Started",setupVoice:"Set Up Your Voice",voiceSub:"Record 3-5 seconds reading softly. Your voice will be used to read stories!",pickStory:"Pick a Story",storySub:"Choose tonight's bedtime adventure",startReading:"Start Reading",continue:"Continue",stories:"Stories",voices:"Voices",play:"Play",bedtimeStories:"Bedtime Stories",chooseAdventure:"Choose tonight's adventure",yourVoices:"Your Voices",recSub:"Record 3-5 seconds reading softly",recordVoice:"Record Your Voice",readSoftly:"Read softly for 3-5 seconds",tapRecord:"Tap to record",recording:"Recording",recorded:"Recorded!",nameVoice:"Name this voice",voicePlaceholder:"Mom's bedtime voice",redo:"Redo",save:"Save",clonedVoices:"Cloned Voices",aiClone:"AI voice clone",deviceVoices:"Device Voices",deviceVoice:"Device voice",goodnight:"Goodnight",voice:"Voice",story:"Story",noneSelected:"None selected",change:"Change",pick:"Pick",beginStory:"Begin Story",connected:"Voice ready",connecting:"Preparing voice...",cloneMsg:"Story will be read in YOUR cloned voice.",deviceMsg:"Select a recorded voice for AI cloning, or use device voice.",back:"Back",storyComplete:"Story complete! Sweet dreams.",warming:"Preparing your voice...",cloneReady:"Voice ready!",howClone:"How voice cloning works:",howCloneDesc:"F5-TTS AI runs on your device — no servers, no uploads. Your voice never leaves your phone. First use downloads ~200MB (cached after).",all:"All",fairytales:"Fairytales",fables:"Fables",bedtime:"Bedtime",short:"Short",long:"Long",switchUser:"Switch User",language:"Language",settings:"Settings",cloningPart:"Preparing voice...",gpuWake:"First time may take a moment...",readSample:"The stars twinkled brightly as the little bear drifted off to sleep in the magical forest.",hi:"Hi",translating:"Translating story...",createStory:"Create Your Own Story",storyTitle:"Story title",storyText:"Write or paste your story here...",yourStories:"Your Stories",customStory:"My story",deleteStory:"Delete story?",saveStory:"Save Story",noVoiceWarn:"No voice selected — will use device voice.",voiceFailed:"AI voice unavailable — using device voice.",classics:"Classics",myStories:"My Stories",writeStory:"Write a story",generateStory:"Generate with AI",surpriseMe:"Surprise me!",describeStory:"Describe your story",descPlaceholder:"A brave little mouse who saves a kingdom...",generating:"Creating your story...",genFailed:"Could not generate story. Try again.",storyFor:"A bedtime story for ages"},
+  en:{whosReading:"Who's reading tonight?",placeholder:"Mom, Dad, Grandma...",getStarted:"Get Started",setupVoice:"Set Up Your Voice",voiceSub:"Record 3-5 seconds reading softly. Your voice will be used to read stories!",pickStory:"Pick a Story",storySub:"Choose tonight's bedtime adventure",startReading:"Start Reading",continue:"Continue",stories:"Stories",voices:"Voices",play:"Play",bedtimeStories:"Bedtime Stories",chooseAdventure:"Choose tonight's adventure",yourVoices:"Your Voices",recSub:"Record 3-5 seconds reading softly",recordVoice:"Record Your Voice",readSoftly:"Read softly for 3-5 seconds",tapRecord:"Tap to record",recording:"Recording",recorded:"Recorded!",nameVoice:"Name this voice",voicePlaceholder:"Mom's bedtime voice",redo:"Redo",save:"Save",clonedVoices:"Cloned Voices",aiClone:"AI voice clone",deviceVoices:"Device Voices",deviceVoice:"Device voice",goodnight:"Goodnight",voice:"Voice",story:"Story",noneSelected:"None selected",change:"Change",pick:"Pick",beginStory:"Begin Story",connected:"Voice ready",connecting:"Preparing voice...",cloneMsg:"Story will be read in YOUR cloned voice.",deviceMsg:"Select a recorded voice for AI cloning, or use device voice.",back:"Back",storyComplete:"Story complete! Sweet dreams.",warming:"Preparing your voice...",cloneReady:"Voice ready!",howClone:"How voice cloning works:",howCloneDesc:"Chatterbox AI runs on a cloud GPU — fast and high quality. Your voice is sent securely for cloning. Set up your API URL in Settings.",all:"All",fairytales:"Fairytales",fables:"Fables",bedtime:"Bedtime",short:"Short",long:"Long",switchUser:"Switch User",language:"Language",settings:"Settings",cloningPart:"Preparing voice...",gpuWake:"First time may take a moment...",readSample:"The stars twinkled brightly as the little bear drifted off to sleep in the magical forest.",hi:"Hi",translating:"Translating story...",createStory:"Create Your Own Story",storyTitle:"Story title",storyText:"Write or paste your story here...",yourStories:"Your Stories",customStory:"My story",deleteStory:"Delete story?",saveStory:"Save Story",noVoiceWarn:"No voice selected — will use device voice.",voiceFailed:"AI voice unavailable — using device voice.",classics:"Classics",myStories:"My Stories",writeStory:"Write a story",generateStory:"Generate with AI",surpriseMe:"Surprise me!",describeStory:"Describe your story",descPlaceholder:"A brave little mouse who saves a kingdom...",generating:"Creating your story...",genFailed:"Could not generate story. Try again.",storyFor:"A bedtime story for ages"},
   he:{whosReading:"מי קורא הלילה?",placeholder:"אמא, אבא, סבתא...",getStarted:"בואו נתחיל",setupVoice:"הגדרת קול",voiceSub:"הקליטו 3-5 שניות של קריאה רכה. הקול שלכם ישמש לקריאת הסיפור!",pickStory:"בחרו סיפור",storySub:"בחרו את הרפתקת השינה של הלילה",startReading:"התחל לקרוא",continue:"המשך",stories:"סיפורים",voices:"קולות",play:"נגן",bedtimeStories:"סיפורי שינה",chooseAdventure:"בחרו את הרפתקת הלילה",yourVoices:"הקולות שלכם",recSub:"הקליטו 3-5 שניות של קריאה רכה",recordVoice:"הקליטו את הקול שלכם",readSoftly:"קראו ברכות 3-5 שניות",tapRecord:"לחצו להקלטה",recording:"מקליט",recorded:"הוקלט!",nameVoice:"תנו שם לקול",voicePlaceholder:"קול השינה של אמא",redo:"מחדש",save:"שמור",clonedVoices:"קולות משוכפלים",aiClone:"שכפול קול AI",deviceVoices:"קולות המכשיר",deviceVoice:"קול מכשיר",goodnight:"לילה טוב",voice:"קול",story:"סיפור",noneSelected:"לא נבחר",change:"שנה",pick:"בחר",beginStory:"התחל סיפור",connected:"הקול מוכן",connecting:"מכין את הקול...",cloneMsg:"הסיפור ייקרא בקול המשוכפל שלכם.",deviceMsg:"בחרו קול מוקלט לשכפול AI, או השתמשו בקול המכשיר.",back:"חזרה",storyComplete:"הסיפור הסתיים! חלומות מתוקים.",warming:"מכין את הקול שלכם...",cloneReady:"הקול מוכן!",howClone:"איך שכפול קול עובד:",howCloneDesc:"F5-TTS AI רץ על המכשיר שלכם — בלי שרתים, בלי העלאות. הקול לא יוצא מהטלפון. שימוש ראשון: ~200MB.",all:"הכל",fairytales:"אגדות",fables:"משלים",bedtime:"שינה",short:"קצר",long:"ארוך",switchUser:"החלף משתמש",language:"שפה",settings:"הגדרות",cloningPart:"מכין את הקול...",gpuWake:"בפעם הראשונה זה יכול לקחת רגע...",readSample:"הכוכבים נצנצו בשקט כשהדוב הקטן נרדם ביער הקסום.",hi:"היי",translating:"מתרגם סיפור...",classics:"קלאסיקות",myStories:"הסיפורים שלי",writeStory:"כתוב סיפור",generateStory:"צור עם AI",surpriseMe:"הפתע אותי!",describeStory:"תאר את הסיפור שלך",descPlaceholder:"עכבר קטן ואמיץ שמציל ממלכה...",generating:"יוצר את הסיפור שלך...",genFailed:"לא הצלחנו ליצור סיפור. נסו שוב.",storyFor:"סיפור שינה לגילאי"},
   es:{whosReading:"¿Quién lee esta noche?",placeholder:"Mamá, Papá, Abuela...",getStarted:"Empezar",setupVoice:"Configura tu voz",voiceSub:"Graba 3-5 segundos leyendo suavemente. ¡Tu voz leerá los cuentos!",pickStory:"Elige un cuento",storySub:"Elige la aventura de esta noche",startReading:"Empezar a leer",continue:"Continuar",stories:"Cuentos",voices:"Voces",play:"Play",bedtimeStories:"Cuentos para dormir",chooseAdventure:"Elige la aventura de esta noche",yourVoices:"Tus voces",recSub:"Graba 3-5 segundos leyendo suavemente",recordVoice:"Graba tu voz",readSoftly:"Lee suavemente 3-5 segundos",tapRecord:"Toca para grabar",recording:"Grabando",recorded:"¡Grabado!",nameVoice:"Nombre de esta voz",voicePlaceholder:"Voz de mamá",redo:"Rehacer",save:"Guardar",clonedVoices:"Voces clonadas",aiClone:"Clon de voz AI",deviceVoices:"Voces del dispositivo",deviceVoice:"Voz del dispositivo",goodnight:"Buenas noches",voice:"Voz",story:"Cuento",noneSelected:"No seleccionado",change:"Cambiar",pick:"Elegir",beginStory:"Empezar cuento",connected:"Voz lista",connecting:"Preparando la voz...",cloneMsg:"El cuento se leerá con TU voz clonada.",deviceMsg:"Selecciona una voz grabada para clonar, o usa la voz del dispositivo.",back:"Volver",storyComplete:"¡Cuento terminado! Dulces sueños.",warming:"Preparando tu voz...",cloneReady:"¡Voz lista!",howClone:"Cómo funciona la clonación:",howCloneDesc:"F5-TTS AI funciona en tu dispositivo — sin servidores. Tu voz nunca sale de tu teléfono. Primera vez: ~200MB.",all:"Todo",fairytales:"Cuentos de hadas",fables:"Fábulas",bedtime:"Dormir",short:"Corto",long:"Largo",switchUser:"Cambiar usuario",language:"Idioma",settings:"Ajustes",cloningPart:"Preparando voz...",gpuWake:"La primera vez puede tardar un momento...",readSample:"Las estrellas brillaban suavemente mientras el pequeño oso se dormía en el bosque mágico.",hi:"Hola",translating:"Traduciendo cuento...",classics:"Clásicos",myStories:"Mis cuentos",writeStory:"Escribir cuento",generateStory:"Generar con IA",surpriseMe:"¡Sorpréndeme!",describeStory:"Describe tu cuento",descPlaceholder:"Un ratoncito valiente que salva un reino...",generating:"Creando tu cuento...",genFailed:"No se pudo generar. Intenta de nuevo.",storyFor:"Un cuento para edades"},
   fr:{whosReading:"Qui lit ce soir ?",placeholder:"Maman, Papa, Mamie...",getStarted:"Commencer",setupVoice:"Configure ta voix",voiceSub:"Enregistre 3-5 secondes en lisant doucement. Ta voix lira les histoires !",pickStory:"Choisis une histoire",storySub:"Choisis l'aventure de ce soir",startReading:"Commencer la lecture",continue:"Continuer",stories:"Histoires",voices:"Voix",play:"Jouer",bedtimeStories:"Histoires du soir",chooseAdventure:"Choisis l'aventure de ce soir",yourVoices:"Tes voix",recSub:"Enregistre 3-5 secondes en lisant doucement",recordVoice:"Enregistre ta voix",readSoftly:"Lis doucement 3-5 secondes",tapRecord:"Appuie pour enregistrer",recording:"Enregistrement",recorded:"Enregistré !",nameVoice:"Nom de cette voix",voicePlaceholder:"Voix de maman",redo:"Refaire",save:"Sauvegarder",clonedVoices:"Voix clonées",aiClone:"Clone vocal IA",deviceVoices:"Voix de l'appareil",deviceVoice:"Voix appareil",goodnight:"Bonne nuit",voice:"Voix",story:"Histoire",noneSelected:"Non sélectionné",change:"Changer",pick:"Choisir",beginStory:"Lancer l'histoire",connected:"Voix prête",connecting:"Préparation de la voix...",cloneMsg:"L'histoire sera lue avec TA voix clonée.",deviceMsg:"Sélectionne une voix enregistrée ou utilise la voix de l'appareil.",back:"Retour",storyComplete:"Histoire terminée ! Fais de beaux rêves.",warming:"Préparation de ta voix...",cloneReady:"Voix prête !",howClone:"Comment ça marche :",howCloneDesc:"F5-TTS AI fonctionne sur ton appareil — sans serveur. Ta voix ne quitte jamais ton téléphone. Premier usage: ~200MB.",all:"Tout",fairytales:"Contes de fées",fables:"Fables",bedtime:"Dodo",short:"Court",long:"Long",switchUser:"Changer d'utilisateur",language:"Langue",settings:"Paramètres",cloningPart:"Préparation vocale...",gpuWake:"La première fois peut prendre un moment...",readSample:"Les étoiles scintillaient doucement tandis que le petit ours s'endormait dans la forêt magique.",hi:"Salut",translating:"Traduction en cours...",classics:"Classiques",myStories:"Mes histoires",writeStory:"Écrire une histoire",generateStory:"Générer avec IA",surpriseMe:"Surprise-moi !",describeStory:"Décris ton histoire",descPlaceholder:"Une petite souris courageuse qui sauve un royaume...",generating:"Création en cours...",genFailed:"Impossible de générer. Réessaye.",storyFor:"Une histoire pour âges"},
@@ -621,276 +606,62 @@ Requirements:
   }
 }
 
-// ===== F5-TTS Browser Voice Cloning Engine =====
-// Runs 100% locally via ONNX Runtime Web — no servers, no quotas, works offline
-const F5_REPO='nsarang/F5-TTS-ONNX';
-const F5_CDN=`https://huggingface.co/${F5_REPO}/resolve/main/`;
-let f5S={enc:null,tf:null,dec:null},f5V=null,f5Loading=false,f5Ready=false,f5Waiters=[];
-let f5HasWebGPU=false; // set during init
+// ===== Chatterbox TTS — Server-side Voice Cloning via Modal =====
+// Calls your deployed Modal endpoint. No local model downloads needed.
+// Deploy: modal deploy modal_backend.py → get endpoint URL → paste in settings.
+
+// TTS API URL — stored in localStorage, configurable in settings menu
+function getTtsUrl(){return localStorage.getItem('tat_ttsUrl')||''}
+function setTtsUrl(url){localStorage.setItem('tat_ttsUrl',url.replace(/\/+$/,''))}
+
+// Convert voice blob to base64 string for API
+async function blobToBase64(blob){
+  return new Promise((res,rej)=>{
+    const r=new FileReader();
+    r.onloadend=()=>res(r.result.split(',')[1]);
+    r.onerror=rej;
+    r.readAsDataURL(blob);
+  });
+}
+
+// Pre-warm: ping the Modal health endpoint to wake the container
+let preWarmStatus={active:false,done:false,error:false,progress:0};let preWarmListeners=[];
+function onPreWarmChange(fn){preWarmListeners.push(fn);return()=>{preWarmListeners=preWarmListeners.filter(f=>f!==fn)}}
+function notifyPreWarm(){preWarmListeners.forEach(fn=>fn({...preWarmStatus}))}
+async function preWarmVoice(voiceId){
+  const url=getTtsUrl();
+  if(!url){
+    console.log('[TTS] No API URL set — skipping pre-warm');
+    preWarmStatus={active:false,done:false,error:true,progress:0};notifyPreWarm();
+    return;
+  }
+  preWarmStatus={active:true,done:false,error:false,progress:0};notifyPreWarm();
+  try{
+    // Verify voice exists in DB
+    const d=await dbGet('voices',voiceId);if(!d?.blob)throw new Error('No voice blob');
+    preWarmStatus.progress=0.3;notifyPreWarm();
+    // Ping health endpoint to wake container
+    const healthUrl=url.replace(/\/generate$/,'').replace(/\/$/,'')+'/health';
+    console.log('[TTS] Pre-warming container:',healthUrl);
+    const r=await fetch(healthUrl,{method:'GET',signal:AbortSignal.timeout(60000)});
+    if(!r.ok)throw new Error('Health check failed: '+r.status);
+    preWarmStatus={active:false,done:true,error:false,progress:1};notifyPreWarm();
+    console.log('[TTS] ✅ Container warm and ready');
+  }catch(e){
+    console.warn('[TTS] Pre-warm failed:',e.message);
+    preWarmStatus={active:false,done:false,error:true,progress:0};notifyPreWarm();
+  }
+}
+
+// Progress callbacks (compatible with old F5 interface)
 let f5DownloadProgress=0,f5DownloadCbs=[];
 function onF5Progress(fn){f5DownloadCbs.push(fn);return()=>{f5DownloadCbs=f5DownloadCbs.filter(f=>f!==fn)}}
 function notifyF5(p){f5DownloadProgress=p;f5DownloadCbs.forEach(fn=>fn(p))}
-
-// Cached fetch with progress — uses Cache API for persistent storage
-async function f5Fetch(path,onProg){
-  const url=F5_CDN+path;
-  console.log('[F5] Fetching:',path);
-  try{
-    const cache=await caches.open('f5-tts-v1');
-    const cached=await cache.match(url);
-    if(cached){
-      const sz=cached.headers.get('content-length');
-      console.log('[F5] ✓ Cache hit:',path,sz?'('+Math.round(sz/1024/1024)+'MB)':'');
-      if(onProg)onProg(1);return cached.arrayBuffer();
-    }
-    console.log('[F5] ⬇ Downloading:',path,'...');
-    const res=await fetch(url);
-    if(!res.ok)throw new Error('HTTP '+res.status+' '+res.statusText+' for '+path);
-    const total=parseInt(res.headers.get('content-length'),10);
-    const reader=res.body.getReader();const chunks=[];let got=0;let lastLog=0;
-    while(true){
-      const{done,value}=await reader.read();if(done)break;
-      chunks.push(value);got+=value.length;
-      if(onProg&&total)onProg(got/total);
-      // Log progress every 10%
-      if(total&&(got-lastLog)>total*0.1){lastLog=got;console.log('[F5]   '+path+': '+Math.round(got/total*100)+'% ('+Math.round(got/1024/1024)+'MB)')}
-    }
-    console.log('[F5] ✓ Downloaded:',path,'('+Math.round(got/1024/1024)+'MB)');
-    const blob=new Blob(chunks);
-    try{await cache.put(url,new Response(blob.slice()));console.log('[F5]   Cached for offline use')}catch(e){console.warn('[F5]   Cache put failed:',e.message)}
-    return blob.arrayBuffer();
-  }catch(e){
-    console.warn('[F5] Cache API issue, direct fetch:',e.message);
-    const res=await fetch(url);if(!res.ok)throw new Error('HTTP '+res.status+' for '+path);
-    const buf=await res.arrayBuffer();console.log('[F5] ✓ Downloaded (no cache):',path,'('+Math.round(buf.byteLength/1024/1024)+'MB)');
-    return buf;
-  }
-}
-
-// Initialize F5-TTS — downloads models + creates ONNX sessions
-async function initF5(progressCb){
-  if(f5Ready){console.log('[F5] Already ready');return true}
-  if(f5Loading)return new Promise(r=>f5Waiters.push(r));
-  f5Loading=true;
-  try{
-    // Step 1: Check ORT
-    if(!window.ort)throw new Error('ONNX Runtime Web not loaded — check network tab for ort.min.js');
-    console.log('[F5] ORT available ✓');
-
-    // Step 2: Detect GPU for execution provider
-    let hasWebGPU=false;
-    try{
-      if(navigator.gpu){const a=await navigator.gpu.requestAdapter();if(a){hasWebGPU=true;console.log('[F5] WebGPU adapter:',a.name||'(unnamed)')}}
-    }catch(e){console.log('[F5] WebGPU check failed:',e.message)}
-    f5HasWebGPU=hasWebGPU;
-    // Always use FP32 transformer — FP16 model requires Float16Array tensors which
-    // no browser supports natively. WebGPU still accelerates FP32 inference significantly.
-    console.log('[F5] Using FP32 transformer (~170MB)'+(hasWebGPU?' + WebGPU acceleration':' + WASM'));
-    const tfPath='onnx/transformer_fp32.onnx';
-
-    const pg={e:0,t:0,d:0,v:0};
-    const up=()=>{const p=pg.e*.03+pg.t*.92+pg.d*.03+pg.v*.02;notifyF5(p);if(progressCb)progressCb(p)};
-
-    // Step 3: Download all files
-    console.log('[F5] Downloading models...');
-    const t0=Date.now();
-    let eBuf,tBuf,dBuf,vocText;
-    try{
-      [eBuf,tBuf,dBuf,vocText]=await Promise.all([
-        f5Fetch('onnx/encoder_fp32.onnx',p=>{pg.e=p;up()}),
-        f5Fetch(tfPath,p=>{pg.t=p;up()}),
-        f5Fetch('onnx/decoder_fp32.onnx',p=>{pg.d=p;up()}),
-        f5Fetch('vocab.txt').then(b=>{pg.v=1;up();return new TextDecoder().decode(b)})
-      ]);
-    }catch(dlErr){throw new Error('Model download failed: '+dlErr.message)}
-    console.log('[F5] ✓ All downloads in '+((Date.now()-t0)/1000).toFixed(1)+'s');
-
-    // Step 4: Create ONNX sessions with optimized settings
-    // Enable WASM multi-threading (requires SharedArrayBuffer — we have COOP/COEP headers)
-    const wasmThreads=Math.min(navigator.hardwareConcurrency||4,8);
-    const wasmOpts={name:'wasm',options:{numThreads:wasmThreads}};
-    let eps=hasWebGPU?['webgpu',wasmOpts]:[wasmOpts];
-    console.log('[F5] Execution providers:',JSON.stringify(eps)+', WASM threads='+wasmThreads);
-    const so={executionProviders:eps};
-
-    console.log('[F5] Creating encoder session...');
-    f5S.enc=await ort.InferenceSession.create(eBuf,so);
-    console.log('[F5] ✓ Encoder. In:',f5S.enc.inputNames,'Out:',f5S.enc.outputNames);
-
-    console.log('[F5] Creating transformer session (largest model, please wait)...');
-    f5S.tf=await ort.InferenceSession.create(tBuf,so);
-    console.log('[F5] ✓ Transformer. In:',f5S.tf.inputNames,'Out:',f5S.tf.outputNames);
-
-    console.log('[F5] Creating decoder session...');
-    f5S.dec=await ort.InferenceSession.create(dBuf,so);
-    console.log('[F5] ✓ Decoder. In:',f5S.dec.inputNames,'Out:',f5S.dec.outputNames);
-
-    // Step 5: Load vocab
-    f5V={};
-    vocText.split('\n').forEach((line,i)=>{const ch=line.replace(/\r/g,'');if(ch.length>0)f5V[ch]=i});
-    console.log('[F5] ✓ Vocab:',Object.keys(f5V).length,'chars');
-
-    f5Ready=true;f5Loading=false;notifyF5(1);
-    f5Waiters.forEach(r=>r(true));f5Waiters=[];
-    console.log('[F5] ✅ Ready! Total init: '+((Date.now()-t0)/1000).toFixed(1)+'s');
-    return true;
-  }catch(e){
-    console.error('[F5] ❌ Init FAILED:',e.message,e);
-    f5Loading=false;f5Ready=false;
-    f5Waiters.forEach(r=>r(false));f5Waiters=[];
-    throw e;
-  }
-}
-
-// Normalize text: replace smart quotes, curly apostrophes, etc. with ASCII equivalents
-// These unicode chars are NOT in the F5-TTS vocab and get mapped to token 0 (unknown),
-// which completely corrupts the text conditioning and produces garbage audio.
-function normalizeText(text){
-  return text
-    .replace(/[\u2018\u2019\u201A\u201B]/g,"'")  // curly single quotes → '
-    .replace(/[\u201C\u201D\u201E\u201F]/g,'"')  // curly double quotes → "
-    .replace(/[\u2013\u2014]/g,'-')               // en/em dashes → -
-    .replace(/\u2026/g,'...')                      // ellipsis → ...
-    .replace(/[\u00A0]/g,' ')                      // non-breaking space → space
-    .replace(/[^\x00-\x7F\u00C0-\u024F\u0400-\u04FF\u0590-\u05FF\u0600-\u06FF\u4E00-\u9FFF\u3040-\u30FF]/g,' ') // remove other exotic chars
-    .replace(/\s+/g,' ').trim();
-}
-
-// Tensor math on raw Float32Arrays
-function arrRMS(d){let s=0;for(let i=0;i<d.length;i++)s+=d[i]*d[i];return Math.sqrt(s/d.length)}
-function arrToInt16(d){const r=new Int16Array(d.length);for(let i=0;i<d.length;i++)r[i]=Math.max(-32768,Math.min(32767,Math.round(d[i]*32767)));return r}
-
-// F5-TTS 3-stage inference pipeline
-async function f5Infer(refF32,refText,genText,speed=1.0,nfe=8){
-  const{enc,tf,dec}=f5S;const hop=256;
-  const audio=refF32;
-  console.log('[F5] Ref audio: '+audio.length+' samples, rms='+arrRMS(audio).toFixed(4));
-  // To int16
-  const i16=arrToInt16(audio);
-  const audioT=new ort.Tensor('int16',i16,[1,1,i16.length]);
-  // Tokenize
-  // F5-TTS: uppercase letters are spelled out letter-by-letter, so lowercase everything
-  // Normalize smart quotes etc. that aren't in the vocab
-  const combined=normalizeText((refText+' '+genText).toLowerCase());
-  const toks=Int32Array.from([...combined].map(c=>f5V[c]||0));
-  const unkChars=[...combined].filter(c=>!f5V[c]);
-  if(unkChars.length>0){
-    const unique=[...new Set(unkChars)].map(c=>c+' (U+'+c.charCodeAt(0).toString(16).padStart(4,'0')+')');
-    console.warn('[F5] Unknown chars:',unkChars.length,'/',combined.length,'unique:',unique.join(', '));
-  }
-  const textT=new ort.Tensor('int32',toks,[1,toks.length]);
-  // Duration
-  const refLen=Math.trunc(audio.length/hop);
-  const dur=refLen+Math.trunc(((refLen/(refText.length+1))*genText.length)/speed);
-  const durT=new ort.Tensor('int64',new BigInt64Array([BigInt(dur)]),[1]);
-  console.log('[F5] Frames: ref='+refLen+' total='+dur+' | NFE='+nfe+' | WebGPU='+f5HasWebGPU);
-
-  // Stage 1: Encoder (always fp32)
-  console.log('[F5] Stage 1/3: Encoder...');
-  const t1=Date.now();
-  const eI={};eI[enc.inputNames[0]]=audioT;eI[enc.inputNames[1]]=textT;eI[enc.inputNames[2]]=durT;
-  console.log('[F5] Encoder inputs:',enc.inputNames.map((n,i)=>`${n}=${[audioT,textT,durT][i]?.type}`).join(', '));
-  const eO=await enc.run(eI);
-  let noise=eO[enc.outputNames[0]],rcq=eO[enc.outputNames[1]],rsq=eO[enc.outputNames[2]],
-      rck=eO[enc.outputNames[3]],rsk=eO[enc.outputNames[4]],cmt=eO[enc.outputNames[5]],
-      cmtd=eO[enc.outputNames[6]],rsl=eO[enc.outputNames[7]];
-  console.log('[F5] Encoder done ('+((Date.now()-t1)/1000).toFixed(1)+'s). Noise:',noise.dims);
-
-  // Stage 2: Transformer NFE loop
-  console.log('[F5] Stage 2/3: Transformer ('+nfe+' steps)...');
-  const t2=Date.now();
-  let ts=new ort.Tensor('int32',new Int32Array([0]),[1]);
-  for(let s=0;s<nfe-1;s++){
-    const stepT=Date.now();
-    const tI={};tI[tf.inputNames[0]]=noise;tI[tf.inputNames[1]]=rcq;tI[tf.inputNames[2]]=rsq;
-    tI[tf.inputNames[3]]=rck;tI[tf.inputNames[4]]=rsk;tI[tf.inputNames[5]]=cmt;
-    tI[tf.inputNames[6]]=cmtd;tI[tf.inputNames[7]]=ts;
-    const tO=await tf.run(tI);noise=tO[tf.outputNames[0]];ts=tO[tf.outputNames[1]];
-    console.log('[F5]   Step '+(s+1)+'/'+(nfe-1)+' ('+((Date.now()-stepT)/1000).toFixed(1)+'s)');
-    await new Promise(r=>setTimeout(r,0)); // yield to UI
-  }
-  console.log('[F5] Transformer done ('+((Date.now()-t2)/1000).toFixed(1)+'s total)');
-
-  // Stage 3: Decoder
-  console.log('[F5] Stage 3/3: Decoder...');
-  const t3=Date.now();
-  const dI={};dI[dec.inputNames[0]]=noise;dI[dec.inputNames[1]]=rsl;
-  const dO=await dec.run(dI);
-  const raw=dO[dec.outputNames[0]].data;
-  const rawType=dO[dec.outputNames[0]].type;
-  console.log('[F5] Decoder done ('+((Date.now()-t3)/1000).toFixed(1)+'s). Output: '+raw.length+' samples, type='+rawType);
-  // Analyze raw output range to detect format
-  let rawMin=Infinity,rawMax=-Infinity;
-  for(let i=0;i<Math.min(raw.length,10000);i++){const v=typeof raw[i]==='number'?raw[i]:Number(raw[i]);if(v<rawMin)rawMin=v;if(v>rawMax)rawMax=v}
-  console.log('[F5] Raw decoder range: ['+rawMin.toFixed(2)+', '+rawMax.toFixed(2)+']');
-  // Auto-detect: if values are in int16 range (>100), divide by 32767; if already float (-1 to 1), use directly
-  const isInt16Range=Math.abs(rawMax)>10||Math.abs(rawMin)>10;
-  const out=new Float32Array(raw.length);
-  if(isInt16Range){
-    console.log('[F5] Decoder output in int16 range → normalizing to [-1,1]');
-    for(let i=0;i<raw.length;i++)out[i]=(typeof raw[i]==='number'?raw[i]:Number(raw[i]))/32767.0;
-  }else{
-    console.log('[F5] Decoder output already in float range → using directly');
-    for(let i=0;i<raw.length;i++)out[i]=typeof raw[i]==='number'?raw[i]:Number(raw[i]);
-  }
-  console.log('[F5] ✅ Generated '+out.length+' samples ('+(out.length/24000).toFixed(1)+'s audio) in '+((Date.now()-t1)/1000).toFixed(1)+'s');
-  return out;
-}
-
-// Float32Array → WAV Blob
-function f32ToWav(samples,sr=24000){
-  const buf=new ArrayBuffer(44+samples.length*2);const v=new DataView(buf);
-  const ws=(o,s)=>{for(let i=0;i<s.length;i++)v.setUint8(o+i,s.charCodeAt(i))};
-  ws(0,'RIFF');v.setUint32(4,36+samples.length*2,true);ws(8,'WAVE');ws(12,'fmt ');
-  v.setUint32(16,16,true);v.setUint16(20,1,true);v.setUint16(22,1,true);v.setUint32(24,sr,true);
-  v.setUint32(28,sr*2,true);v.setUint16(32,2,true);v.setUint16(34,16,true);
-  ws(36,'data');v.setUint32(40,samples.length*2,true);
-  let o=44;for(let i=0;i<samples.length;i++){const s=Math.max(-1,Math.min(1,samples[i]));v.setInt16(o,s<0?s*0x8000:s*0x7FFF,true);o+=2}
-  return new Blob([buf],{type:'audio/wav'});
-}
-
-// Decode voice recording → 24kHz mono Float32Array
-async function decodeRefAudio(voiceBlob){
-  const ctx=new(window.AudioContext||window.webkitAudioContext)({sampleRate:24000});
-  const ab=voiceBlob instanceof Blob?await voiceBlob.arrayBuffer():voiceBlob;
-  const audio=await ctx.decodeAudioData(ab);ctx.close();
-  let mono;
-  if(audio.numberOfChannels===1)mono=new Float32Array(audio.getChannelData(0));
-  else{mono=new Float32Array(audio.length);for(let ch=0;ch<audio.numberOfChannels;ch++){const d=audio.getChannelData(ch);for(let i=0;i<audio.length;i++)mono[i]+=d[i]}for(let i=0;i<mono.length;i++)mono[i]/=audio.numberOfChannels}
-  const max=3*24000;if(mono.length>max)mono=mono.slice(0,max);
-  // Trim leading silence (threshold: RMS of 50ms windows > 0.005)
-  const winSize=Math.floor(0.05*24000);
-  let trimStart=0;
-  for(let i=0;i<mono.length-winSize;i+=winSize){
-    let s=0;for(let j=i;j<i+winSize;j++)s+=mono[j]*mono[j];
-    if(Math.sqrt(s/winSize)>0.005){trimStart=Math.max(0,i-winSize);break}
-  }
-  if(trimStart>0){mono=mono.slice(trimStart);console.log('[F5] Trimmed '+Math.round(trimStart/24000*10)/10+'s leading silence')}
-  // Trim trailing silence too
-  let trimEnd=mono.length;
-  for(let i=mono.length-winSize;i>0;i-=winSize){
-    let s=0;for(let j=i;j<i+winSize;j++)s+=mono[j]*mono[j];
-    if(Math.sqrt(s/winSize)>0.005){trimEnd=Math.min(mono.length,i+winSize*2);break}
-  }
-  if(trimEnd<mono.length){mono=mono.slice(0,trimEnd);console.log('[F5] Trimmed trailing silence, now '+(mono.length/24000).toFixed(1)+'s')}
-  return mono;
-}
-
-// Cache decoded ref audio per voice (avoids re-decoding every chunk)
-let refAudioCache={id:null,f32:null};
-async function getRefAudio(voiceBlob,voiceId){
-  // Use voiceId + blob size as cache key to prevent stale cache across voice switches
-  const cacheKey=voiceId+'_'+(voiceBlob?.size||0);
-  if(refAudioCache.id===cacheKey&&refAudioCache.f32)return refAudioCache.f32;
-  const f32=await decodeRefAudio(voiceBlob);
-  refAudioCache={id:cacheKey,f32};return f32;
-}
+let f5Ready=false; // set true after first successful API call
 
 // ===== Audio Cache — store generated chunks in IndexedDB =====
-// Key: voiceId + text hash. Once generated, replay is INSTANT.
-let _voiceBlobSize=0; // track current voice blob size for cache invalidation
+let _voiceBlobSize=0;
 function audioCacheKey(voiceId,text){
-  // Simple fast hash of text content
   let h=0;for(let i=0;i<text.length;i++){h=((h<<5)-h)+text.charCodeAt(i);h|=0}
   return voiceId+'_'+_voiceBlobSize+'_'+Math.abs(h).toString(36);
 }
@@ -901,58 +672,58 @@ async function setCachedAudio(voiceId,text,blob){
   try{await dbPut('audioCache',{key:audioCacheKey(voiceId,text),blob,ts:Date.now()})}catch(e){console.warn('[Cache] Write failed:',e)}
 }
 
-// ===== Main generateChunk — F5-TTS local voice cloning =====
+// ===== Main generateChunk — calls Chatterbox on Modal =====
 let generateLock=false;
 async function generateChunk(text,voiceBlob,langCode,voiceId){
-  // Check cache first — instant return if already generated
+  // Check cache first
   if(voiceId){
     const cached=await getCachedAudio(voiceId,text);
-    if(cached){console.log('[F5] ⚡ Cache hit for:',text.substring(0,40)+'...');return cached}
+    if(cached){console.log('[TTS] ⚡ Cache hit for:',text.substring(0,40)+'...');return cached}
   }
   while(generateLock)await new Promise(r=>setTimeout(r,200));
   generateLock=true;
   try{
-    const lang=langCode||'en';
-    const refText=UI[lang]?.readSample||UI.en.readSample;
-    // Ensure F5-TTS is loaded (first call downloads ~200MB, cached after)
-    if(!f5Ready){
-      console.log('[F5] First use — loading voice engine...');
-      await initF5(p=>console.log('[F5] Download:',Math.round(p*100)+'%'));
-    }
-    if(!f5Ready)throw new Error('F5-TTS failed to initialize');
-    // Get reference audio (decoded & cached)
-    console.log('[F5] Decoding reference audio...');
-    const refF32=await getRefAudio(voiceBlob,'current');
-    console.log('[F5] Ref audio decoded:',refF32.length,'samples ('+(refF32.length/24000).toFixed(1)+'s)');
-    // Run inference
-    console.log('[F5] Generating speech for:',text.substring(0,60)+'...');
+    const url=getTtsUrl();
+    if(!url)throw new Error('No TTS API URL configured. Go to Settings → TTS API URL.');
+    // Convert voice blob to base64
+    const voiceB64=await blobToBase64(voiceBlob);
+    console.log('[TTS] Sending to API:',text.substring(0,60)+'...');
     const t0=Date.now();
-    const audioF32=await f5Infer(refF32,refText,text,1.0,6);
-    // Audio quality check
-    let mn=Infinity,mx=-Infinity,sq=0;
-    for(let i=0;i<audioF32.length;i++){const v=audioF32[i];if(v<mn)mn=v;if(v>mx)mx=v;sq+=v*v}
-    const outRms=Math.sqrt(sq/audioF32.length);
-    console.log('[F5] Audio stats: min='+mn.toFixed(4)+' max='+mx.toFixed(4)+' rms='+outRms.toFixed(4)+' len='+audioF32.length);
-    if(outRms<0.001){console.warn('[F5] ⚠️ Output is nearly silent!');throw new Error('Voice cloning produced silent audio')}
-    const wav=f32ToWav(audioF32,24000);
-    console.log('[F5] ✅ Done in '+(Date.now()-t0)/1000+'s');
-    // Save to cache for instant replay
-    if(voiceId)setCachedAudio(voiceId,text,wav);
-    return wav;
+    const r=await fetch(url.replace(/\/$/,'')+'/generate',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        text:text,
+        voice_b64:voiceB64,
+        language:langCode||'en',
+        exaggeration:0.5,
+      }),
+      signal:AbortSignal.timeout(120000), // 2 min timeout for cold starts
+    });
+    if(!r.ok){
+      const errText=await r.text().catch(()=>'');
+      throw new Error('API error '+r.status+': '+errText.substring(0,100));
+    }
+    const wavBlob=await r.blob();
+    console.log('[TTS] ✅ Got audio ('+Math.round(wavBlob.size/1024)+'KB) in '+((Date.now()-t0)/1000).toFixed(1)+'s');
+    f5Ready=true;
+    // Cache for instant replay
+    if(voiceId)setCachedAudio(voiceId,text,wavBlob);
+    return wavBlob;
   }catch(err){
-    console.error('[F5] ❌ generateChunk failed:',err.message,err);
+    console.error('[TTS] ❌ generateChunk failed:',err.message);
     throw err;
   }finally{generateLock=false}
 }
-function chunkText(text,maxLen=60){
-  // Split on sentence boundaries first
+
+function chunkText(text,maxLen=200){
+  // Chatterbox handles longer chunks well — use 200 chars instead of 60
   const sentences=text.match(/[^.!?。！？]+[.!?。！？]+[\s"]*/g)||[text];
   const chunks=[];let cur='';
   for(const s of sentences){
     const st=s.trim();if(!st)continue;
     if(cur.length+st.length<=maxLen){cur+=st+' ';continue}
     if(cur.trim())chunks.push(cur.trim());
-    // If single sentence exceeds maxLen, split on commas/semicolons
     if(st.length>maxLen){
       const parts=st.split(/(?<=[,;:])\s*/);let sub='';
       for(const p of parts){
@@ -964,26 +735,6 @@ function chunkText(text,maxLen=60){
   }
   if(cur.trim())chunks.push(cur.trim());
   return chunks;
-}
-
-// Voice pre-warm: download F5-TTS models + validate voice
-let preWarmStatus={active:false,done:false,error:false,progress:0};let preWarmListeners=[];
-function onPreWarmChange(fn){preWarmListeners.push(fn);return()=>{preWarmListeners=preWarmListeners.filter(f=>f!==fn)}}
-function notifyPreWarm(){preWarmListeners.forEach(fn=>fn({...preWarmStatus}))}
-async function preWarmVoice(voiceId){
-  preWarmStatus={active:true,done:false,error:false,progress:0};notifyPreWarm();
-  try{
-    const d=await dbGet('voices',voiceId);if(!d?.blob)throw new Error('No voice');
-    console.log('[F5] Pre-warming: downloading models if needed...');
-    await initF5(p=>{preWarmStatus.progress=p;notifyPreWarm()});
-    // Quick test decode of reference audio
-    await decodeRefAudio(d.blob);
-    preWarmStatus={active:false,done:true,error:false,progress:1};notifyPreWarm();
-    console.log('[F5] Pre-warm complete! Models cached for offline use.');
-  }catch(e){
-    console.warn('[F5] Pre-warm failed:',e);
-    preWarmStatus={active:false,done:false,error:true,progress:0};notifyPreWarm();
-  }
 }
 
 // Stories - each has txS (short ~2-3min) and txL (long ~6-8min)
@@ -1316,7 +1067,7 @@ function Player({story,voice,ver,onBack,show,t,text,lang}){
       const chunkStart=chunkOffsetsRef.current[idx]||0;
       setHlWord(charToWord(chunkStart));
       const u=new SpeechSynthesisUtterance(chunks[idx]);u.rate=0.88;u.pitch=1.0;
-      const langCode=localStorage.getItem('tat_lang')||'en';const lc=langCode==='zh'?'zh-CN':langCode;
+      const lc=lang==='zh'?'zh-CN':lang;
       const vs=synth.getVoices();const pk=vs.find(v=>v.lang.startsWith(lc))||vs.find(v=>/Google/i.test(v.name)&&v.lang.startsWith(lc))||vs.find(v=>v.lang.startsWith('en'))||vs[0];
       if(pk)u.voice=pk;
       u.onboundary=(e)=>{
@@ -1456,6 +1207,8 @@ function App(){
   const[csText,setCsText]=useState('');
   const[genDesc,setGenDesc]=useState('');
   const[genLoading,setGenLoading]=useState(false);
+  const[ttsUrl,setTtsUrlState]=useState(()=>getTtsUrl());
+  const[editingUrl,setEditingUrl]=useState(false);
 
   const t=makeT(lang);
   const dir=getLangDir(lang);
@@ -1478,8 +1231,7 @@ function App(){
     const lv=localStorage.getItem('tat_lastVoice');if(lv&&lv.startsWith('v-')){const f=vl.find(v=>v.id===lv);if(f)setSv(f)}
     else{localStorage.removeItem('tat_lastVoice')}}catch{}
     speechSynthesis?.getVoices();if(speechSynthesis)speechSynthesis.onvoiceschanged=()=>speechSynthesis.getVoices();
-    // F5-TTS will be initialized on-demand when voice cloning is first used
-    console.log('[App] ORT available:',!!window.ort);
+    console.log('[App] TTS API URL:',getTtsUrl()||'(not set)');
     dbGetAll('customStories').then(cs=>setCustomStories(cs||[])).catch(()=>{});
     return onPreWarmChange(s=>setPw(s));},[]);
 
@@ -1602,7 +1354,7 @@ function App(){
       setPlayerText(txt);
     }
     setTab('player')};
-  const doLogout=()=>{localStorage.removeItem('tat_name');localStorage.removeItem('tat_v');localStorage.removeItem('tat_tut');setName('');setTutDone(false);setTutStep(0);setSv(null);setSs(null);speechSynthesis?.cancel();setMenu(false);
+  const doLogout=()=>{localStorage.removeItem('tat_name');localStorage.removeItem('tat_v');localStorage.removeItem('tat_tut');localStorage.removeItem('tat_lastVoice');localStorage.removeItem('tat_verPrefs');setName('');setTutDone(false);setTutStep(0);setSv(null);setSs(null);speechSynthesis?.cancel();setMenu(false);
     // Reload custom stories for next user (they're shared across readers)
     dbGetAll('customStories').then(cs=>setCustomStories(cs||[])).catch(()=>{})};
 
@@ -1624,6 +1376,14 @@ function App(){
           <div className="ddi" style={{cursor:'default',flexDirection:'column',alignItems:'stretch',gap:6}}>
             <div style={{display:'flex',alignItems:'center',gap:6}}><Icon name="globe" size={14}/> {t('language')}</div>
             <div className="langsel" style={{margin:0}}>{LANGS.map(l=><button key={l.c} className={`langopt ${lang===l.c?'a':''}`} onClick={()=>{setLang(l.c);setTlCache({})}}>{l.f} {l.n}</button>)}</div>
+          </div>
+          <div className="ddiv"/>
+          <div className="ddi" style={{cursor:'default',flexDirection:'column',alignItems:'stretch',gap:6}}>
+            <div style={{display:'flex',alignItems:'center',gap:6}}><Icon name="brain" size={14} color="var(--teal)"/> TTS API URL</div>
+            <input className="inp" placeholder="https://your-modal-url.modal.run" value={ttsUrl}
+              onChange={e=>{setTtsUrlState(e.target.value);setTtsUrl(e.target.value)}}
+              style={{fontSize:11,padding:'8px 10px'}}/>
+            {ttsUrl&&<div style={{fontSize:10,color:ttsUrl?'var(--teal)':'var(--txd)'}}>{ttsUrl?'✓ Configured':'Paste your Modal endpoint URL'}</div>}
           </div>
           <div className="ddiv"/>
           <button className="ddi" onClick={()=>{if(confirm(t('switchUser')+'?'))doLogout()}}><Icon name="logout" size={16} color="var(--coral)"/> {t('switchUser')}</button>
