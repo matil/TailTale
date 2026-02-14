@@ -154,8 +154,12 @@ if(window.ort){
   // Mobile browsers lack SharedArrayBuffer (needs COOP/COEP headers), so use single thread
   const hasSharedArrayBuffer=typeof SharedArrayBuffer!=='undefined';
   ort.env.wasm.numThreads=hasSharedArrayBuffer?Math.min(navigator.hardwareConcurrency||2,4):1;
-  ort.env.wasm.proxy=true; // Run inference in Web Worker — prevents UI freeze
-  console.log('[ORT] Configured: threads='+ort.env.wasm.numThreads+', SharedArrayBuffer='+hasSharedArrayBuffer+', proxy=true');
+  // WebGPU is inherently async (GPU execution), so proxy=false is fine
+  // For WASM-only, proxy=true moves blocking computation to a worker (prevents UI freeze)
+  // But proxy can interfere with WebGPU session creation, so detect early
+  const gpuAvailable=!!navigator.gpu;
+  ort.env.wasm.proxy=!gpuAvailable; // WASM-only: use worker. WebGPU: GPU is already async
+  console.log('[ORT] Configured: threads='+ort.env.wasm.numThreads+', SharedArrayBuffer='+hasSharedArrayBuffer+', proxy='+ort.env.wasm.proxy+', gpuHint='+gpuAvailable);
 }else{console.error('[ORT] onnxruntime-web NOT loaded — window.ort is undefined')}
 </script>
 <script type="text/babel">
@@ -738,18 +742,8 @@ async function initF5(progressCb){
 function arrRMS(d){let s=0;for(let i=0;i<d.length;i++)s+=d[i]*d[i];return Math.sqrt(s/d.length)}
 function arrToInt16(d,q=0.999){const a=Float32Array.from(d,v=>Math.abs(v));a.sort();const mx=a[Math.min(Math.floor(a.length*q),a.length-1)];const sc=mx>0?32767/mx:1;const r=new Int16Array(d.length);for(let i=0;i<d.length;i++)r[i]=Math.max(-32768,Math.min(32767,Math.round(d[i]*sc)));return r}
 
-// FP16 tensor conversion — only works if browser has native Float16Array
-const hasFloat16=typeof Float16Array!=='undefined';
-function toFP16Tensor(ortTensor){
-  if(!hasFloat16)throw new Error('No Float16Array');
-  const d=ortTensor.data instanceof Float32Array?ortTensor.data:new Float32Array(ortTensor.data);
-  return new ort.Tensor('float16',Float16Array.from(d),ortTensor.dims);
-}
-function toFP32Tensor(ortTensor){
-  if(ortTensor.type==='float32')return ortTensor;
-  const d=hasFloat16&&ortTensor.data instanceof Float16Array?ortTensor.data:new Uint16Array(ortTensor.data);
-  return new ort.Tensor('float32',Float32Array.from(d),ortTensor.dims);
-}
+// FP16 tensor conversion — NOT NEEDED: ORT WebGPU handles FP16 models with FP32 input tensors internally
+// The FP16 model is just smaller to download; ORT does the precision conversion on the GPU
 
 // F5-TTS 3-stage inference pipeline
 async function f5Infer(refF32,refText,genText,speed=1.0,nfe=8){
@@ -771,7 +765,7 @@ async function f5Infer(refF32,refText,genText,speed=1.0,nfe=8){
   const refLen=Math.trunc(audio.length/hop);
   const dur=refLen+Math.trunc(((refLen/(refText.length+1))*genText.length)/speed);
   const durT=new ort.Tensor('int64',new BigInt64Array([BigInt(dur)]),[1]);
-  console.log('[F5] Frames: ref='+refLen+' total='+dur+' | NFE='+nfe+' | FP16='+f5UseFP16);
+  console.log('[F5] Frames: ref='+refLen+' total='+dur+' | NFE='+nfe+' | model='+(f5UseFP16?'fp16':'fp32'));
 
   // Stage 1: Encoder (always fp32)
   console.log('[F5] Stage 1/3: Encoder...');
@@ -782,13 +776,6 @@ async function f5Infer(refF32,refText,genText,speed=1.0,nfe=8){
       rck=eO[enc.outputNames[3]],rsk=eO[enc.outputNames[4]],cmt=eO[enc.outputNames[5]],
       cmtd=eO[enc.outputNames[6]],rsl=eO[enc.outputNames[7]];
   console.log('[F5] Encoder done ('+((Date.now()-t1)/1000).toFixed(1)+'s). Noise:',noise.dims);
-
-  // Convert to FP16 for transformer if using FP16 model
-  if(f5UseFP16){
-    try{noise=toFP16Tensor(noise);rcq=toFP16Tensor(rcq);rsq=toFP16Tensor(rsq);
-    rck=toFP16Tensor(rck);rsk=toFP16Tensor(rsk);cmt=toFP16Tensor(cmt);cmtd=toFP16Tensor(cmtd);
-    console.log('[F5] Converted encoder outputs to FP16')}catch(e){console.warn('[F5] FP16 conversion failed, using FP32:',e.message);f5UseFP16=false}
-  }
 
   // Stage 2: Transformer NFE loop
   console.log('[F5] Stage 2/3: Transformer ('+nfe+' steps)...');
@@ -804,9 +791,6 @@ async function f5Infer(refF32,refText,genText,speed=1.0,nfe=8){
     await new Promise(r=>setTimeout(r,0)); // yield to UI
   }
   console.log('[F5] Transformer done ('+((Date.now()-t2)/1000).toFixed(1)+'s total)');
-
-  // Convert back to FP32 for decoder
-  if(f5UseFP16)noise=toFP32Tensor(noise);
 
   // Stage 3: Decoder
   console.log('[F5] Stage 3/3: Decoder...');
@@ -1188,6 +1172,8 @@ function Player({story,voice,ver,onBack,show,t,text,lang}){
   const generateAndPlay=useCallback(async()=>{
     stopped.current=false;pausedRef.current=false;setPaused(false);
     setStatus('generating');setProgress(0);setHlWord(-1);setElapsed(0);
+    // Revoke previous Object URLs to prevent memory leak
+    chunksAudio.current.forEach(u=>{if(u)try{URL.revokeObjectURL(u)}catch(e){}});
     chunksAudio.current=[];chunkDurations.current=[];currentIdx.current=0;
     ttsModeRef.current='clone';
     if(!voice?.id?.startsWith('v-')){show(t('noVoiceWarn'));setStatus('idle');return}
@@ -1195,7 +1181,7 @@ function Player({story,voice,ver,onBack,show,t,text,lang}){
     try{const d=await dbGet('voices',voice.id);vb=d?.blob;console.log('[TTS] Voice blob:',vb?.size,vb?.type)}
     catch(e){console.warn('Voice DB error:',e)}
     if(!vb){show(t('voiceFailed'));setStatus('idle');return}
-    const chunks=chunkText(content,120);allChunks.current=chunks;computeChunkOffsets(chunks);let started=false;
+    const chunks=chunkText(content,200);allChunks.current=chunks;computeChunkOffsets(chunks);let started=false;
     // Show download progress if models not yet cached
     let dlUnsub=null;
     if(!f5Ready){
@@ -1215,7 +1201,7 @@ function Player({story,voice,ver,onBack,show,t,text,lang}){
         if(!started&&!stopped.current){started=true;setStatus('playing');setGenMsg('');playChunk(0)}
       }catch(e){if(dlUnsub){dlUnsub();dlUnsub=null}console.error('[TTS] ❌ Generation error chunk',i,':',e.message||e);if(i===0){show(t('voiceFailed')+' ('+((e.message||'').substring(0,60))+')');setStatus('playing');fallbackTTS(0);return}chunksAudio.current[i]=null}}
     if(!started&&!stopped.current){show(t('voiceFailed'));setStatus('playing');fallbackTTS(0)}
-  },[content,voice,show,t]);
+  },[content,voice,show,t,lang]);
 
   const fallbackTTS=(startIdx)=>{
     ttsModeRef.current='device';
@@ -1268,6 +1254,7 @@ function Player({story,voice,ver,onBack,show,t,text,lang}){
   const stopAll=()=>{stopped.current=true;stopTimer();
     if(audioRef.current){audioRef.current.pause();audioRef.current.src=''}
     window.speechSynthesis?.cancel();
+    chunksAudio.current.forEach(u=>{if(u)try{URL.revokeObjectURL(u)}catch(e){}});
     setStatus('idle');setProgress(0);setHlWord(-1);setPaused(false);setElapsed(0);
     deviceNextRef.current=null};
 
@@ -1308,7 +1295,8 @@ function Player({story,voice,ver,onBack,show,t,text,lang}){
     if(el){const cr=readingRef.current.getBoundingClientRect();const er=el.getBoundingClientRect();
       if(er.bottom>cr.bottom-20||er.top<cr.top+20)el.scrollIntoView({behavior:'smooth',block:'center'})}
   },[hlWord]);
-  useEffect(()=>()=>{stopped.current=true;stopTimer();window.speechSynthesis?.cancel()},[]);
+  useEffect(()=>()=>{stopped.current=true;stopTimer();window.speechSynthesis?.cancel();
+    chunksAudio.current.forEach(u=>{if(u)try{URL.revokeObjectURL(u)}catch(e){}});},[]);
   useEffect(()=>{const onVis=()=>{if(document.hidden)stopTimer();
     else if(!stopped.current&&!pausedRef.current&&ttsModeRef.current==='clone'&&audioRef.current&&!audioRef.current.paused)startTimer()};
     document.addEventListener('visibilitychange',onVis);return()=>document.removeEventListener('visibilitychange',onVis)},[]);
@@ -1514,7 +1502,7 @@ function App(){
       if(!txt){const cached=await dbGet('translations',key).catch(()=>null);if(cached)txt=cached.text}
       setPlayerText(txt);
     }
-    setTab('player')};;
+    setTab('player')};
   const doLogout=()=>{localStorage.removeItem('tat_name');localStorage.removeItem('tat_v');localStorage.removeItem('tat_tut');setName('');setTutDone(false);setTutStep(0);setSv(null);setSs(null);speechSynthesis?.cancel();setMenu(false);
     // Reload custom stories for next user (they're shared across readers)
     dbGetAll('customStories').then(cs=>setCustomStories(cs||[])).catch(()=>{})};
