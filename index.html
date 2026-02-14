@@ -709,18 +709,21 @@ async function callHFSpace(text,voiceBlob,langCode){
   console.log('[TTS] Voice uploaded:',voicePath);
 
   // Queue the request — try Gradio 5 path first
-  const fileData={path:voicePath,meta:{_type:'gradio.FileData'}};
+  // app.py signature: generate_tts_audio(text_input, language_id, audio_prompt_path_input, exaggeration, temperature, seed, cfg_weight)
+  // audio_prompt_path_input is a gr.Audio(type="filepath") → for API, send as path string or file dict
+  const fileRef={path:voicePath,url:HF_SPACE+'/gradio_api/file='+voicePath,orig_name:'voice.wav',mime_type:'audio/wav'};
   const payload={data:[
-    text,              // text_input
-    langCode||'en',    // language_id
-    fileData,          // audio_prompt_path_input
-    0.5,               // exaggeration
-    0.5,               // cfg_weight
-    0.8,               // temperature
-    0,                 // seed (0 = random)
+    text,              // text_input (str)
+    langCode||'en',    // language_id (str: en, fr, he, etc.)
+    fileRef,           // audio_prompt_path_input (Audio filepath)
+    0.5,               // exaggeration_input (float, 0.25-2.0)
+    0.8,               // temperature_input (float, 0.05-5.0)
+    0,                 // seed_num_input (int, 0=random)
+    0.5,               // cfgw_input (float, 0.2-1.0)
   ]};
 
   console.log('[TTS] Queuing prediction...');
+  console.log('[TTS] Payload:',JSON.stringify(payload).substring(0,300));
   let queuePath='/gradio_api/call/generate_tts_audio';
   let qr=await fetch(HF_SPACE+queuePath,{
     method:'POST',
@@ -781,41 +784,54 @@ async function callHFSpace(text,voiceBlob,langCode){
             
             if(currentEvent==='complete'){
               try{
-                const data=JSON.parse(raw);
-                // Check for error in complete event
-                if(data&&typeof data==='object'&&!Array.isArray(data)&&data.error){
+                const parsed=JSON.parse(raw);
+                // Gradio SSE complete format can be:
+                // 1) Direct array: [audioData]
+                // 2) Wrapped: {"output": {"data": [audioData]}}
+                let data=parsed;
+                if(parsed&&parsed.output&&parsed.output.data)data=parsed.output.data;
+                if(!Array.isArray(data)){
                   clearTimeout(timeout);
-                  reject(new Error('HF Space error: '+JSON.stringify(data.error)));
+                  reject(new Error('HF Space unexpected response: '+raw.substring(0,300)));
                   return;
                 }
-                // data should be an array with audio output
-                if(Array.isArray(data)&&data[0]){
-                  const out=data[0];
-                  let audioUrl=null;
-                  if(typeof out==='string')audioUrl=out;
-                  else if(out.url)audioUrl=out.url;
-                  else if(out.path)audioUrl=HF_SPACE+'/gradio_api/file='+out.path;
-                  if(audioUrl){
-                    clearTimeout(timeout);
-                    if(audioUrl.startsWith('/'))audioUrl=HF_SPACE+audioUrl;
-                    console.log('[TTS] Got audio URL:',audioUrl.substring(0,80)+'...');
-                    const ar=await fetch(audioUrl);
-                    if(!ar.ok)reject(new Error('Audio download failed: '+ar.status));
-                    else resolve(await ar.blob());
-                    return;
-                  }
+                const out=data[0];
+                if(!out){
+                  clearTimeout(timeout);
+                  reject(new Error('HF Space: empty audio output'));
+                  return;
                 }
-                // If we got complete but no audio data
+                let audioUrl=null;
+                if(typeof out==='string')audioUrl=out;
+                else if(out.url)audioUrl=out.url;
+                else if(out.path)audioUrl=HF_SPACE+'/gradio_api/file='+out.path;
+                if(audioUrl){
+                  clearTimeout(timeout);
+                  if(audioUrl.startsWith('/'))audioUrl=HF_SPACE+audioUrl;
+                  console.log('[TTS] Got audio URL:',audioUrl.substring(0,80)+'...');
+                  const ar=await fetch(audioUrl);
+                  if(!ar.ok)reject(new Error('Audio download failed: '+ar.status));
+                  else resolve(await ar.blob());
+                  return;
+                }
+                // Audio component might return (sample_rate, array) as a dict
+                // e.g. {"name":"audio.wav","data":"data:audio/wav;base64,..."}
+                if(out.data&&typeof out.data==='string'&&out.data.startsWith('data:')){
+                  clearTimeout(timeout);
+                  const ar=await fetch(out.data);
+                  resolve(await ar.blob());
+                  return;
+                }
                 clearTimeout(timeout);
-                reject(new Error('HF Space: complete but no audio data: '+raw.substring(0,200)));
+                reject(new Error('HF Space: cannot parse audio from: '+JSON.stringify(out).substring(0,200)));
                 return;
               }catch(e){
                 clearTimeout(timeout);
-                reject(new Error('HF Space: parse error on complete: '+raw.substring(0,200)));
+                reject(new Error('HF Space: parse error: '+e.message+' raw: '+raw.substring(0,200)));
                 return;
               }
             }
-            // For other events (heartbeat, etc), just continue
+            // For other events (heartbeat, process_starts, etc), just continue
             currentEvent='';
           }
         }
