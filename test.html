@@ -26,7 +26,7 @@ audio{width:100%;margin:10px 0}
 </div>
 
 <div style="margin-top:10px">
-<button onclick="toggleRec()" id="btnRec" disabled class="red">2. Hold to Record (6-10s)</button>
+<button onclick="toggleRec()" id="btnRec" disabled class="red">2. Record Voice (5s)</button>
 <audio id="refAudio" controls></audio>
 </div>
 
@@ -38,8 +38,8 @@ audio{width:100%;margin:10px 0}
 <div style="margin-top:10px">
 <label>NFE Steps: <select id="nfe">
 <option value="4">4 (fast, low quality)</option>
-<option value="8">8 (medium)</option>
-<option value="16" selected>16 (good)</option>
+<option value="8" selected>8 (recommended)</option>
+<option value="16">16 (better, slower)</option>
 <option value="24">24 (better)</option>
 <option value="32">32 (best, slow)</option>
 </select></label>
@@ -162,8 +162,8 @@ async function decodeAudio(blob){
     }
     for(let i=0;i<mono.length;i++)mono[i]/=audio.numberOfChannels;
   }
-  // Trim to 10s max
-  if(mono.length>240000)mono=mono.slice(0,240000);
+  // Trim to 5s max (longer = quadratically slower transformer)
+  if(mono.length>120000)mono=mono.slice(0,120000);
   return mono;
 }
 
@@ -204,8 +204,9 @@ async function generate(){
     const audioT=new ort.Tensor('int16',i16,[1,1,i16.length]);
     L('Audio tensor: '+audioT.type+' '+JSON.stringify(audioT.dims));
     
-    // Tokenize
-    const combined=(refText+' '+genText).toLowerCase();
+    // Tokenize (normalize smart quotes first!)
+    const normalize=t=>t.replace(/[\u2018\u2019\u201A\u201B]/g,"'").replace(/[\u201C\u201D\u201E\u201F]/g,'"').replace(/[\u2013\u2014]/g,'-').replace(/\u2026/g,'...').replace(/\s+/g,' ').trim();
+    const combined=normalize((refText+' '+genText).toLowerCase());
     const toks=Int32Array.from([...combined].map(c=>vocab[c]||0));
     const unk=[...combined].filter(c=>!vocab[c]);
     if(unk.length>0)L('⚠ Unknown chars ('+unk.length+'): '+JSON.stringify([...new Set(unk)]));
