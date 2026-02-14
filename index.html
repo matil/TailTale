@@ -42,8 +42,8 @@ body{font-family:var(--ff);background:var(--nd);color:var(--tx);-webkit-font-smo
 .hills{position:absolute;bottom:0;width:100%;height:120px}.hl{position:absolute;bottom:0;border-radius:50% 50% 0 0}
 .hl:nth-child(1){width:max(500px,45vw);height:120px;background:#0F1235;left:-80px}.hl:nth-child(2){width:max(450px,40vw);height:95px;background:#121640;left:180px}.hl:nth-child(3){width:max(600px,50vw);height:105px;background:#0D1030;right:-120px}
 .app{position:relative;z-index:1;height:100%;display:flex;flex-direction:column;max-width:520px;margin:0 auto;padding:0 env(safe-area-inset-right) 0 env(safe-area-inset-left)}
-.hdr{padding:12px 20px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;direction:ltr}
-.logo{display:flex;align-items:center}
+.hdr{padding:12px 20px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.logo{display:flex;align-items:center;direction:ltr}
 .logo-hdr{height:44px;width:200px;display:block}
 .logo-welcome{width:300px;max-width:90vw;margin:0 auto 8px;display:block}
 .hbtn{height:36px;padding:0 14px;border-radius:50px;border:1px solid var(--bd);background:var(--gl);font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:5px;color:var(--txs);font-family:var(--ff);transition:.2s}.hbtn:hover{background:var(--glh)}
@@ -75,19 +75,18 @@ body{font-family:var(--ff);background:var(--nd);color:var(--tx);-webkit-font-smo
 .vx{margin-left:auto;background:none;border:none;cursor:pointer;opacity:.3;padding:4px;color:var(--txd)}.vx:hover{opacity:.7}
 .pc{border-radius:28px;overflow:hidden;margin-top:6px}.pb{background:linear-gradient(160deg,#1A0A3E,#120835 40%,#0D0628);padding:28px 20px;position:relative;border:1px solid rgba(255,255,255,.05);direction:ltr}
 .pti{font-family:var(--fh);font-size:22px;font-weight:700;color:var(--moon);text-align:center;direction:auto;unicode-bidi:plaintext}.pau{font-size:12px;color:rgba(255,255,255,.3);text-align:center;margin-top:2px}
-.pbar{margin:22px 0 6px;padding:10px 0;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:none}
+.pbar{margin:22px 0 6px;padding:14px 0;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:none;user-select:none}
 .pbtr{width:100%;height:6px;background:rgba(255,255,255,.08);border-radius:3px;position:relative}
 .pbfl{height:100%;background:linear-gradient(90deg,var(--lavs),var(--wg));border-radius:3px;position:relative;will-change:width}
-.pbth{position:absolute;right:-8px;top:50%;transform:translateY(-50%);width:18px;height:18px;background:var(--moon);border-radius:50%;box-shadow:0 0 8px rgba(255,248,220,.3)}
+.pbth{position:absolute;right:-10px;top:50%;transform:translateY(-50%);width:22px;height:22px;background:var(--moon);border-radius:50%;box-shadow:0 0 8px rgba(255,248,220,.3);transition:transform .1s}.pbar:active .pbth{transform:translateY(-50%) scale(1.3)}
 .ptm{display:flex;justify-content:space-between;font-size:11px;color:rgba(255,255,255,.25);font-weight:600;font-variant-numeric:tabular-nums}
 .pcc{display:flex;align-items:center;justify-content:center;gap:20px;margin-top:20px}
 .cb{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.07);color:rgba(255,255,255,.6);width:46px;height:46px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.2s}.cb:hover{background:rgba(255,255,255,.1);color:#fff}.cb:active{transform:scale(.93)}
 .cb.pp{width:64px;height:64px;background:linear-gradient(135deg,var(--lavs),var(--lavd));color:#fff;box-shadow:0 0 25px rgba(167,139,204,.25);border:none}
 .pvb{text-align:center;margin-top:16px;font-size:11px;color:rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;gap:4px;direction:ltr}.pvb b{color:var(--wg)}
-.ra{background:rgba(20,24,69,.5);border-radius:var(--rm);padding:20px;margin-top:14px;flex:1;min-height:100px;overflow-y:auto;font-size:15px;line-height:1.85;color:rgba(232,228,240,.65);border:1px solid var(--bd);scroll-behavior:smooth;margin-bottom:16px}
+.ra{background:rgba(20,24,69,.5);border-radius:var(--rm);padding:20px;margin-top:14px;flex:1;min-height:100px;overflow-y:auto;font-size:15px;line-height:1.85;color:rgba(232,228,240,.55);border:1px solid var(--bd);scroll-behavior:smooth;margin-bottom:16px}
 .ra p{margin-bottom:14px}.ra p:last-child{margin-bottom:0}
-.ra .whl{color:var(--wg);font-weight:600;text-shadow:0 0 10px rgba(255,190,118,.25);transition:color .12s,text-shadow .12s}
-.ra .wctx{color:rgba(232,228,240,.85);transition:color .2s}
+.ra .whl{color:var(--wg);transition:color .15s}
 .genst{background:rgba(139,111,192,.12);border:1px solid rgba(139,111,192,.2);border-radius:var(--rs);padding:14px;margin-top:12px;text-align:center;font-size:13px;color:var(--lav);line-height:1.5}
 .genst .spinner{display:inline-block;width:16px;height:16px;border:2px solid rgba(197,179,230,.3);border-top-color:var(--lav);border-radius:50%;animation:spin 1s linear infinite;vertical-align:middle;margin-right:6px}
 @keyframes spin{to{transform:rotate(360deg)}}
@@ -125,7 +124,7 @@ body{font-family:var(--ff);background:var(--nd);color:var(--tx);-webkit-font-smo
 .ddi{display:flex;align-items:center;gap:8px;padding:10px 14px;border-radius:10px;cursor:pointer;font-size:13px;font-weight:600;color:var(--txs);transition:.15s;width:100%;background:none;border:none;font-family:var(--ff);text-align:left}.ddi:hover{background:var(--gl);color:var(--tx)}
 .ddiv{height:1px;background:var(--bd);margin:4px 8px}
 .langsel{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}.langopt{padding:6px 14px;border-radius:10px;border:1px solid var(--bd);background:var(--gl);font-size:12px;font-weight:700;cursor:pointer;transition:.2s;color:var(--txs);font-family:var(--ff)}.langopt:hover{background:var(--glh)}.langopt.a{background:rgba(167,139,204,.2);color:var(--lav);border-color:rgba(167,139,204,.3)}
-[dir=rtl] .sr{flex-direction:row-reverse}[dir=rtl] .si{text-align:right}[dir=rtl] .vc{flex-direction:row-reverse}[dir=rtl] .ct{flex-direction:row-reverse}[dir=rtl] .sh{flex-direction:row-reverse}[dir=rtl] .nav{flex-direction:row-reverse}[dir=rtl] .ddmenu{right:auto;left:16px}[dir=rtl] .ddi{flex-direction:row-reverse;text-align:right}[dir=rtl] .ver-btns{flex-direction:row-reverse}[dir=rtl] .main{direction:rtl}[dir=rtl] .fi{direction:rtl}[dir=rtl] .ss{text-align:right}[dir=rtl] .ra{direction:rtl}[dir=rtl] .ra p{text-align:right;direction:rtl}[dir=rtl] .genst{direction:rtl}[dir=rtl] .card{direction:rtl}[dir=rtl] .prewarm{direction:rtl}[dir=rtl] .info{direction:rtl;text-align:right}[dir=rtl] .flt{direction:rtl}[dir=rtl] .cmtabs{direction:rtl}
+[dir=rtl] .sr{flex-direction:row-reverse}[dir=rtl] .si{text-align:right}[dir=rtl] .vc{flex-direction:row-reverse}[dir=rtl] .ct{flex-direction:row-reverse}[dir=rtl] .sh{flex-direction:row-reverse}[dir=rtl] .nav{flex-direction:row-reverse}[dir=rtl] .ddmenu{right:auto;left:16px}[dir=rtl] .ddi{flex-direction:row-reverse;text-align:right}[dir=rtl] .ver-btns{flex-direction:row-reverse}[dir=rtl] .main{direction:rtl}[dir=rtl] .fi{direction:rtl}[dir=rtl] .ss{text-align:right}[dir=rtl] .ra{direction:rtl}[dir=rtl] .ra p{text-align:right;direction:rtl}[dir=rtl] .genst{direction:rtl}[dir=rtl] .card{direction:rtl}[dir=rtl] .prewarm{direction:rtl}[dir=rtl] .info{direction:rtl;text-align:right}[dir=rtl] .flt{direction:rtl}[dir=rtl] .cmtabs{direction:rtl}[dir=rtl] .hdr{flex-direction:row-reverse}[dir=rtl] .vsample{margin-left:0;margin-right:auto}[dir=rtl] .pvb{direction:ltr}
 .tl-spinner{display:inline-flex;align-items:center;gap:6px;padding:10px 16px;border-radius:10px;background:rgba(139,111,192,.1);color:var(--lav);font-size:12px;font-weight:600;margin:10px 0}
 .tl-spinner .spinner{width:14px;height:14px;border:2px solid rgba(197,179,230,.3);border-top-color:var(--lav);border-radius:50%;animation:spin 1s linear infinite}
 .vsample{width:36px;height:36px;border-radius:50%;border:1px solid rgba(85,230,193,.2);background:rgba(85,230,193,.06);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:.2s;flex-shrink:0;margin-left:auto}.vsample:hover{background:rgba(85,230,193,.15);border-color:rgba(85,230,193,.4)}.vsample:active{transform:scale(.9)}
@@ -224,12 +223,27 @@ pt:["Era uma vez, numa terra muito distante, as estrelas começaram a cantar.","
 zh:["从前，在一个遥远的地方，星星开始唱歌了。","小熊打了个哈欠，缩进了温暖的毯子里。","晚安月亮，晚安星星，晚安所有的小朋友。","一阵轻柔的微风把萤火虫吹过了沉睡的草地。","聪明的老猫头鹰守护着森林，看着大家入睡。","一闪一闪亮晶晶，满天都是小星星。","小兔子在月光下的花园里轻轻地跳着。","从此他们幸福地生活在一起。结局。","闭上眼睛，梦想神奇的冒险吧。","夜空闪烁着无数小钻石般的光芒。"]
 };
 let sampleAudioPlaying=null;
-function playVoiceSample(lang,voiceBlob){
+async function playVoiceSample(lang,voiceId){
   // Stop any currently playing sample
-  if(sampleAudioPlaying){try{sampleAudioPlaying.cancel?sampleAudioPlaying.cancel():sampleAudioPlaying.pause?.()}catch(e){}sampleAudioPlaying=null}
+  if(sampleAudioPlaying){try{sampleAudioPlaying.pause();sampleAudioPlaying.src=''}catch(e){}sampleAudioPlaying=null}
+  // Play back the actual recorded voice from DB
+  if(voiceId){
+    try{
+      const d=await dbGet('voices',voiceId);
+      if(d?.blob){
+        const url=URL.createObjectURL(d.blob);
+        const audio=new Audio(url);
+        audio.onended=()=>{URL.revokeObjectURL(url);sampleAudioPlaying=null};
+        audio.onerror=()=>{URL.revokeObjectURL(url);sampleAudioPlaying=null};
+        sampleAudioPlaying=audio;
+        await audio.play();
+        return;
+      }
+    }catch(e){console.warn('Voice playback failed:',e)}
+  }
+  // Fallback: use device TTS
   const sentences=VOICE_SAMPLES[lang]||VOICE_SAMPLES.en;
   const text=sentences[Math.floor(Math.random()*sentences.length)];
-  // Use device TTS for instant preview
   const synth=window.speechSynthesis;if(!synth)return;
   synth.cancel();
   const u=new SpeechSynthesisUtterance(text);u.rate=0.9;u.pitch=1.0;
@@ -237,9 +251,9 @@ function playVoiceSample(lang,voiceBlob){
   const vs=synth.getVoices();
   const pk=vs.find(v=>v.lang.startsWith(lc)&&/female|samantha|karen|tessa/i.test(v.name))||vs.find(v=>v.lang.startsWith(lc))||vs.find(v=>v.lang.startsWith('en'))||vs[0];
   if(pk)u.voice=pk;
-  sampleAudioPlaying=synth;synth.speak(u);
+  const fakeAudio={pause:()=>synth.cancel(),src:''};
+  sampleAudioPlaying=fakeAudio;synth.speak(u);
   u.onend=()=>{sampleAudioPlaying=null};u.onerror=()=>{sampleAudioPlaying=null};
-  return text;
 }
 
 // Translated story titles & authors per language
@@ -498,20 +512,38 @@ async function dbGetAll(s){const db=await openDB();return new Promise((res,rej)=
 
 async function translateText(text,from,to){
   if(from===to)return text;
-  // Only used for custom stories — use Claude API
   const key=`${from}_${to}_${hashCode(text)}`;
   const cached=await dbGet('translations',key).catch(()=>null);
-  if(cached&&!cached.text?.includes('MYMEMORY'))return cached.text;
+  if(cached&&!cached.text?.includes('MYMEMORY')&&cached.text!==text)return cached.text;
+  // Google Translate language codes
+  const gLang=(c)=>({zh:'zh-CN',he:'iw'}[c]||c);
+  // Strategy 1: Google Translate free API (paragraph by paragraph to preserve structure)
+  try{
+    const paras=text.split('\n\n');const translated=[];
+    for(const p of paras){
+      if(!p.trim()){translated.push('');continue}
+      const url=`https://translate.googleapis.com/translate_a/single?client=gtx&sl=${gLang(from)}&tl=${gLang(to)}&dt=t&q=${encodeURIComponent(p)}`;
+      const r=await fetch(url);
+      if(!r.ok)throw new Error('GT '+r.status);
+      const d=await r.json();
+      translated.push((d[0]||[]).map(s=>s[0]||'').join(''));
+    }
+    const result=translated.join('\n\n');
+    await dbPut('translations',{key,text:result,from,to,ts:Date.now()});
+    return result;
+  }catch(e){console.warn('Google Translate failed:',e)}
+  // Strategy 2: Claude API (works in artifact viewer)
   try{
     const resp=await fetch('https://api.anthropic.com/v1/messages',{
       method:'POST',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:4000,
         messages:[{role:'user',content:`Translate the following bedtime story from ${from} to ${to}. Keep the same paragraph structure (separated by double newlines). Output ONLY the translated text, nothing else:\n\n${text}`}]})
     });
+    if(!resp.ok)throw new Error('API '+resp.status);
     const d=await resp.json();const result=d?.content?.[0]?.text||text;
-    await dbPut('translations',{key,text:result,from,to,ts:Date.now()});
-    return result;
-  }catch(e){console.warn('Translation failed:',e);return text}
+    if(result&&result!==text){await dbPut('translations',{key,text:result,from,to,ts:Date.now()});return result}
+  }catch(e){console.warn('Claude translation failed:',e)}
+  return text;
 }
 function hashCode(s){let h=0;for(let i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))&0x7fffffff;return h.toString(36)}
 
@@ -534,12 +566,13 @@ function getRandomPrompt(){return SURPRISE_PROMPTS[Math.floor(Math.random()*SURP
 
 async function generateStoryAI(description,lang,childName){
   const langName=LANGS.find(l=>l.c===lang)?.n||'English';
+  // Always generate in English first (more reliable), then translate if needed
   const prompt=`Write a short, gentle bedtime story (200-300 words) for young children (ages 3-7).
 
 Story idea: ${description}
 
 Requirements:
-- Write entirely in ${langName}${lang!=='en'?' (do NOT write in English)':''}
+- Write in English
 - Sweet, calming tone perfect for bedtime
 - Simple vocabulary for young children
 - Include the child's name "${childName}" as a character or the one being told the story
@@ -554,14 +587,22 @@ Requirements:
       body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1000,
         messages:[{role:"user",content:prompt}]})
     });
-    if(!r.ok)throw new Error('API '+r.status);
+    if(!r.ok){const errText=await r.text().catch(()=>'');console.error('Story gen API error:',r.status,errText);throw new Error('API '+r.status)}
     const d=await r.json();
     const text=d.content?.map(b=>b.text||'').join('\n').trim();
     if(!text)throw new Error('Empty response');
-    // Split title from body
     const lines=text.split('\n');
-    const title=lines[0].replace(/^[#*"]+|[#*"]+$/g,'').trim();
-    const body=lines.slice(1).join('\n').trim();
+    let title=lines[0].replace(/^[#*"]+|[#*"]+$/g,'').trim();
+    let body=lines.slice(1).join('\n').trim();
+    // Translate if non-English
+    if(lang!=='en'){
+      try{
+        const trTitle=await translateText(title,'en',lang);
+        const trBody=await translateText(body,'en',lang);
+        if(trTitle&&trTitle!==title)title=trTitle;
+        if(trBody&&trBody!==body)body=trBody;
+      }catch(e){console.warn('Story translation failed, using English:',e)}
+    }
     return{title,body};
   }catch(e){
     console.error('Story generation failed:',e);
@@ -774,7 +815,7 @@ function LogoFull({className=''}){
       <tspan fill="#FFF8DC">T</tspan><tspan fill="#F5A623">a</tspan><tspan fill="#FFF8DC">le</tspan>
     </text>
     <path d="M70 146 Q110 155 160 150 Q210 145 250 150" stroke="url(#tG)" strokeWidth="2.5" strokeLinecap="round" fill="none" opacity=".5"/>
-    <text x="160" y="170" textAnchor="middle" fontFamily="Nunito,sans-serif" fontWeight="600" fontSize="12" fill="#A8A0C0" letterSpacing="3">BEDTIME STORIES IN YOUR VOICE</text>
+    <text x="160" y="170" textAnchor="middle" fontFamily="Inter,sans-serif" fontWeight="600" fontSize="12" fill="#A8A0C0" letterSpacing="3">BEDTIME STORIES IN YOUR VOICE</text>
   </svg>);
 }
 function LogoHeader(){
@@ -824,7 +865,7 @@ function TutWelcome({onDone,lang,setLang,t}){
 function TutVoice({voices,onSave,onSelect,selected,onNext,pw,t,lang}){
   const[samplePlaying,setSamplePlaying]=useState(null);
   const testVoice=(e,v)=>{e.stopPropagation();setSamplePlaying(v.id);
-    playVoiceSample(lang);setTimeout(()=>setSamplePlaying(null),3000)};
+    playVoiceSample(lang,v.id);setTimeout(()=>setSamplePlaying(null),5000)};
   return(<div className="fi"><TutStepper step={1}/>
     <div className="tut-title">{t('setupVoice')}</div>
     <div className="tut-sub">{t('voiceSub')}</div>
@@ -898,6 +939,9 @@ function Player({story,voice,ver,onBack,show,t,text,lang}){
   const stopped=useRef(false);const pausedRef=useRef(false);const currentIdx=useRef(0);
   const allChunks=useRef([]);const timerRef=useRef(null);const readingRef=useRef(null);
   const chunkOffsetsRef=useRef([]);
+  const ttsModeRef=useRef('clone'); // 'clone' or 'device'
+  const deviceNextRef=useRef(null); // store device TTS restart function
+  const deviceStartRef=useRef(0);
   const content=text||(ver==='long'?story?.txL:story?.txS)||'';const paragraphs=content.split('\n\n');
   const storyMin=(ver==='long'?story?.mL:story?.mS)||4;
 
@@ -916,7 +960,6 @@ function Player({story,voice,ver,onBack,show,t,text,lang}){
   const wordsByPara=useMemo(()=>{const g=paragraphs.map(()=>[]);wordMap.forEach(w=>{if(g[w.pi])g[w.pi].push(w)});return g},[wordMap]);
   const charToWord=(pos)=>{for(let i=wordMap.length-1;i>=0;i--){if(pos>=wordMap[i].start)return i}return 0};
 
-  // Compute chunk offsets for character position mapping
   const computeChunkOffsets=(chunks)=>{
     const offsets=[];let sf=0;
     for(const c of chunks){const idx=content.indexOf(c,sf);offsets.push(idx>=0?idx:sf);sf=(idx>=0?idx:sf)+c.length}
@@ -931,12 +974,10 @@ function Player({story,voice,ver,onBack,show,t,text,lang}){
     let td=0;for(let i=0;i<total;i++)td+=(chunkDurations.current[i]||(i<idx?3:cd));
     if(td>0)setProgress(Math.min(99.5,(ct/td)*100));
     setElapsed(Math.round(ct));
-    // Word-level: estimate character position within current chunk
     const chunkStart=chunkOffsetsRef.current[idx]||0;
     const chunkLen=allChunks.current[idx]?.length||1;
     const charInChunk=Math.round(chunkLen*(cd>0?cc/cd:0));
-    const globalChar=chunkStart+charInChunk;
-    setHlWord(charToWord(globalChar));
+    setHlWord(charToWord(chunkStart+charInChunk));
   };
   const startTimer=()=>{stopTimer();timerRef.current=setInterval(doProgress,120)};
   const stopTimer=()=>{if(timerRef.current){clearInterval(timerRef.current);timerRef.current=null}};
@@ -952,6 +993,7 @@ function Player({story,voice,ver,onBack,show,t,text,lang}){
     stopped.current=false;pausedRef.current=false;setPaused(false);
     setStatus('generating');setProgress(0);setHlWord(-1);setElapsed(0);
     chunksAudio.current=[];chunkDurations.current=[];currentIdx.current=0;
+    ttsModeRef.current='clone';
     if(!voice?.id?.startsWith('v-')){show(t('noVoiceWarn'));setStatus('idle');return}
     let vb=null;
     try{const d=await dbGet('voices',voice.id);vb=d?.blob;console.log('[TTS] Voice blob:',vb?.size,vb?.type)}
@@ -964,48 +1006,95 @@ function Player({story,voice,ver,onBack,show,t,text,lang}){
         const tmp=new Audio(chunksAudio.current[i]);
         await new Promise(r=>{tmp.onloadedmetadata=()=>{chunkDurations.current[i]=tmp.duration;r()};tmp.onerror=r;setTimeout(r,3000)});
         if(!started&&!stopped.current){started=true;setStatus('playing');setGenMsg('');playChunk(0)}
-      }catch(e){console.error('Gen error',i,':',e);if(i===0){show(t('voiceFailed'));setStatus('playing');fallbackTTS();return}chunksAudio.current[i]=null}}
-    if(!started&&!stopped.current){show(t('voiceFailed'));setStatus('playing');fallbackTTS()}
+      }catch(e){console.error('Gen error',i,':',e);if(i===0){show(t('voiceFailed'));setStatus('playing');fallbackTTS(0);return}chunksAudio.current[i]=null}}
+    if(!started&&!stopped.current){show(t('voiceFailed'));setStatus('playing');fallbackTTS(0)}
   },[content,voice,show,t]);
-  const fallbackTTS=()=>{const synth=window.speechSynthesis;synth.cancel();
-    const chunks=chunkText(content,250);allChunks.current=chunks;computeChunkOffsets(chunks);let st=Date.now();
-    const totalLen=content.length;
-    const next=(idx)=>{if(idx>=chunks.length||stopped.current){setStatus('done');setProgress(100);setHlWord(-1);return}
+
+  const fallbackTTS=(startIdx)=>{
+    ttsModeRef.current='device';
+    const synth=window.speechSynthesis;synth.cancel();
+    const chunks=allChunks.current.length?allChunks.current:chunkText(content,250);
+    if(!allChunks.current.length){allChunks.current=chunks;computeChunkOffsets(chunks)}
+    deviceStartRef.current=Date.now();
+    const next=(idx)=>{
+      if(idx>=chunks.length||stopped.current){setStatus('done');setProgress(100);setHlWord(-1);return}
+      currentIdx.current=idx;
       setProgress((idx/chunks.length)*100);
-      setElapsed(Math.round((Date.now()-st)/1000));
-      // Start with chunk-level highlight
+      setElapsed(Math.round((Date.now()-deviceStartRef.current)/1000));
       const chunkStart=chunkOffsetsRef.current[idx]||0;
       setHlWord(charToWord(chunkStart));
       const u=new SpeechSynthesisUtterance(chunks[idx]);u.rate=0.88;u.pitch=1.0;
       const langCode=localStorage.getItem('tat_lang')||'en';const lc=langCode==='zh'?'zh-CN':langCode;
       const vs=synth.getVoices();const pk=vs.find(v=>v.lang.startsWith(lc))||vs.find(v=>/Google/i.test(v.name)&&v.lang.startsWith(lc))||vs.find(v=>v.lang.startsWith('en'))||vs[0];
       if(pk)u.voice=pk;
-      // Word-level highlighting via boundary events (Chrome, Edge, Firefox)
       u.onboundary=(e)=>{
         if(e.name==='word'&&!stopped.current&&!pausedRef.current){
-          const gp=chunkStart+e.charIndex;
-          setHlWord(charToWord(gp));
-          setElapsed(Math.round((Date.now()-st)/1000));
+          setHlWord(charToWord(chunkStart+e.charIndex));
+          setElapsed(Math.round((Date.now()-deviceStartRef.current)/1000));
+          setProgress(((idx+(e.charIndex/(chunks[idx].length||1)))/chunks.length)*100);
         }
       };
-      u.onend=()=>next(idx+1);u.onerror=e=>{if(e.error!=='canceled')next(idx+1)};synth.speak(u)};next(0)};
+      u.onend=()=>next(idx+1);u.onerror=e=>{if(e.error!=='canceled')next(idx+1)};synth.speak(u)};
+    deviceNextRef.current=next;
+    next(startIdx||0);
+  };
+
   const togglePause=()=>{if(status!=='playing')return;
-    if(pausedRef.current){pausedRef.current=false;setPaused(false);if(audioRef.current?.paused){audioRef.current.play();startTimer()}else window.speechSynthesis?.resume()}
-    else{pausedRef.current=true;setPaused(true);stopTimer();if(audioRef.current&&!audioRef.current.paused)audioRef.current.pause();else window.speechSynthesis?.pause()}};
-  const stopAll=()=>{stopped.current=true;stopTimer();if(audioRef.current){audioRef.current.pause();audioRef.current.src=''}window.speechSynthesis?.cancel();setStatus('idle');setProgress(0);setHlWord(-1);setPaused(false);setElapsed(0)};
-  const handleSeek=(e)=>{if(!allChunks.current.length||!chunksAudio.current.some(Boolean))return;
+    if(pausedRef.current){
+      // RESUME
+      pausedRef.current=false;setPaused(false);
+      if(ttsModeRef.current==='device'){
+        window.speechSynthesis?.resume();
+      }else{
+        if(audioRef.current?.src&&audioRef.current.src!==''){audioRef.current.play().catch(()=>{});startTimer()}
+      }
+    }else{
+      // PAUSE
+      pausedRef.current=true;setPaused(true);stopTimer();
+      if(ttsModeRef.current==='device'){
+        window.speechSynthesis?.pause();
+      }else{
+        if(audioRef.current)audioRef.current.pause();
+      }
+    }
+  };
+  const stopAll=()=>{stopped.current=true;stopTimer();
+    if(audioRef.current){audioRef.current.pause();audioRef.current.src=''}
+    window.speechSynthesis?.cancel();
+    setStatus('idle');setProgress(0);setHlWord(-1);setPaused(false);setElapsed(0);
+    deviceNextRef.current=null};
+
+  const handleSeek=(e)=>{
     const rect=e.currentTarget.getBoundingClientRect();
     const cx=e.changedTouches?e.changedTouches[0].clientX:e.touches?e.touches[0].clientX:e.clientX;
     const pct=Math.max(0,Math.min(1,(cx-rect.left)/rect.width));
-    let td=0;for(let i=0;i<allChunks.current.length;i++)td+=(chunkDurations.current[i]||3);
-    const tt=pct*td;let ac=0;let ti=0;let st=0;
-    for(let i=0;i<allChunks.current.length;i++){const d=chunkDurations.current[i]||3;if(ac+d>tt){ti=i;st=tt-ac;break}ac+=d;ti=i;st=0}
-    stopTimer();if(audioRef.current){audioRef.current.pause();audioRef.current.src=''}window.speechSynthesis?.cancel();
-    stopped.current=false;
-    if(chunksAudio.current[ti]){currentIdx.current=ti;audioRef.current.src=chunksAudio.current[ti];
-      audioRef.current.onloadedmetadata=()=>{audioRef.current.currentTime=Math.min(st,audioRef.current.duration-0.1);audioRef.current.play().then(()=>{setStatus('playing');setPaused(false);pausedRef.current=false;startTimer()})};
-      audioRef.current.onended=()=>playChunk(ti+1);audioRef.current.onerror=()=>playChunk(ti+1);audioRef.current.load()}else{setStatus('playing');setPaused(false);pausedRef.current=false;playChunk(ti)}};
-  // Scroll highlighted word into view when it goes offscreen
+    // Update visual progress immediately
+    setProgress(pct*100);
+
+    if(ttsModeRef.current==='device'){
+      // Device TTS: skip to the chunk at this position
+      const chunks=allChunks.current;if(!chunks.length)return;
+      const ti=Math.min(Math.floor(pct*chunks.length),chunks.length-1);
+      window.speechSynthesis?.cancel();
+      stopped.current=false;pausedRef.current=false;setPaused(false);
+      if(deviceNextRef.current){deviceNextRef.current(ti)}
+      else{setStatus('playing');fallbackTTS(ti)}
+    }else{
+      // Clone mode: seek within audio chunks
+      if(!allChunks.current.length||!chunksAudio.current.some(Boolean))return;
+      let td=0;for(let i=0;i<allChunks.current.length;i++)td+=(chunkDurations.current[i]||3);
+      const tt=pct*td;let ac=0;let ti=0;let st=0;
+      for(let i=0;i<allChunks.current.length;i++){const d=chunkDurations.current[i]||3;if(ac+d>tt){ti=i;st=tt-ac;break}ac+=d;ti=i;st=0}
+      stopTimer();if(audioRef.current){audioRef.current.pause();audioRef.current.src=''}window.speechSynthesis?.cancel();
+      stopped.current=false;
+      if(chunksAudio.current[ti]){currentIdx.current=ti;audioRef.current.src=chunksAudio.current[ti];
+        audioRef.current.onloadedmetadata=()=>{audioRef.current.currentTime=Math.min(st,audioRef.current.duration-0.1);audioRef.current.play().then(()=>{setStatus('playing');setPaused(false);pausedRef.current=false;startTimer()}).catch(()=>{})};
+        audioRef.current.onended=()=>playChunk(ti+1);audioRef.current.onerror=()=>playChunk(ti+1);audioRef.current.load()}
+      else{setStatus('playing');setPaused(false);pausedRef.current=false;playChunk(ti)}
+    }
+  };
+
+  // Scroll highlighted word into view
   useEffect(()=>{
     if(hlWord<0||!readingRef.current)return;
     const el=readingRef.current.querySelector('.whl');
@@ -1014,7 +1103,7 @@ function Player({story,voice,ver,onBack,show,t,text,lang}){
   },[hlWord]);
   useEffect(()=>()=>{stopped.current=true;stopTimer();window.speechSynthesis?.cancel()},[]);
   useEffect(()=>{const onVis=()=>{if(document.hidden)stopTimer();
-    else if(!stopped.current&&!pausedRef.current&&audioRef.current&&!audioRef.current.paused)startTimer()};
+    else if(!stopped.current&&!pausedRef.current&&ttsModeRef.current==='clone'&&audioRef.current&&!audioRef.current.paused)startTimer()};
     document.addEventListener('visibilitychange',onVis);return()=>document.removeEventListener('visibilitychange',onVis)},[]);
   useEffect(()=>{if(!('mediaSession' in navigator)||status==='idle')return;
     const title=getStoryTitle(story?.id,lang)||story?.t||'Bedtime Story';
@@ -1024,14 +1113,15 @@ function Player({story,voice,ver,onBack,show,t,text,lang}){
     navigator.mediaSession.setActionHandler('stop',stopAll);
   },[status,story,lang]);
   const isClone=voice?.id?.startsWith('v-');const fmtSec=(s)=>Math.floor(s/60)+':'+String(s%60).padStart(2,'0');
-  // Determine context window around highlighted word (±5 words get brighter)
-  const isNearHl=(wIdx)=>{if(hlWord<0)return false;const d=Math.abs(wIdx-hlWord);return d>0&&d<=5};
   return(<div className="fi">
     <audio ref={audioRef} style={{display:'none'}}/>
     <button className="btn bg2 bsm" onClick={()=>{stopAll();onBack()}} style={{marginBottom:10}}><Icon name="back" size={16}/> {t('back')}</button>
     <div className="pc"><div className="pb">
       <div className="pti">{getStoryTitle(story?.id,lang)||story?.t||t('story')}</div><div className="pau">{getStoryAuthor(story?.a||'',lang)}</div>
-      <div className="pbar" onClick={handleSeek} onTouchStart={e=>{e.preventDefault();handleSeek(e)}} onTouchMove={e=>{e.preventDefault();handleSeek(e)}} onTouchEnd={e=>e.preventDefault()}><div className="pbtr"><div className="pbfl" style={{width:progress+'%'}}><div className="pbth"/></div></div></div>
+      <div className="pbar" onClick={handleSeek} onTouchStart={e=>{e.preventDefault();handleSeek(e)}} onTouchMove={e=>{e.preventDefault();handleSeek(e)}} onTouchEnd={e=>e.preventDefault()} onMouseDown={e=>{
+        handleSeek(e);const onMove=ev=>{handleSeek(ev)};const onUp=()=>{document.removeEventListener('mousemove',onMove);document.removeEventListener('mouseup',onUp)};
+        document.addEventListener('mousemove',onMove);document.addEventListener('mouseup',onUp);
+      }}><div className="pbtr"><div className="pbfl" style={{width:progress+'%'}}><div className="pbth"/></div></div></div>
       <div className="ptm"><span>{fmtSec(elapsed)}</span><span>~{storyMin}:00</span></div>
       <div className="pcc">
         {status==='idle'&&<button className="cb pp" onClick={generateAndPlay}><Icon name="play" size={26} color="#fff"/></button>}
@@ -1045,7 +1135,7 @@ function Player({story,voice,ver,onBack,show,t,text,lang}){
     {status==='done'&&<div className="genst"><span className="done"><Icon name="check" size={14} color="var(--teal)"/> {t('storyComplete')}</span></div>}
     <div className="ra" ref={readingRef}>{wordsByPara.map((pWords,pi)=>
       <p key={pi}>{pWords.map(w=>
-        <span key={w.idx} className={w.idx===hlWord?'whl':isNearHl(w.idx)?'wctx':''}>{w.text} </span>
+        <span key={w.idx} className={w.idx===hlWord?'whl':''}>{w.text} </span>
       )}</p>
     )}</div>
   </div>);
@@ -1218,7 +1308,9 @@ function App(){
       setPlayerText(txt);
     }
     setTab('player')};;
-  const doLogout=()=>{localStorage.removeItem('tat_name');localStorage.removeItem('tat_v');localStorage.removeItem('tat_tut');setName('');setTutDone(false);setTutStep(0);setSv(null);setSs(null);speechSynthesis?.cancel();setMenu(false)};
+  const doLogout=()=>{localStorage.removeItem('tat_name');localStorage.removeItem('tat_v');localStorage.removeItem('tat_tut');setName('');setTutDone(false);setTutStep(0);setSv(null);setSs(null);speechSynthesis?.cancel();setMenu(false);
+    // Reload custom stories for next user (they're shared across readers)
+    dbGetAll('customStories').then(cs=>setCustomStories(cs||[])).catch(()=>{})};
 
   if(!name)return<><BG/><div className="app" dir={dir} key={lang}><TutWelcome onDone={finishName} lang={lang} setLang={setLang} t={t}/></div></>;
 
@@ -1302,7 +1394,7 @@ function App(){
         {voices.length>0&&<><div className="sh" style={{fontSize:16,marginTop:12}}><Icon name="brain" size={18} color="var(--teal)"/> {t('clonedVoices')}</div>
           {voices.map(v=><div key={v.id} className={`vc ${sv?.id===v.id?'sel':''}`} onClick={()=>selectVoice(v)}>
             <div className="va va-u"><Icon name="mic" size={20} color="var(--teal)"/></div><div style={{flex:1,minWidth:0}}><div className="vn">{v.name}</div><div className="vd">{t('aiClone')}</div></div>
-            <button className={`vsample ${samplePl===v.id?'playing':''}`} onClick={e=>{e.stopPropagation();setSamplePl(v.id);playVoiceSample(lang);setTimeout(()=>setSamplePl(null),3000)}} title={t('testVoice')||'Test voice'}><Icon name="play" size={14} color="var(--teal)"/></button>
+            <button className={`vsample ${samplePl===v.id?'playing':''}`} onClick={e=>{e.stopPropagation();setSamplePl(v.id);playVoiceSample(lang,v.id);setTimeout(()=>setSamplePl(null),5000)}} title={t('testVoice')||'Test voice'}><Icon name="play" size={14} color="var(--teal)"/></button>
             {sv?.id===v.id&&<span><Icon name="check" size={18} color="var(--teal)"/></span>}
             <button className="vx" onClick={e=>{e.stopPropagation();delVoice(v.id)}}><Icon name="trash" size={14}/></button></div>)}</>}
         {voices.length===0&&<div className="info" style={{marginTop:8}}>{t('recSub')}</div>}
