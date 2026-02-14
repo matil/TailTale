@@ -691,7 +691,7 @@ async function hfUpload(blob,filename){
   const wavBlob=await blobToWav(blob);
   const form=new FormData();
   form.append('files',wavBlob,filename||'voice.wav');
-  // Gradio 5 uses /gradio_api/upload, older uses /upload — try both
+  // Gradio 5 uses /gradio_api/upload prefix
   let r=await fetch(HF_SPACE+'/gradio_api/upload',{method:'POST',body:form});
   if(!r.ok){
     console.warn('[TTS] /gradio_api/upload returned '+r.status+', trying /upload...');
@@ -699,31 +699,40 @@ async function hfUpload(blob,filename){
   }
   if(!r.ok)throw new Error('Upload failed: '+r.status);
   const paths=await r.json();
-  return paths[0]; // server path
+  console.log('[TTS] Upload response:',JSON.stringify(paths));
+  return {serverPath:paths[0],size:wavBlob.size};
 }
 
 // ===== Call HF Space Gradio API =====
 async function callHFSpace(text,voiceBlob,langCode){
   console.log('[TTS] Uploading voice to HF Space...');
-  const voicePath=await hfUpload(voiceBlob,'voice.wav');
-  console.log('[TTS] Voice uploaded:',voicePath);
+  const {serverPath,size}=await hfUpload(voiceBlob,'voice.wav');
+  console.log('[TTS] Voice uploaded:',serverPath);
 
-  // Queue the request — try Gradio 5 path first
-  // app.py signature: generate_tts_audio(text_input, language_id, audio_prompt_path_input, exaggeration, temperature, seed, cfg_weight)
-  // audio_prompt_path_input is a gr.Audio(type="filepath") → for API, send as path string or file dict
-  const fileRef={path:voicePath,url:HF_SPACE+'/gradio_api/file='+voicePath,orig_name:'voice.wav',mime_type:'audio/wav'};
+  // Build Gradio FileData object — must include meta._type for Gradio to recognize as file ref
+  const fileData={
+    path:serverPath,
+    url:HF_SPACE+'/gradio_api/file='+serverPath,
+    orig_name:'voice.wav',
+    size:size,
+    mime_type:'audio/wav',
+    is_stream:false,
+    meta:{_type:'gradio.FileData'}
+  };
+
+  // app.py: generate_tts_audio(text_input, language_id, audio_prompt_path_input, exaggeration, temperature, seed, cfg_weight)
   const payload={data:[
-    text,              // text_input (str)
-    langCode||'en',    // language_id (str: en, fr, he, etc.)
-    fileRef,           // audio_prompt_path_input (Audio filepath)
-    0.5,               // exaggeration_input (float, 0.25-2.0)
-    0.8,               // temperature_input (float, 0.05-5.0)
-    0,                 // seed_num_input (int, 0=random)
-    0.5,               // cfgw_input (float, 0.2-1.0)
+    text,              // 0: text_input (str, max 300 chars)
+    langCode||'en',    // 1: language_id (str: en, fr, he, ar, etc.)
+    fileData,          // 2: audio_prompt_path_input (gr.Audio filepath)
+    0.5,               // 3: exaggeration_input (float, 0.25-2.0, neutral=0.5)
+    0.8,               // 4: temperature_input (float, 0.05-5.0)
+    0,                 // 5: seed_num_input (int, 0=random)
+    0.5,               // 6: cfgw_input (float, 0.2-1.0)
   ]};
 
   console.log('[TTS] Queuing prediction...');
-  console.log('[TTS] Payload:',JSON.stringify(payload).substring(0,300));
+  console.log('[TTS] Payload:',JSON.stringify(payload).substring(0,500));
   let queuePath='/gradio_api/call/generate_tts_audio';
   let qr=await fetch(HF_SPACE+queuePath,{
     method:'POST',
@@ -766,7 +775,7 @@ async function callHFSpace(text,voiceBlob,langCode){
         buf=lines.pop()||'';
         for(const line of lines){
           const trimmed=line.trim();
-          if(!trimmed)continue; // skip blank lines (event separators)
+          if(!trimmed)continue;
           console.log('[SSE]',trimmed);
           
           if(trimmed.startsWith('event:')){
@@ -778,60 +787,57 @@ async function callHFSpace(text,voiceBlob,langCode){
             
             if(currentEvent==='error'){
               clearTimeout(timeout);
-              reject(new Error('HF Space error ('+currentEvent+'): '+raw));
+              reject(new Error('HF Space error: '+raw));
               return;
             }
             
             if(currentEvent==='complete'){
               try{
                 const parsed=JSON.parse(raw);
-                // Gradio SSE complete format can be:
-                // 1) Direct array: [audioData]
-                // 2) Wrapped: {"output": {"data": [audioData]}}
+                console.log('[TTS] Complete data:',JSON.stringify(parsed).substring(0,300));
+                // Gradio formats: [audioData] or {output:{data:[audioData]}}
                 let data=parsed;
                 if(parsed&&parsed.output&&parsed.output.data)data=parsed.output.data;
                 if(!Array.isArray(data)){
                   clearTimeout(timeout);
-                  reject(new Error('HF Space unexpected response: '+raw.substring(0,300)));
+                  reject(new Error('HF Space unexpected: '+raw.substring(0,300)));
                   return;
                 }
+                // gr.Audio returns (sample_rate, numpy_array) → Gradio serializes as file dict
                 const out=data[0];
-                if(!out){
-                  clearTimeout(timeout);
-                  reject(new Error('HF Space: empty audio output'));
-                  return;
-                }
+                if(!out){clearTimeout(timeout);reject(new Error('HF Space: null audio output. Likely GPU quota exceeded or model error.'));return}
+                
                 let audioUrl=null;
-                if(typeof out==='string')audioUrl=out;
-                else if(out.url)audioUrl=out.url;
-                else if(out.path)audioUrl=HF_SPACE+'/gradio_api/file='+out.path;
+                if(typeof out==='string'){
+                  // Could be a URL or a base64 data URL
+                  audioUrl=out;
+                }else if(out.url){
+                  audioUrl=out.url;
+                }else if(out.path){
+                  audioUrl=HF_SPACE+'/gradio_api/file='+out.path;
+                }else if(out.name&&out.data){
+                  // base64 format: {name:"audio.wav", data:"data:audio/wav;base64,..."}
+                  audioUrl=out.data;
+                }
+                
                 if(audioUrl){
                   clearTimeout(timeout);
-                  if(audioUrl.startsWith('/'))audioUrl=HF_SPACE+audioUrl;
-                  console.log('[TTS] Got audio URL:',audioUrl.substring(0,80)+'...');
+                  if(audioUrl.startsWith('/')&&!audioUrl.startsWith('data:'))audioUrl=HF_SPACE+audioUrl;
+                  console.log('[TTS] Downloading audio from:',audioUrl.substring(0,100));
                   const ar=await fetch(audioUrl);
-                  if(!ar.ok)reject(new Error('Audio download failed: '+ar.status));
-                  else resolve(await ar.blob());
-                  return;
-                }
-                // Audio component might return (sample_rate, array) as a dict
-                // e.g. {"name":"audio.wav","data":"data:audio/wav;base64,..."}
-                if(out.data&&typeof out.data==='string'&&out.data.startsWith('data:')){
-                  clearTimeout(timeout);
-                  const ar=await fetch(out.data);
+                  if(!ar.ok){reject(new Error('Audio download failed: '+ar.status));return}
                   resolve(await ar.blob());
                   return;
                 }
                 clearTimeout(timeout);
-                reject(new Error('HF Space: cannot parse audio from: '+JSON.stringify(out).substring(0,200)));
+                reject(new Error('HF Space: cannot resolve audio: '+JSON.stringify(out).substring(0,200)));
                 return;
               }catch(e){
                 clearTimeout(timeout);
-                reject(new Error('HF Space: parse error: '+e.message+' raw: '+raw.substring(0,200)));
+                reject(new Error('HF parse error: '+e.message+' | '+raw.substring(0,200)));
                 return;
               }
             }
-            // For other events (heartbeat, process_starts, etc), just continue
             currentEvent='';
           }
         }
@@ -1181,7 +1187,7 @@ function Player({story,voice,ver,onBack,show,t,text,lang}){
     try{const d=await dbGet('voices',voice.id);vb=d?.blob;_voiceBlobSize=vb?.size||0;console.log('[TTS] Voice blob:',vb?.size,vb?.type)}
     catch(e){console.warn('Voice DB error:',e)}
     if(!vb){show(t('voiceFailed'));setStatus('idle');return}
-    const chunks=chunkText(content,60);allChunks.current=chunks;computeChunkOffsets(chunks);let started=false;
+    const chunks=chunkText(content,250);allChunks.current=chunks;computeChunkOffsets(chunks);let started=false;
     // Show download progress if models not yet cached
     let dlUnsub=null;
     if(!f5Ready){
