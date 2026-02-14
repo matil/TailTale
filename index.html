@@ -612,7 +612,7 @@ Requirements:
 
 // Chatterbox TTS — Multilingual (23 languages including Hebrew)
 const HF_SPACES=["ResembleAI/Chatterbox-Multilingual-TTS","ResembleAI/Chatterbox"];
-let gradioClient=null;let gradioLock=false;let gradioEndpoint=null;let gradioSpaceIdx=0;let gradioRetried=false;
+let gradioClient=null;let gradioLock=false;let gradioEndpoint=null;let gradioSpaceIdx=0;let gradioRetried=false;let gpuQuotaRetries=0;
 async function initGradio(){
   if(gradioClient)return gradioClient;
   if(!window.__gradio){await new Promise(res=>{if(window.__gradio)return res();window.addEventListener('gradio-ready',res,{once:true});setTimeout(res,15000)})}
@@ -672,6 +672,15 @@ async function generateChunk(text,voiceBlob,langCode){
       }
     }catch(e1){
       console.warn('[TTS] predict with named args failed:',e1.message);
+      // GPU quota is shared — wait and retry directly, don't try array args
+      if(e1.message&&e1.message.includes('GPU quota')&&gpuQuotaRetries<3){
+        const wait=Math.min(15000,5000*(gradioRetried?2:1));
+        console.log('[TTS] GPU quota hit (attempt '+(gpuQuotaRetries+1)+'/3), waiting',wait/1000,'s...');gpuQuotaRetries++;
+        gradioRetried=!gradioRetried;
+        releaseLock();
+        await new Promise(r=>setTimeout(r,wait));
+        return generateChunk(text,voiceBlob,langCode);
+      }
       // Retry with positional array args
       try{
         if(isMultilingual){
@@ -681,6 +690,15 @@ async function generateChunk(text,voiceBlob,langCode){
         }
       }catch(e2){
         console.warn('[TTS] predict with array args failed:',e2.message);
+        // GPU quota is shared across all spaces — wait and retry, don't switch
+        if(e2.message&&e2.message.includes('GPU quota')&&gpuQuotaRetries<3){
+          const wait=Math.min(15000,5000*(gradioRetried?2:1));
+          console.log('[TTS] GPU quota hit (attempt '+(gpuQuotaRetries+1)+'/3), waiting',wait/1000,'s...');gpuQuotaRetries++;
+          gradioRetried=!gradioRetried;
+          releaseLock();
+          await new Promise(r=>setTimeout(r,wait));
+          return generateChunk(text,voiceBlob,langCode);
+        }
         // Try reconnecting to same space (might have been sleeping)
         if(!gradioRetried){
           console.log('[TTS] Retrying with fresh connection...');
@@ -700,7 +718,7 @@ async function generateChunk(text,voiceBlob,langCode){
       }
     }
     console.log('[TTS] Result:',JSON.stringify(result?.data?.[0]).substring(0,200));
-    gradioRetried=false;
+    gradioRetried=false;gpuQuotaRetries=0;
     if(result?.data?.[0]){
       const ad=result.data[0];let url=null;
       if(typeof ad==='object'&&ad.url)url=ad.url;
