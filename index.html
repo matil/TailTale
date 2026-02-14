@@ -517,37 +517,92 @@ Requirements:
   }
 }
 
-// Chatterbox TTS
-const HF_SPACE="ResembleAI/Chatterbox";let gradioClient=null;let gradioLock=false;
+// Chatterbox TTS — Multilingual (23 languages including Hebrew)
+const HF_SPACES=["ResembleAI/Chatterbox-Multilingual-TTS","ResembleAI/Chatterbox"];
+let gradioClient=null;let gradioLock=false;let gradioEndpoint=null;let gradioSpaceIdx=0;
 async function initGradio(){
   if(gradioClient)return gradioClient;
-  if(!window.__gradio){await new Promise(res=>{if(window.__gradio)return res();window.addEventListener('gradio-ready',res,{once:true});setTimeout(res,10000)})}
+  if(!window.__gradio){await new Promise(res=>{if(window.__gradio)return res();window.addEventListener('gradio-ready',res,{once:true});setTimeout(res,15000)})}
   if(!window.__gradio)return null;
-  try{gradioClient=await window.__gradio.Client.connect(HF_SPACE);console.log('Connected to Chatterbox');return gradioClient}catch(e){console.warn('Chatterbox fail:',e);return null}
+  for(let i=gradioSpaceIdx;i<HF_SPACES.length;i++){
+    try{
+      console.log('[TTS] Connecting to',HF_SPACES[i],'...');
+      const c=await window.__gradio.Client.connect(HF_SPACES[i]);
+      console.log('[TTS] Connected to',HF_SPACES[i]);
+      // Auto-discover the TTS endpoint
+      try{
+        const api=await c.view_api();
+        console.log('[TTS] API endpoints:',JSON.stringify(api).substring(0,500));
+        const named=api?.named_endpoints||api?.endpoints||{};
+        const ep=Object.keys(named).find(k=>k.includes('generate')||k.includes('tts'))||Object.keys(named)[0];
+        if(ep){gradioEndpoint=ep;console.log('[TTS] Using endpoint:',ep)}
+        else{gradioEndpoint='/predict';console.log('[TTS] Fallback endpoint: /predict')}
+      }catch(ae){console.warn('[TTS] view_api failed, using /predict:',ae);gradioEndpoint='/predict'}
+      gradioClient=c;gradioSpaceIdx=i;return c;
+    }catch(e){console.warn('[TTS] Failed to connect to',HF_SPACES[i],':',e)}
+  }
+  return null;
 }
 async function acquireLock(){while(gradioLock){await new Promise(r=>setTimeout(r,500))}gradioLock=true}
 function releaseLock(){gradioLock=false}
-async function generateChunk(text,voiceBlob){
+async function generateChunk(text,voiceBlob,langCode){
   await acquireLock();
   try{
     const client=await initGradio();if(!client||!window.__gradio)throw new Error('TTS unavailable');
-    const voiceFile=new File([voiceBlob],'voice.wav',{type:voiceBlob.type||'audio/wav'});
-    const audioFile=window.__gradio.handle_file(voiceFile);
-    console.log('[TTS] Sending:',text.substring(0,50)+'... voice:',voiceFile.size,'bytes',voiceFile.type);
-    const result=await client.predict("/generate_tts_audio",[text,audioFile,0.4,0.8,0,0.4]);
-    console.log('[TTS] Result type:',typeof result?.data?.[0],JSON.stringify(result?.data?.[0]).substring(0,150));
+    // Create a proper Blob (not File) — handle_file is broken in browsers (Gradio #8650)
+    const audioBlob=new Blob([voiceBlob],{type:'audio/wav'});
+    console.log('[TTS] Sending:',text.substring(0,50)+'...',audioBlob.size,'bytes, endpoint:',gradioEndpoint,'lang:',langCode);
+    // Try multiple parameter formats since different spaces have different signatures
+    let result=null;
+    const isMultilingual=gradioSpaceIdx===0;
+    try{
+      if(isMultilingual){
+        // Multilingual: text, audio, language, exaggeration, cfg_weight
+        const lc=langCode||'en';
+        result=await client.predict(gradioEndpoint,[text,audioBlob,lc,0.4,0.5]);
+      }else{
+        // Original: text, audio, exaggeration, cfg_weight, temperature, seed
+        result=await client.predict(gradioEndpoint,[text,audioBlob,0.4,0.5,0.0,0]);
+      }
+    }catch(e1){
+      console.warn('[TTS] predict with array args failed:',e1.message);
+      // Retry with handle_file wrapper in case this version needs it
+      try{
+        const hf=window.__gradio.handle_file;
+        const wrapped=hf?hf(audioBlob):audioBlob;
+        if(isMultilingual){
+          result=await client.predict(gradioEndpoint,[text,wrapped,langCode||'en',0.4,0.5]);
+        }else{
+          result=await client.predict(gradioEndpoint,[text,wrapped,0.4,0.5,0.0,0]);
+        }
+      }catch(e2){
+        console.warn('[TTS] predict with handle_file failed:',e2.message);
+        // Last resort: try reconnecting to next space
+        if(gradioSpaceIdx<HF_SPACES.length-1){
+          console.log('[TTS] Trying next space...');
+          gradioClient=null;gradioSpaceIdx++;
+          releaseLock();
+          return generateChunk(text,voiceBlob,langCode);
+        }
+        throw e2;
+      }
+    }
+    console.log('[TTS] Result:',JSON.stringify(result?.data?.[0]).substring(0,200));
     if(result?.data?.[0]){
       const ad=result.data[0];let url=null;
       if(typeof ad==='object'&&ad.url)url=ad.url;
       else if(typeof ad==='string'&&ad.startsWith('http'))url=ad;
-      else if(typeof ad==='object'&&ad.path){const base=client.config?.root||'https://huggingface.co/spaces/'+HF_SPACE;url=ad.path.startsWith('http')?ad.path:base+'/file='+ad.path}
-      if(url){console.log('[TTS] Fetching audio from:',url);const r=await fetch(url);if(!r.ok)throw new Error('Fetch failed: '+r.status);const blob=await r.blob();console.log('[TTS] Audio blob:',blob.size,'bytes',blob.type);return blob}
+      else if(typeof ad==='object'&&ad.path){
+        const base=client.config?.root||'https://'+HF_SPACES[gradioSpaceIdx].replace('/','-').toLowerCase()+'.hf.space';
+        url=ad.path.startsWith('http')?ad.path:base+'/file='+ad.path;
+      }
+      if(url){console.log('[TTS] Fetching audio:',url);const r=await fetch(url);if(!r.ok)throw new Error('Fetch '+r.status);const blob=await r.blob();console.log('[TTS] Audio:',blob.size,'bytes',blob.type);return blob}
       if(ad instanceof Blob)return ad;
     }
-    throw new Error('No audio returned');
+    throw new Error('No audio in response');
   }finally{releaseLock()}
 }
-function chunkText(text,maxLen=280){const sentences=text.match(/[^.!?]+[.!?]+[\s"]*/g)||[text];const chunks=[];let cur='';for(const s of sentences){if((cur+s).length>maxLen&&cur){chunks.push(cur.trim());cur=s}else cur+=s}if(cur.trim())chunks.push(cur.trim());return chunks}
+function chunkText(text,maxLen=280){const sentences=text.match(/[^.!?。！？]+[.!?。！？]+[\s"]*/g)||[text];const chunks=[];let cur='';for(const s of sentences){if((cur+s).length>maxLen&&cur){chunks.push(cur.trim());cur=s}else cur+=s}if(cur.trim())chunks.push(cur.trim());return chunks}
 
 // Voice pre-warm: wake GPU + validate voice right after recording
 let preWarmStatus={active:false,done:false,error:false};let preWarmListeners=[];
@@ -557,12 +612,13 @@ async function preWarmVoice(voiceId){
   preWarmStatus={active:true,done:false,error:false};notifyPreWarm();
   try{
     const d=await dbGet('voices',voiceId);if(!d?.blob)throw new Error('No voice');
-    console.log('Pre-warming voice clone...');
-    await generateChunk("Once upon a time, in a land far away, the stars twinkled softly.",d.blob);
+    const lang=localStorage.getItem('tat_lang')||'en';
+    console.log('[TTS] Pre-warming voice clone... lang:',lang);
+    await generateChunk("Once upon a time, in a land far away, the stars twinkled softly.",d.blob,lang);
     preWarmStatus={active:false,done:true,error:false};notifyPreWarm();
-    console.log('Voice pre-warm complete!');
+    console.log('[TTS] Voice pre-warm complete!');
   }catch(e){
-    console.warn('Pre-warm failed (GPU may still be cold):',e);
+    console.warn('[TTS] Pre-warm failed (GPU may still be cold):',e);
     preWarmStatus={active:false,done:false,error:true};notifyPreWarm();
   }
 }
@@ -821,7 +877,7 @@ function Player({story,voice,ver,onBack,show,t,text,lang}){
     const chunks=chunkText(content,280);allChunks.current=chunks;let started=false;
     for(let i=0;i<chunks.length;i++){if(stopped.current)return;
       setGenMsg(t('cloningPart')+' '+(i+1)+'/'+chunks.length);
-      try{const blob=await generateChunk(chunks[i],vb);chunksAudio.current[i]=URL.createObjectURL(blob);
+      try{const blob=await generateChunk(chunks[i],vb,lang);chunksAudio.current[i]=URL.createObjectURL(blob);
         const tmp=new Audio(chunksAudio.current[i]);
         await new Promise(r=>{tmp.onloadedmetadata=()=>{chunkDurations.current[i]=tmp.duration;r()};tmp.onerror=r;setTimeout(r,3000)});
         if(!started&&!stopped.current){started=true;setStatus('playing');setGenMsg('');playChunk(0)}
@@ -905,7 +961,6 @@ function App(){
   const[lang,setLangState]=useState(()=>localStorage.getItem('tat_lang')||'en');
   const[menu,setMenu]=useState(false);
   const[tlCache,setTlCache]=useState({});
-  const[translating,setTranslating]=useState(false);
   const[customStories,setCustomStories]=useState([]);
   const[createMode,setCreateMode]=useState(null); // null | 'write' | 'generate'
   const[csTitle,setCsTitle]=useState('');
@@ -938,33 +993,63 @@ function App(){
     dbGetAll('customStories').then(cs=>setCustomStories(cs||[])).catch(()=>{});
     return onPreWarmChange(s=>setPw(s));},[]);
 
-  // Translation helper
+  // Translation helper — returns cached or translates silently
   const getTranslatedText=useCallback(async(storyId,ver)=>{
     if(lang==='en')return null;
     const key=`${storyId}_${ver}_${lang}`;
     if(tlCache[key])return tlCache[key];
-    const cached=await dbGet('translations',key);
+    const cached=await dbGet('translations',key).catch(()=>null);
     if(cached){setTlCache(p=>({...p,[key]:cached.text}));return cached.text}
-    setTranslating(true);
+    // Translate on demand (silently)
     try{
       let src;
       if(storyId.startsWith('cs-')){const cs=customStories.find(s=>s.id===storyId);src=cs?cs.txS:null}
       else{const story=S.find(s=>s.id===storyId);src=story?(ver==='long'?story.txL:story.txS):null}
-      if(!src){setTranslating(false);return null}
+      if(!src)return null;
       const result=await translateText(src,'en',lang);
-      setTlCache(p=>({...p,[key]:result}));
-      setTranslating(false);return result;
-    }catch(e){setTranslating(false);return null}
+      setTlCache(p=>({...p,[key]:result}));return result;
+    }catch(e){return null}
   },[lang,tlCache,customStories]);
 
-  // Pre-translate selected story when entering player
+  // Background pre-translate ALL built-in stories for current language
+  const preTranslateRef=useRef(null);
+  useEffect(()=>{
+    if(lang==='en'){preTranslateRef.current=null;return}
+    // Cancel previous pre-translate
+    let cancelled=false;preTranslateRef.current=lang;
+    (async()=>{
+      for(const story of S){
+        if(cancelled||preTranslateRef.current!==lang)return;
+        for(const ver of['short','long']){
+          if(cancelled)return;
+          const key=`${story.id}_${ver}_${lang}`;
+          const cached=await dbGet('translations',key).catch(()=>null);
+          if(cached){setTlCache(p=>({...p,[key]:cached.text}));continue}
+          try{
+            const src=ver==='long'?story.txL:story.txS;
+            const result=await translateText(src,'en',lang);
+            if(!cancelled)setTlCache(p=>({...p,[key]:result}));
+          }catch(e){console.warn('Pre-translate failed for',story.id,ver,e)}
+          // Small delay to avoid rate limiting
+          await new Promise(r=>setTimeout(r,300));
+        }
+      }
+      if(!cancelled)console.log('[i18n] Pre-translation complete for',lang);
+    })();
+    return()=>{cancelled=true};
+  },[lang]);
+
+  // Play story — use cached translation or English fallback (no spinner)
   const[playerText,setPlayerText]=useState(null);
   const playStory=async()=>{if(!ss){show(t('noneSelected'));return}
     if(lang!=='en'){
-      setTranslating(true);
-      const txt=await getTranslatedText(ss.id,getVer(ss.id));
-      setPlayerText(txt);setTranslating(false);setTab('player');
-    }else{setPlayerText(null);setTab('player')}};
+      const key=`${ss.id}_${getVer(ss.id)}_${lang}`;
+      // Try memory cache first, then DB
+      let txt=tlCache[key]||null;
+      if(!txt){const cached=await dbGet('translations',key).catch(()=>null);if(cached)txt=cached.text}
+      setPlayerText(txt);// null = use English fallback
+    }else{setPlayerText(null)}
+    setTab('player')};
 
   const show=m=>{setToast(m);setTimeout(()=>setToast(''),2800)};
   const saveVoice=async(vn,blob)=>{const id='v-'+Date.now();await dbPut('voices',{id,blob,ts:Date.now()});
@@ -1003,9 +1088,13 @@ function App(){
   const finishName=(n)=>{setName(n);localStorage.setItem('tat_name',n);localStorage.setItem('tat_v','5');
     dbPut('settings',{key:'user_'+n,lang,ts:Date.now()}).catch(()=>{})};
   const finishTut=async()=>{setTutDone(true);localStorage.setItem('tat_tut','1');
-    if(lang!=='en'&&ss){setTranslating(true);
-      const txt=await getTranslatedText(ss.id,getVer(ss.id));setPlayerText(txt);setTranslating(false);setTab('player');
-    }else{setTab('player')}};
+    if(lang!=='en'&&ss){
+      const key=`${ss.id}_${getVer(ss.id)}_${lang}`;
+      let txt=tlCache[key]||null;
+      if(!txt){const cached=await dbGet('translations',key).catch(()=>null);if(cached)txt=cached.text}
+      setPlayerText(txt);
+    }
+    setTab('player')};;
   const doLogout=()=>{localStorage.removeItem('tat_name');localStorage.removeItem('tat_v');localStorage.removeItem('tat_tut');setName('');setTutDone(false);setTutStep(0);setSv(null);setSs(null);speechSynthesis?.cancel();setMenu(false)};
 
   if(!name)return<><BG/><div className="app" dir={dir} key={lang}><TutWelcome onDone={finishName} lang={lang} setLang={setLang} t={t}/></div></>;
@@ -1106,9 +1195,8 @@ function App(){
               <button className={`vbtn ${getVer(ss.id)==='long'?'va2':''}`} onClick={()=>setVer(ss.id,'long')}>{t('long')} ~{ss.mL}m</button>
             </div>}</div>
             <button className="btn bg2 bsm" onClick={()=>setTab('stories')}>{ss?t('change'):t('pick')}</button></div></div>
-        <button className="btn bp bw" onClick={playStory} disabled={!ss||!sv||translating} style={{marginTop:8,fontSize:18,padding:'16px 24px'}}>
-          {translating?<><span className="spinner" style={{width:18,height:18,border:'2px solid rgba(255,255,255,.3)',borderTopColor:'#fff',borderRadius:'50%',display:'inline-block'}}/> {t('translating')}</>
-          :<><Icon name="play" size={18} color="#fff"/> {t('beginStory')}</>}</button>
+        <button className="btn bp bw" onClick={playStory} disabled={!ss||!sv} style={{marginTop:8,fontSize:18,padding:'16px 24px'}}>
+          <Icon name="play" size={18} color="#fff"/> {t('beginStory')}</button>
         {pw.active&&<div className="prewarm" style={{marginTop:10}}><span className="spinner"/> {t('warming')}</div>}
         {pw.done&&!pw.active&&<div className="prewarm" style={{marginTop:10,color:'var(--teal)',borderColor:'rgba(85,230,193,.2)'}}><Icon name="check" size={14} color="var(--teal)"/> {t('cloneReady')}</div>}
         <div className="info" style={{marginTop:12}}><b>{gOk?t('connected'):t('connecting')}</b><br/>
