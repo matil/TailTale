@@ -1155,7 +1155,10 @@ function Player({story,voice,ver,onBack,show,t,text,lang}){
     let dlUnsub=null;
     if(!f5Ready){
       setGenMsg(t('gpuWake'));
-      dlUnsub=onF5Progress(p=>{setGenMsg(t('gpuWake')+' '+Math.round(p*100)+'%')});
+      dlUnsub=onF5Progress(p=>{
+        if(p>=1)setGenMsg(t('cloningPart')+' 1/'+chunks.length);
+        else setGenMsg(t('gpuWake')+' '+Math.round(p*100)+'%');
+      });
     }
     for(let i=0;i<chunks.length;i++){if(stopped.current){if(dlUnsub)dlUnsub();return;}
       if(f5Ready)setGenMsg(t('cloningPart')+' '+(i+1)+'/'+chunks.length);
