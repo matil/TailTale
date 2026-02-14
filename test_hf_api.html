@@ -1,149 +1,150 @@
 <!DOCTYPE html>
-<html><head><meta charset="utf-8"><title>HF Space API Test</title>
+<html><head><meta charset="utf-8"><title>HF Space Multi-Test</title>
 <style>body{font-family:monospace;padding:20px;background:#111;color:#0f0}pre{white-space:pre-wrap}
-.ok{color:#0f0}.err{color:#f44}.warn{color:#ff0}.info{color:#0af}
 button{font-size:18px;padding:10px 20px;margin:10px 5px;cursor:pointer}
 </style></head><body>
-<h2>Chatterbox Multilingual TTS — API Format Tester</h2>
-<p>This page tests which file format the HF Space actually accepts.</p>
-<button onclick="runAllTests()">▶ Run All Tests</button>
+<h2>Chatterbox HF Space — Multi-Space Tester</h2>
+<p>Tests all 3 Chatterbox spaces to find which one actually works right now.</p>
+<button onclick="runTests()">▶ Run Tests (may take 2+ min)</button>
 <button onclick="document.getElementById('log').textContent=''">Clear</button>
 <pre id="log"></pre>
 <script>
-const HF='https://resembleai-chatterbox-multilingual-tts.hf.space';
-const log=document.getElementById('log');
-function L(msg,cls='info'){log.textContent+=msg+'\n';log.lastChild&&log.scrollTop===log.scrollHeight}
+const SPACES=[
+  {name:'Multilingual',url:'https://resembleai-chatterbox-multilingual-tts.hf.space',hasLang:true},
+  {name:'English Original',url:'https://resembleai-chatterbox.hf.space',hasLang:false},
+  {name:'Turbo',url:'https://resembleai-chatterbox-turbo-demo.hf.space',hasLang:false},
+];
+const L=msg=>document.getElementById('log').textContent+=msg+'\n';
 
-// Create a tiny valid WAV (1 second sine wave)
 function makeTestWav(){
-  const sr=16000,dur=2,freq=300;
-  const n=sr*dur;
-  const buf=new ArrayBuffer(44+n*2);
-  const v=new DataView(buf);
+  const sr=16000,n=sr*2;
+  const buf=new ArrayBuffer(44+n*2),v=new DataView(buf);
   const w=(o,s)=>{for(let i=0;i<s.length;i++)v.setUint8(o+i,s.charCodeAt(i))};
   w(0,'RIFF');v.setUint32(4,36+n*2,true);w(8,'WAVE');
   w(12,'fmt ');v.setUint32(16,16,true);v.setUint16(20,1,true);
   v.setUint16(22,1,true);v.setUint32(24,sr,true);
   v.setUint32(28,sr*2,true);v.setUint16(32,2,true);v.setUint16(34,16,true);
   w(36,'data');v.setUint32(40,n*2,true);
-  for(let i=0;i<n;i++){
-    const s=Math.sin(2*Math.PI*freq*i/sr)*0.5;
-    v.setInt16(44+i*2,s*32767,true);
-  }
+  for(let i=0;i<n;i++)v.setInt16(44+i*2,Math.sin(2*Math.PI*300*i/sr)*16000,true);
   return new Blob([buf],{type:'audio/wav'});
 }
 
-async function upload(blob){
-  L('Uploading WAV ('+Math.round(blob.size/1024)+'KB)...');
-  const form=new FormData();
-  form.append('files',blob,'voice.wav');
+async function testSpace(space){
+  L('\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+  L('Testing: '+space.name+' ('+space.url+')');
+  L('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
   
-  // Try /gradio_api/upload first, then /upload
-  let r=await fetch(HF+'/gradio_api/upload',{method:'POST',body:form});
-  if(!r.ok){
-    L('/gradio_api/upload → '+r.status+', trying /upload...','warn');
-    r=await fetch(HF+'/upload',{method:'POST',body:form});
+  // Step 1: Check API info
+  for(const prefix of ['/gradio_api','/api','']){
+    try{
+      const r=await fetch(space.url+prefix+'/info');
+      if(r.ok){
+        const info=await r.json();
+        L('  API info ('+prefix+'/info): found, version='+info.version);
+        break;
+      }
+    }catch(e){}
   }
-  if(!r.ok) throw new Error('Upload failed: '+r.status);
-  const paths=await r.json();
-  L('Upload OK: '+JSON.stringify(paths),'ok');
-  return paths[0];
-}
-
-async function callAPI(label, payload){
-  L('\n━━━ TEST: '+label+' ━━━','info');
-  L('Payload: '+JSON.stringify(payload).substring(0,400));
   
-  // Try /gradio_api/call/ first
-  let queuePath='/gradio_api/call/generate_tts_audio';
-  let qr=await fetch(HF+queuePath,{
-    method:'POST',headers:{'Content-Type':'application/json'},
-    body:JSON.stringify(payload)
-  });
-  if(!qr.ok){
-    L(queuePath+' → '+qr.status+', trying /call/...','warn');
-    queuePath='/call/generate_tts_audio';
-    qr=await fetch(HF+queuePath,{
-      method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify(payload)
-    });
+  // Step 2: Upload
+  const wav=makeTestWav();
+  let uploadPath=null;
+  for(const prefix of ['/gradio_api/upload','/upload']){
+    try{
+      const form=new FormData();
+      form.append('files',wav,'voice.wav');
+      const r=await fetch(space.url+prefix,{method:'POST',body:form});
+      if(r.ok){
+        const paths=await r.json();
+        uploadPath=paths[0];
+        L('  Upload ('+prefix+'): OK → '+uploadPath);
+        break;
+      }else{L('  Upload ('+prefix+'): '+r.status)}
+    }catch(e){L('  Upload ('+prefix+'): Error - '+e.message)}
   }
-  if(!qr.ok){
-    const t=await qr.text().catch(()=>'');
-    L('Queue FAILED: '+qr.status+' '+t.substring(0,200),'err');
-    return false;
-  }
-  const {event_id}=await qr.json();
-  L('Queued: '+event_id);
   
-  // Read SSE stream
-  const url=HF+queuePath+'/'+event_id;
-  const r=await fetch(url);
-  const text=await r.text();
-  L('SSE raw response:\n'+text.substring(0,1000));
+  // Step 3: Try to generate with null audio (default voice, no file needed)
+  const tests=[];
+  if(space.hasLang){
+    tests.push({label:'null audio',data:["Hello, this is a test.","en",null,0.5,0.8,0,0.5]});
+    if(uploadPath){
+      tests.push({label:'path string',data:["Hello test.","en",uploadPath,0.5,0.8,0,0.5]});
+      tests.push({label:'FileData',data:["Hello test.","en",{path:uploadPath,meta:{_type:'gradio.FileData'}},0.5,0.8,0,0.5]});
+    }
+  }else{
+    tests.push({label:'null audio',data:["Hello, this is a test.",null,0.5,0.8,0,0.5]});
+    if(uploadPath){
+      tests.push({label:'path string',data:["Hello test.",uploadPath,0.5,0.8,0,0.5]});
+      tests.push({label:'FileData',data:["Hello test.",{path:uploadPath,meta:{_type:'gradio.FileData'}},0.5,0.8,0,0.5]});
+    }
+  }
   
-  if(text.includes('event: error')){
-    L('❌ FAILED: server returned error','err');
-    return false;
+  for(const test of tests){
+    L('  --- '+test.label+' ---');
+    for(const ep of ['generate_tts_audio','predict']){
+      for(const prefix of ['/gradio_api/call/','/call/']){
+        const callUrl=space.url+prefix+ep;
+        try{
+          const qr=await fetch(callUrl,{
+            method:'POST',
+            headers:{'Content-Type':'application/json'},
+            body:JSON.stringify({data:test.data})
+          });
+          if(!qr.ok)continue;
+          const{event_id}=await qr.json();
+          L('  Queued at '+prefix+ep+': '+event_id);
+          
+          const sseUrl=callUrl+'/'+event_id;
+          const ctrl=new AbortController();
+          const timer=setTimeout(()=>ctrl.abort(),120000);
+          try{
+            const sr=await fetch(sseUrl,{signal:ctrl.signal});
+            const txt=await sr.text();
+            clearTimeout(timer);
+            L('  SSE (first 600 chars):');
+            txt.substring(0,600).split('\n').forEach(l=>L('    '+l));
+            
+            if(txt.includes('event: complete')){
+              L('  ✅ SUCCESS with: '+test.label+' via '+prefix+ep);
+              return {works:true,prefix,ep,format:test.label,space};
+            }
+            if(txt.includes('event: error'))L('  ❌ Server error');
+          }catch(e){clearTimeout(timer);L('  Timeout/error: '+e.message)}
+          break;
+        }catch(e){}
+      }
+    }
   }
-  if(text.includes('event: complete')){
-    L('✅ SUCCESS!','ok');
-    return true;
-  }
-  L('⚠ Unknown result','warn');
   return false;
 }
 
-async function runAllTests(){
-  log.textContent='';
-  L('=== Starting HF Space API Format Tests ===\n');
+async function runTests(){
+  document.getElementById('log').textContent='';
+  L('=== Testing all Chatterbox HF Spaces ===');
+  L('Time: '+new Date().toISOString());
+  L('Each space may take 1-2 min (GPU cold start)...\n');
   
-  try{
-    const wav=makeTestWav();
-    const path=await upload(wav);
-    
-    const shortText="Hello, this is a test of the voice cloning system.";
-    
-    // Test 1: Just the path string
-    const t1=await callAPI('Plain path string',{data:[
-      shortText, 'en', path, 0.5, 0.8, 0, 0.5
-    ]});
-    
-    // Test 2: FileData with meta._type
-    const t2=await callAPI('FileData with meta._type',{data:[
-      shortText, 'en',
-      {path:path, meta:{_type:'gradio.FileData'}},
-      0.5, 0.8, 0, 0.5
-    ]});
-    
-    // Test 3: Full FileData object  
-    const t3=await callAPI('Full FileData object',{data:[
-      shortText, 'en',
-      {path:path, url:HF+'/gradio_api/file='+path, orig_name:'voice.wav', size:wav.size, mime_type:'audio/wav', is_stream:false, meta:{_type:'gradio.FileData'}},
-      0.5, 0.8, 0, 0.5
-    ]});
-    
-    // Test 4: null audio (use default voice)
-    const t4=await callAPI('null audio (default voice)',{data:[
-      shortText, 'en', null, 0.5, 0.8, 0, 0.5
-    ]});
-    
-    // Test 5: Tuple format (sample_rate, data) that gr.Audio sometimes uses
-    const t5=await callAPI('Tuple format [sr, null]',{data:[
-      shortText, 'en',
-      {name:'voice.wav', data:'file='+path},
-      0.5, 0.8, 0, 0.5
-    ]});
-    
-    L('\n\n=== RESULTS ===','info');
-    L('Test 1 (plain path string): '+(t1?'✅ WORKS':'❌ FAILED'), t1?'ok':'err');
-    L('Test 2 (FileData meta._type): '+(t2?'✅ WORKS':'❌ FAILED'), t2?'ok':'err');
-    L('Test 3 (Full FileData): '+(t3?'✅ WORKS':'❌ FAILED'), t3?'ok':'err');
-    L('Test 4 (null/default voice): '+(t4?'✅ WORKS':'❌ FAILED'), t4?'ok':'err');
-    L('Test 5 (name+data format): '+(t5?'✅ WORKS':'❌ FAILED'), t5?'ok':'err');
-    
-  }catch(e){
-    L('Fatal error: '+e.message,'err');
+  let winner=null;
+  for(const space of SPACES){
+    const result=await testSpace(space);
+    if(result&&result.works&&!winner)winner=result;
+  }
+  
+  L('\n\n========= FINAL RESULT =========');
+  if(winner){
+    L('✅ WORKING: '+winner.space.name);
+    L('   URL: '+winner.space.url);
+    L('   Prefix: '+winner.prefix);
+    L('   Endpoint: '+winner.ep);
+    L('   Format: '+winner.format);
+  }else{
+    L('❌ ALL SPACES FAILED');
+    L('');
+    L('Quick check: go to the space directly in your browser:');
+    L('https://huggingface.co/spaces/ResembleAI/Chatterbox-Multilingual-TTS');
+    L('Click Generate with default text/voice.');
+    L('If that ALSO fails → the Space is broken (not our code).');
+    L('If it works → paste the result here and I will match the format.');
   }
 }
 </script>
