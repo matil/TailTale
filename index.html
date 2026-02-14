@@ -768,6 +768,7 @@ async function f5Infer(refF32,refText,genText,speed=1.0,nfe=8){
   console.log('[F5] Stage 1/3: Encoder...');
   const t1=Date.now();
   const eI={};eI[enc.inputNames[0]]=audioT;eI[enc.inputNames[1]]=textT;eI[enc.inputNames[2]]=durT;
+  console.log('[F5] Encoder inputs:',enc.inputNames.map((n,i)=>`${n}=${[audioT,textT,durT][i]?.type}`).join(', '));
   const eO=await enc.run(eI);
   let noise=eO[enc.outputNames[0]],rcq=eO[enc.outputNames[1]],rsq=eO[enc.outputNames[2]],
       rck=eO[enc.outputNames[3]],rsk=eO[enc.outputNames[4]],cmt=eO[enc.outputNames[5]],
@@ -795,9 +796,22 @@ async function f5Infer(refF32,refText,genText,speed=1.0,nfe=8){
   const dI={};dI[dec.inputNames[0]]=noise;dI[dec.inputNames[1]]=rsl;
   const dO=await dec.run(dI);
   const raw=dO[dec.outputNames[0]].data;
-  console.log('[F5] Decoder done ('+((Date.now()-t3)/1000).toFixed(1)+'s). Output: '+raw.length+' samples');
+  const rawType=dO[dec.outputNames[0]].type;
+  console.log('[F5] Decoder done ('+((Date.now()-t3)/1000).toFixed(1)+'s). Output: '+raw.length+' samples, type='+rawType);
+  // Analyze raw output range to detect format
+  let rawMin=Infinity,rawMax=-Infinity;
+  for(let i=0;i<Math.min(raw.length,10000);i++){const v=typeof raw[i]==='number'?raw[i]:Number(raw[i]);if(v<rawMin)rawMin=v;if(v>rawMax)rawMax=v}
+  console.log('[F5] Raw decoder range: ['+rawMin.toFixed(2)+', '+rawMax.toFixed(2)+']');
+  // Auto-detect: if values are in int16 range (>100), divide by 32767; if already float (-1 to 1), use directly
+  const isInt16Range=Math.abs(rawMax)>10||Math.abs(rawMin)>10;
   const out=new Float32Array(raw.length);
-  for(let i=0;i<raw.length;i++)out[i]=(typeof raw[i]==='number'?raw[i]:Number(raw[i]))/32767.0;
+  if(isInt16Range){
+    console.log('[F5] Decoder output in int16 range → normalizing to [-1,1]');
+    for(let i=0;i<raw.length;i++)out[i]=(typeof raw[i]==='number'?raw[i]:Number(raw[i]))/32767.0;
+  }else{
+    console.log('[F5] Decoder output already in float range → using directly');
+    for(let i=0;i<raw.length;i++)out[i]=typeof raw[i]==='number'?raw[i]:Number(raw[i]);
+  }
   // Revert RMS normalization
   if(rms>0&&rms<tgtRMS){const scale=rms/tgtRMS;for(let i=0;i<out.length;i++)out[i]*=scale}
   console.log('[F5] ✅ Generated '+out.length+' samples ('+(out.length/24000).toFixed(1)+'s audio) in '+((Date.now()-t1)/1000).toFixed(1)+'s');
@@ -831,9 +845,11 @@ async function decodeRefAudio(voiceBlob){
 // Cache decoded ref audio per voice (avoids re-decoding every chunk)
 let refAudioCache={id:null,f32:null};
 async function getRefAudio(voiceBlob,voiceId){
-  if(refAudioCache.id===voiceId&&refAudioCache.f32)return refAudioCache.f32;
+  // Use voiceId + blob size as cache key to prevent stale cache across voice switches
+  const cacheKey=voiceId+'_'+(voiceBlob?.size||0);
+  if(refAudioCache.id===cacheKey&&refAudioCache.f32)return refAudioCache.f32;
   const f32=await decodeRefAudio(voiceBlob);
-  refAudioCache={id:voiceId,f32};return f32;
+  refAudioCache={id:cacheKey,f32};return f32;
 }
 
 // ===== Main generateChunk — F5-TTS local voice cloning =====
@@ -857,7 +873,7 @@ async function generateChunk(text,voiceBlob,langCode){
     // Run inference
     console.log('[F5] Generating speech for:',text.substring(0,60)+'...');
     const t0=Date.now();
-    const audioF32=await f5Infer(refF32,refText,text,1.0,f5HasWebGPU?8:4);
+    const audioF32=await f5Infer(refF32,refText,text,1.0,f5HasWebGPU?16:8);
     // Audio quality check
     let mn=Infinity,mx=-Infinity,sq=0;
     for(let i=0;i<audioF32.length;i++){const v=audioF32[i];if(v<mn)mn=v;if(v>mx)mx=v;sq+=v*v}
