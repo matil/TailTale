@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html><head><title>F5-TTS Diagnostics</title>
+<script src="https://cdn.jsdelivr.net/npm/onnxruntime-web@1.21.0/dist/ort.min.js"></script>
+<style>body{font-family:monospace;padding:20px;background:#111;color:#0f0}pre{white-space:pre-wrap}#log{max-height:90vh;overflow:auto}.err{color:#f44}.warn{color:#fa0}.ok{color:#0f0}</style>
+</head><body>
+<h2>F5-TTS Pipeline Diagnostics</h2>
+<button onclick="runDiag()" id="btn">Run Full Diagnostic</button>
+<pre id="log">Click button to start. Will download ~200MB of models.</pre>
+<script>
+const CDN='https://huggingface.co/nsarang/F5-TTS-ONNX/resolve/main/';
+const log=document.getElementById('log');
+function L(msg,cls){log.innerHTML+=`<span class="${cls||''}">${msg}</span>\n`;log.scrollTop=log.scrollHeight;console.log(msg)}
+
+async function fetchBuf(path){
+  L(`Downloading ${path}...`);
+  const cache=await caches.open('f5-diag');
+  const url=CDN+path;
+  let res=await cache.match(url);
+  if(res){L(`  ✓ cached`);return res.arrayBuffer()}
+  res=await fetch(url);
+  if(!res.ok)throw new Error('HTTP '+res.status);
+  const buf=await res.arrayBuffer();
+  try{await cache.put(url,new Response(buf.slice()))}catch(e){}
+  L(`  ✓ ${(buf.byteLength/1024/1024).toFixed(1)}MB`);
+  return buf;
+}
+
+function tensorInfo(session,type){
+  const names=type==='in'?session.inputNames:session.outputNames;
+  // Can't get types directly from JS API, but we can try creating test tensors
+  return names;
+}
+
+async function runDiag(){
+  document.getElementById('btn').disabled=true;
+  log.innerHTML='';
+  try{
+    // 1. Check ORT
+    L('=== STEP 1: ONNX Runtime ===');
+    L(`ORT version: ${ort.env?.versions?.web||'unknown'}`);
+    
+    // 2. WebGPU
+    L('\n=== STEP 2: WebGPU ===');
+    let gpu=false;
+    try{
+      if(navigator.gpu){const a=await navigator.gpu.requestAdapter();if(a){gpu=true;L(`WebGPU: YES (${a.name||'unnamed'})`)}}
+      if(!gpu)L('WebGPU: NO','warn');
+    }catch(e){L('WebGPU: ERROR '+e.message,'err')}
+    
+    // 3. Download models
+    L('\n=== STEP 3: Download Models ===');
+    const encBuf=await fetchBuf('onnx/encoder_fp32.onnx');
+    const tfBuf=await fetchBuf('onnx/transformer_fp32.onnx');
+    const decBuf=await fetchBuf('onnx/decoder_fp32.onnx');
+    const vocBuf=await fetchBuf('vocab.txt');
+    
+    // 4. Create sessions
+    L('\n=== STEP 4: Create Sessions ===');
+    const eps=gpu?['webgpu','wasm']:['wasm'];
+    L(`Execution providers: ${eps.join(', ')}`);
+    
+    const enc=await ort.InferenceSession.create(encBuf,{executionProviders:eps});
+    L(`Encoder inputs:  ${enc.inputNames.join(', ')}`);
+    L(`Encoder outputs: ${enc.outputNames.join(', ')}`);
+    
+    const tf=await ort.InferenceSession.create(tfBuf,{executionProviders:eps});
+    L(`Transformer inputs:  ${tf.inputNames.join(', ')}`);
+    L(`Transformer outputs: ${tf.outputNames.join(', ')}`);
+    
+    const dec=await ort.InferenceSession.create(decBuf,{executionProviders:eps});
+    L(`Decoder inputs:  ${dec.inputNames.join(', ')}`);
+    L(`Decoder outputs: ${dec.outputNames.join(', ')}`);
+    
+    // 5. Vocab
+    const vocText=new TextDecoder().decode(vocBuf);
+    const vocab={};
+    vocText.split('\n').forEach((line,i)=>{const ch=line.replace(/\r/g,'');if(ch.length>0)vocab[ch]=i});
+    L(`Vocab: ${Object.keys(vocab).length} chars`);
+    
+    // 6. Test encoder with DIFFERENT input types
+    L('\n=== STEP 5: Test Encoder Input Types ===');
+    
+    // Create test audio: 1 second of sine wave at 24kHz
+    const sr=24000, dur=1.0;
+    const testAudio=new Float32Array(sr*dur);
+    for(let i=0;i<testAudio.length;i++)testAudio[i]=0.3*Math.sin(2*Math.PI*440*i/sr);
+    
+    const testText='hello';
+    const toks=Int32Array.from([...testText].map(c=>vocab[c]||0));
+    const textT=new ort.Tensor('int32',toks,[1,toks.length]);
+    const refLen=Math.trunc(testAudio.length/256);
+    const totalDur=refLen+refLen; // double duration
+    const durT=new ort.Tensor('int64',new BigInt64Array([BigInt(totalDur)]),[1]);
+    
+    // Try INT16 input
+    L('\n--- Test A: Encoder with INT16 audio ---');
+    try{
+      const i16=new Int16Array(testAudio.length);
+      for(let i=0;i<testAudio.length;i++)i16[i]=Math.round(testAudio[i]*32767);
+      const audioT16=new ort.Tensor('int16',i16,[1,1,i16.length]);
+      L(`  Input tensor: type=${audioT16.type} dims=${JSON.stringify(audioT16.dims)}`);
+      const eI={};eI[enc.inputNames[0]]=audioT16;eI[enc.inputNames[1]]=textT;eI[enc.inputNames[2]]=durT;
+      const eO=await enc.run(eI);
+      L(`  ✓ INT16 WORKS!`,'ok');
+      for(const name of enc.outputNames){
+        const t=eO[name];
+        const d=t.data;
+        let mn=Infinity,mx=-Infinity;
+        for(let i=0;i<Math.min(d.length,1000);i++){const v=typeof d[i]==='number'?d[i]:Number(d[i]);if(v<mn)mn=v;if(v>mx)mx=v}
+        L(`  ${name}: type=${t.type} dims=${JSON.stringify(t.dims)} range=[${mn.toFixed(4)}, ${mx.toFixed(4)}]`);
+      }
+    }catch(e){L(`  ✗ INT16 FAILED: ${e.message}`,'err')}
+    
+    // Try FLOAT32 input
+    L('\n--- Test B: Encoder with FLOAT32 audio ---');
+    try{
+      const audioT32=new ort.Tensor('float32',testAudio,[1,1,testAudio.length]);
+      L(`  Input tensor: type=${audioT32.type} dims=${JSON.stringify(audioT32.dims)}`);
+      const eI={};eI[enc.inputNames[0]]=audioT32;eI[enc.inputNames[1]]=textT;eI[enc.inputNames[2]]=durT;
+      const eO=await enc.run(eI);
+      L(`  ✓ FLOAT32 WORKS!`,'ok');
+      for(const name of enc.outputNames){
+        const t=eO[name];
+        const d=t.data;
+        let mn=Infinity,mx=-Infinity;
+        for(let i=0;i<Math.min(d.length,1000);i++){const v=typeof d[i]==='number'?d[i]:Number(d[i]);if(v<mn)mn=v;if(v>mx)mx=v}
+        L(`  ${name}: type=${t.type} dims=${JSON.stringify(t.dims)} range=[${mn.toFixed(4)}, ${mx.toFixed(4)}]`);
+      }
+    }catch(e){L(`  ✗ FLOAT32 FAILED: ${e.message}`,'err')}
+    
+    // 7. Full pipeline test with whichever works
+    L('\n=== STEP 6: Full Pipeline Test ===');
+    // Try int16 first since that's what our code uses
+    let audioTensor;
+    let inputType;
+    try{
+      const i16=new Int16Array(testAudio.length);
+      for(let i=0;i<testAudio.length;i++)i16[i]=Math.round(testAudio[i]*32767);
+      audioTensor=new ort.Tensor('int16',i16,[1,1,i16.length]);
+      inputType='int16';
+    }catch(e){
+      audioTensor=new ort.Tensor('float32',testAudio,[1,1,testAudio.length]);
+      inputType='float32';
+    }
+    L(`Using ${inputType} audio input`);
+    
+    // Encoder
+    L('Running encoder...');
+    const eI={};eI[enc.inputNames[0]]=audioTensor;eI[enc.inputNames[1]]=textT;eI[enc.inputNames[2]]=durT;
+    const eO=await enc.run(eI);
+    let noise=eO[enc.outputNames[0]];
+    L(`Encoder done. noise: type=${noise.type} dims=${JSON.stringify(noise.dims)}`);
+    
+    // Transformer - just 2 steps for speed
+    const nfe=3;
+    L(`Running transformer (${nfe-1} steps)...`);
+    let rcq=eO[enc.outputNames[1]],rsq=eO[enc.outputNames[2]],
+        rck=eO[enc.outputNames[3]],rsk=eO[enc.outputNames[4]],
+        cmt=eO[enc.outputNames[5]],cmtd=eO[enc.outputNames[6]],
+        rsl=eO[enc.outputNames[7]];
+    let ts=new ort.Tensor('int32',new Int32Array([0]),[1]);
+    for(let s=0;s<nfe-1;s++){
+      const tI={};
+      tI[tf.inputNames[0]]=noise;tI[tf.inputNames[1]]=rcq;tI[tf.inputNames[2]]=rsq;
+      tI[tf.inputNames[3]]=rck;tI[tf.inputNames[4]]=rsk;tI[tf.inputNames[5]]=cmt;
+      tI[tf.inputNames[6]]=cmtd;tI[tf.inputNames[7]]=ts;
+      const tO=await tf.run(tI);
+      noise=tO[tf.outputNames[0]];ts=tO[tf.outputNames[1]];
+      // Check noise range
+      const nd=noise.data;let mn=Infinity,mx=-Infinity;
+      for(let i=0;i<Math.min(nd.length,1000);i++){const v=typeof nd[i]==='number'?nd[i]:Number(nd[i]);if(v<mn)mn=v;if(v>mx)mx=v}
+      L(`  Step ${s+1}: noise range=[${mn.toFixed(4)}, ${mx.toFixed(4)}] type=${noise.type}`);
+    }
+    
+    // Decoder
+    L('Running decoder...');
+    const dI={};dI[dec.inputNames[0]]=noise;dI[dec.inputNames[1]]=rsl;
+    const dO=await dec.run(dI);
+    const raw=dO[dec.outputNames[0]];
+    L(`Decoder output: type=${raw.type} dims=${JSON.stringify(raw.dims)}`);
+    const rd=raw.data;
+    let mn=Infinity,mx=-Infinity,sq=0;
+    for(let i=0;i<rd.length;i++){const v=typeof rd[i]==='number'?rd[i]:Number(rd[i]);if(v<mn)mn=v;if(v>mx)mx=v;sq+=v*v}
+    const rms=Math.sqrt(sq/rd.length);
+    L(`Decoder range: [${mn.toFixed(4)}, ${mx.toFixed(4)}] rms=${rms.toFixed(4)}`,'ok');
+    
+    if(Math.abs(mx)>100){
+      L(`\n⚠️ VERDICT: Decoder outputs INT16-scale values. Dividing by 32767 is CORRECT.`,'warn');
+    }else if(Math.abs(mx)>1.5){
+      L(`\n⚠️ VERDICT: Decoder outputs unusual range. May need different normalization.`,'warn');
+    }else{
+      L(`\n⚠️ VERDICT: Decoder outputs FLOAT range [-1,1]. Should NOT divide by 32767!`,'err');
+      L(`   This would make all values ~0 = nearly silent/distorted!`,'err');
+    }
+    
+    L('\n=== STEP 7: Input Type Summary ===');
+    L('Check above: which input type (INT16 vs FLOAT32) succeeded?');
+    L('If FLOAT32 works but INT16 fails → our code feeds wrong type!');
+    L('If both work → check decoder output range for normalization bug.');
+    
+    L('\n=== DONE ===','ok');
+    
+  }catch(e){
+    L(`\nFATAL ERROR: ${e.message}\n${e.stack}`,'err');
+  }
+  document.getElementById('btn').disabled=false;
+}
+</script></body></html>
