@@ -823,7 +823,7 @@ async function generateChunk(text,voiceBlob,langCode){
   generateLock=true;
   try{
     const lang=langCode||'en';
-    const refText=T[lang]?.readSample||T.en.readSample;
+    const refText=UI[lang]?.readSample||UI.en.readSample;
     // Ensure F5-TTS is loaded (first call downloads ~200MB, cached after)
     if(!f5Ready){
       console.log('[F5] First use — loading voice engine...');
