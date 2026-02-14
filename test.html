@@ -26,20 +26,20 @@ audio{width:100%;margin:10px 0}
 </div>
 
 <div style="margin-top:10px">
-<button onclick="toggleRec()" id="btnRec" disabled class="red">2. Record Voice (5s)</button>
+<button onclick="toggleRec()" id="btnRec" disabled class="red">2. Record Voice (3-5s)</button>
 <audio id="refAudio" controls></audio>
 </div>
 
 <div style="margin-top:10px">
 <label>Text to generate:</label>
-<input type="text" id="genText" value="Once upon a time, there was a little bear who loved to explore the forest at night." style="width:100%;box-sizing:border-box">
+<input type="text" id="genText" value="The little bear loved to explore the forest." style="width:100%;box-sizing:border-box">
 </div>
 
 <div style="margin-top:10px">
 <label>NFE Steps: <select id="nfe">
 <option value="4">4 (fast, low quality)</option>
-<option value="8" selected>8 (recommended)</option>
-<option value="16">16 (better, slower)</option>
+<option value="6" selected>6 (recommended)</option>
+<option value="8">8 (better, slower)</option>
 <option value="24">24 (better)</option>
 <option value="32">32 (best, slow)</option>
 </select></label>
@@ -162,8 +162,8 @@ async function decodeAudio(blob){
     }
     for(let i=0;i<mono.length;i++)mono[i]/=audio.numberOfChannels;
   }
-  // Trim to 5s max (longer = quadratically slower transformer)
-  if(mono.length>120000)mono=mono.slice(0,120000);
+  // Trim to 3s max (shorter = quadratically faster transformer)
+  if(mono.length>72000)mono=mono.slice(0,72000);
   return mono;
 }
 
