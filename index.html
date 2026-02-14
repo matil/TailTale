@@ -611,28 +611,9 @@ Requirements:
 // No signup, no API key, no cost. 23 languages, voice cloning.
 // https://huggingface.co/spaces/ResembleAI/Chatterbox-Multilingual-TTS
 
-const HF_SPACE='ResembleAI/Chatterbox-Multilingual-TTS';
-const HF_SPACE_URL='https://resembleai-chatterbox-multilingual-tts.hf.space';
+const HF_SPACE='https://resembleai-chatterbox-multilingual-tts.hf.space';
 
-// Gradio JS client singleton
-let _gradioClient=null;
-let _gradioLoading=false;
-async function getGradioClient(){
-  if(_gradioClient)return _gradioClient;
-  if(_gradioLoading){while(_gradioLoading)await new Promise(r=>setTimeout(r,200));return _gradioClient}
-  _gradioLoading=true;
-  try{
-    console.log('[TTS] Loading Gradio client from CDN...');
-    const mod=await import('https://cdn.jsdelivr.net/npm/@gradio/client@1.14.0/dist/index.min.js');
-    console.log('[TTS] Connecting to HF Space:',HF_SPACE);
-    _gradioClient=await mod.Client.connect(HF_SPACE);
-    console.log('[TTS] ✅ Connected to Chatterbox Multilingual');
-    return _gradioClient;
-  }catch(e){console.error('[TTS] Client connect failed:',e);throw e}
-  finally{_gradioLoading=false}
-}
-
-// Pre-warm: connect to HF Space early (ZeroGPU cold start)
+// Pre-warm: wake the HF Space (ZeroGPU cold start)
 let preWarmStatus={active:false,done:false,error:false,progress:0};let preWarmListeners=[];
 function onPreWarmChange(fn){preWarmListeners.push(fn);return()=>{preWarmListeners=preWarmListeners.filter(f=>f!==fn)}}
 function notifyPreWarm(){preWarmListeners.forEach(fn=>fn({...preWarmStatus}))}
@@ -640,7 +621,8 @@ async function preWarmVoice(voiceId){
   preWarmStatus={active:true,done:false,error:false,progress:0.3};notifyPreWarm();
   try{
     const d=await dbGet('voices',voiceId);if(!d?.blob)throw new Error('No voice');
-    await getGradioClient();
+    // Ping the space to wake it
+    await fetch(HF_SPACE+'/',{method:'HEAD',mode:'no-cors'}).catch(()=>{});
     preWarmStatus={active:false,done:true,error:false,progress:1};notifyPreWarm();
   }catch(e){
     preWarmStatus={active:false,done:false,error:true,progress:0};notifyPreWarm();
@@ -666,38 +648,114 @@ async function setCachedAudio(voiceId,text,blob){
   try{await dbPut('audioCache',{key:audioCacheKey(voiceId,text),blob,ts:Date.now()})}catch(e){console.warn('[Cache] Write failed:',e)}
 }
 
-// ===== Call HF Space via Gradio JS client =====
+// ===== Upload file to HF Space (Gradio 5 API) =====
+async function hfUpload(blob,filename){
+  const form=new FormData();
+  form.append('files',blob,filename||'voice.wav');
+  // Gradio 5 uses /gradio_api/upload, older uses /upload — try both
+  let r=await fetch(HF_SPACE+'/gradio_api/upload',{method:'POST',body:form});
+  if(!r.ok){
+    console.warn('[TTS] /gradio_api/upload returned '+r.status+', trying /upload...');
+    r=await fetch(HF_SPACE+'/upload',{method:'POST',body:form});
+  }
+  if(!r.ok)throw new Error('Upload failed: '+r.status);
+  const paths=await r.json();
+  return paths[0]; // server path
+}
+
+// ===== Call HF Space Gradio API =====
 async function callHFSpace(text,voiceBlob,langCode){
-  const client=await getGradioClient();
-  console.log('[TTS] Calling Chatterbox via Gradio client...');
-  
-  // The Gradio client handles upload + queuing + SSE automatically
-  const result=await client.predict('/generate_tts_audio',[
+  console.log('[TTS] Uploading voice to HF Space...');
+  const voicePath=await hfUpload(voiceBlob,'voice.wav');
+  console.log('[TTS] Voice uploaded:',voicePath);
+
+  // Queue the request — try Gradio 5 path first
+  const fileData={path:voicePath,meta:{_type:'gradio.FileData'}};
+  const payload={data:[
     text,              // text_input
     langCode||'en',    // language_id
-    voiceBlob,         // audio_prompt_path_input (Blob — client uploads it)
+    fileData,          // audio_prompt_path_input
     0.5,               // exaggeration
     0.5,               // cfg_weight
     0.8,               // temperature
     0,                 // seed (0 = random)
-  ]);
+  ]};
 
-  console.log('[TTS] Predict result:',JSON.stringify(result.data).substring(0,200));
-  const out=result.data[0];
-  if(!out)throw new Error('No audio in response');
+  console.log('[TTS] Queuing prediction...');
+  let queuePath='/gradio_api/call/generate_tts_audio';
+  let qr=await fetch(HF_SPACE+queuePath,{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify(payload),
+  });
+  if(!qr.ok){
+    console.warn('[TTS] '+queuePath+' returned '+qr.status+', trying /call/...');
+    queuePath='/call/generate_tts_audio';
+    qr=await fetch(HF_SPACE+queuePath,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(payload),
+    });
+  }
+  if(!qr.ok){
+    const err=await qr.text().catch(()=>'');
+    throw new Error('HF Space queue error '+qr.status+': '+err.substring(0,200));
+  }
+  const {event_id}=await qr.json();
+  if(!event_id)throw new Error('No event_id from HF Space');
+  console.log('[TTS] Queued, event_id:',event_id);
 
-  // Resolve audio URL from the result
-  let audioUrl=null;
-  if(typeof out==='string')audioUrl=out;
-  else if(out.url)audioUrl=out.url;
-  else if(out.path)audioUrl=HF_SPACE_URL+'/file='+out.path;
-  if(!audioUrl)throw new Error('Cannot resolve audio URL');
-  
-  if(audioUrl.startsWith('/'))audioUrl=HF_SPACE_URL+audioUrl;
-  console.log('[TTS] Downloading audio:',audioUrl.substring(0,80)+'...');
-  const ar=await fetch(audioUrl);
-  if(!ar.ok)throw new Error('Audio download failed: '+ar.status);
-  return await ar.blob();
+  // Stream result via SSE
+  return new Promise((resolve,reject)=>{
+    const timeout=setTimeout(()=>reject(new Error('HF Space timeout (3 min)')),180000);
+    const url=HF_SPACE+queuePath+'/'+event_id;
+    
+    fetch(url).then(async r=>{
+      if(!r.ok){clearTimeout(timeout);reject(new Error('SSE fetch error: '+r.status));return}
+      const reader=r.body.getReader();
+      const decoder=new TextDecoder();
+      let buf='';
+      while(true){
+        const{done,value}=await reader.read();
+        if(done)break;
+        buf+=decoder.decode(value,{stream:true});
+        const lines=buf.split('\n');
+        buf=lines.pop()||'';
+        for(const line of lines){
+          if(line.startsWith('data: ')){
+            const raw=line.substring(6);
+            try{
+              const data=JSON.parse(raw);
+              if(Array.isArray(data)&&data[0]){
+                const out=data[0];
+                let audioUrl=null;
+                if(typeof out==='string')audioUrl=out;
+                else if(out.url)audioUrl=out.url;
+                else if(out.path)audioUrl=HF_SPACE+'/gradio_api/file='+out.path;
+                if(audioUrl){
+                  clearTimeout(timeout);
+                  if(audioUrl.startsWith('/'))audioUrl=HF_SPACE+audioUrl;
+                  console.log('[TTS] Got audio URL:',audioUrl.substring(0,80)+'...');
+                  const ar=await fetch(audioUrl);
+                  if(!ar.ok)reject(new Error('Audio download failed: '+ar.status));
+                  else resolve(await ar.blob());
+                  return;
+                }
+              }
+            }catch(e){/* not JSON, skip */}
+          }
+          if(line.startsWith('event: error')){
+            clearTimeout(timeout);
+            const errData=lines.find(l=>l.startsWith('data:'));
+            reject(new Error('HF Space error: '+(errData||'unknown')));
+            return;
+          }
+        }
+      }
+      clearTimeout(timeout);
+      reject(new Error('SSE stream ended without audio'));
+    }).catch(e=>{clearTimeout(timeout);reject(e)});
+  });
 }
 
 // ===== Main generateChunk =====
