@@ -738,25 +738,42 @@ async function initF5(progressCb){
   }
 }
 
+// Normalize text: replace smart quotes, curly apostrophes, etc. with ASCII equivalents
+// These unicode chars are NOT in the F5-TTS vocab and get mapped to token 0 (unknown),
+// which completely corrupts the text conditioning and produces garbage audio.
+function normalizeText(text){
+  return text
+    .replace(/[\u2018\u2019\u201A\u201B]/g,"'")  // curly single quotes → '
+    .replace(/[\u201C\u201D\u201E\u201F]/g,'"')  // curly double quotes → "
+    .replace(/[\u2013\u2014]/g,'-')               // en/em dashes → -
+    .replace(/\u2026/g,'...')                      // ellipsis → ...
+    .replace(/[\u00A0]/g,' ')                      // non-breaking space → space
+    .replace(/[^\x00-\x7F\u00C0-\u024F\u0400-\u04FF\u0590-\u05FF\u0600-\u06FF\u4E00-\u9FFF\u3040-\u30FF]/g,' ') // remove other exotic chars
+    .replace(/\s+/g,' ').trim();
+}
+
 // Tensor math on raw Float32Arrays
 function arrRMS(d){let s=0;for(let i=0;i<d.length;i++)s+=d[i]*d[i];return Math.sqrt(s/d.length)}
-function arrToInt16(d,q=0.999){const a=Float32Array.from(d,v=>Math.abs(v));a.sort();const mx=a[Math.min(Math.floor(a.length*q),a.length-1)];const sc=mx>0?32767/mx:1;const r=new Int16Array(d.length);for(let i=0;i<d.length;i++)r[i]=Math.max(-32768,Math.min(32767,Math.round(d[i]*sc)));return r}
+function arrToInt16(d){const r=new Int16Array(d.length);for(let i=0;i<d.length;i++)r[i]=Math.max(-32768,Math.min(32767,Math.round(d[i]*32767)));return r}
 
 // F5-TTS 3-stage inference pipeline
 async function f5Infer(refF32,refText,genText,speed=1.0,nfe=8){
-  const{enc,tf,dec}=f5S;const hop=256,tgtRMS=0.1;
-  // Normalize RMS
-  let audio=refF32;const rms=arrRMS(audio);
-  console.log('[F5] Ref audio: '+audio.length+' samples, rms='+rms.toFixed(4));
-  if(rms>0&&rms<tgtRMS){const scale=tgtRMS/rms;audio=new Float32Array(audio.length);for(let i=0;i<refF32.length;i++)audio[i]=refF32[i]*scale;console.log('[F5] RMS normalized: scale='+scale.toFixed(2))}
+  const{enc,tf,dec}=f5S;const hop=256;
+  const audio=refF32;
+  console.log('[F5] Ref audio: '+audio.length+' samples, rms='+arrRMS(audio).toFixed(4));
   // To int16
   const i16=arrToInt16(audio);
   const audioT=new ort.Tensor('int16',i16,[1,1,i16.length]);
   // Tokenize
-  const combined=refText+' '+genText;
+  // F5-TTS: uppercase letters are spelled out letter-by-letter, so lowercase everything
+  // Normalize smart quotes etc. that aren't in the vocab
+  const combined=normalizeText((refText+' '+genText).toLowerCase());
   const toks=Int32Array.from([...combined].map(c=>f5V[c]||0));
-  const unkCount=[...combined].filter(c=>!f5V[c]).length;
-  if(unkCount>0)console.warn('[F5] Unknown chars:',unkCount,'/',combined.length);
+  const unkChars=[...combined].filter(c=>!f5V[c]);
+  if(unkChars.length>0){
+    const unique=[...new Set(unkChars)].map(c=>c+' (U+'+c.charCodeAt(0).toString(16).padStart(4,'0')+')');
+    console.warn('[F5] Unknown chars:',unkChars.length,'/',combined.length,'unique:',unique.join(', '));
+  }
   const textT=new ort.Tensor('int32',toks,[1,toks.length]);
   // Duration
   const refLen=Math.trunc(audio.length/hop);
@@ -812,8 +829,6 @@ async function f5Infer(refF32,refText,genText,speed=1.0,nfe=8){
     console.log('[F5] Decoder output already in float range → using directly');
     for(let i=0;i<raw.length;i++)out[i]=typeof raw[i]==='number'?raw[i]:Number(raw[i]);
   }
-  // Revert RMS normalization
-  if(rms>0&&rms<tgtRMS){const scale=rms/tgtRMS;for(let i=0;i<out.length;i++)out[i]*=scale}
   console.log('[F5] ✅ Generated '+out.length+' samples ('+(out.length/24000).toFixed(1)+'s audio) in '+((Date.now()-t1)/1000).toFixed(1)+'s');
   return out;
 }
@@ -838,7 +853,15 @@ async function decodeRefAudio(voiceBlob){
   let mono;
   if(audio.numberOfChannels===1)mono=new Float32Array(audio.getChannelData(0));
   else{mono=new Float32Array(audio.length);for(let ch=0;ch<audio.numberOfChannels;ch++){const d=audio.getChannelData(ch);for(let i=0;i<audio.length;i++)mono[i]+=d[i]}for(let i=0;i<mono.length;i++)mono[i]/=audio.numberOfChannels}
-  const max=10*24000;if(mono.length>max)mono=mono.slice(0,max);
+  const max=5*24000;if(mono.length>max)mono=mono.slice(0,max);
+  // Trim leading silence (threshold: RMS of 50ms windows > 0.005)
+  const winSize=Math.floor(0.05*24000);
+  let trimStart=0;
+  for(let i=0;i<mono.length-winSize;i+=winSize){
+    let s=0;for(let j=i;j<i+winSize;j++)s+=mono[j]*mono[j];
+    if(Math.sqrt(s/winSize)>0.005){trimStart=Math.max(0,i-winSize);break}
+  }
+  if(trimStart>0){mono=mono.slice(trimStart);console.log('[F5] Trimmed '+Math.round(trimStart/24000*10)/10+'s leading silence')}
   return mono;
 }
 
@@ -873,7 +896,7 @@ async function generateChunk(text,voiceBlob,langCode){
     // Run inference
     console.log('[F5] Generating speech for:',text.substring(0,60)+'...');
     const t0=Date.now();
-    const audioF32=await f5Infer(refF32,refText,text,1.0,f5HasWebGPU?16:8);
+    const audioF32=await f5Infer(refF32,refText,text,1.0,8);
     // Audio quality check
     let mn=Infinity,mx=-Infinity,sq=0;
     for(let i=0;i<audioF32.length;i++){const v=audioF32[i];if(v<mn)mn=v;if(v>mx)mx=v;sq+=v*v}
@@ -887,7 +910,7 @@ async function generateChunk(text,voiceBlob,langCode){
     throw err;
   }finally{generateLock=false}
 }
-function chunkText(text,maxLen=280){const sentences=text.match(/[^.!?。！？]+[.!?。！？]+[\s"]*/g)||[text];const chunks=[];let cur='';for(const s of sentences){if((cur+s).length>maxLen&&cur){chunks.push(cur.trim());cur=s}else cur+=s}if(cur.trim())chunks.push(cur.trim());return chunks}
+function chunkText(text,maxLen=120){const sentences=text.match(/[^.!?。！？]+[.!?。！？]+[\s"]*/g)||[text];const chunks=[];let cur='';for(const s of sentences){if((cur+s).length>maxLen&&cur){chunks.push(cur.trim());cur=s}else cur+=s}if(cur.trim())chunks.push(cur.trim());return chunks}
 
 // Voice pre-warm: download F5-TTS models + validate voice
 let preWarmStatus={active:false,done:false,error:false,progress:0};let preWarmListeners=[];
