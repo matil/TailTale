@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#0B0E2D">
@@ -34,20 +34,20 @@ body{font-family:'Nunito',sans-serif;background:var(--nd);color:var(--tx);-webki
 .ff{position:absolute;width:4px;height:4px;background:var(--wg);border-radius:50%;animation:ffa ease-in-out infinite;box-shadow:0 0 8px var(--wg)}
 @keyframes ffa{0%,100%{opacity:.15;transform:translate(0,0)}25%{opacity:.7;transform:translate(12px,-18px)}50%{opacity:.3;transform:translate(-8px,-30px)}75%{opacity:.8;transform:translate(16px,-12px)}}
 .hills{position:absolute;bottom:0;width:100%;height:120px}.hl{position:absolute;bottom:0;border-radius:50% 50% 0 0}
-.hl:nth-child(1){width:500px;height:120px;background:#0F1235;left:-80px}.hl:nth-child(2){width:450px;height:95px;background:#121640;left:180px}.hl:nth-child(3){width:600px;height:105px;background:#0D1030;right:-120px}
-.app{position:relative;z-index:1;height:100%;display:flex;flex-direction:column;max-width:480px;margin:0 auto}
+.hl:nth-child(1){width:max(500px,45vw);height:120px;background:#0F1235;left:-80px}.hl:nth-child(2){width:max(450px,40vw);height:95px;background:#121640;left:180px}.hl:nth-child(3){width:max(600px,50vw);height:105px;background:#0D1030;right:-120px}
+.app{position:relative;z-index:1;height:100%;display:flex;flex-direction:column;max-width:520px;margin:0 auto;padding:0 env(safe-area-inset-right) 0 env(safe-area-inset-left)}
 .hdr{padding:12px 20px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;direction:ltr}
 .logo{display:flex;align-items:center}
 .logo-hdr{height:44px;width:200px;display:block}
 .logo-welcome{width:300px;max-width:90vw;margin:0 auto 8px;display:block}
 .hbtn{height:36px;padding:0 14px;border-radius:50px;border:1px solid var(--bd);background:var(--gl);font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:5px;color:var(--txs);font-family:'Nunito',sans-serif;transition:.2s}.hbtn:hover{background:var(--glh)}
 .main{flex:1;overflow:hidden;padding:0 20px 0;display:flex;flex-direction:column;min-height:0}
-.nav{flex-shrink:0;background:rgba(11,14,45,.92);backdrop-filter:blur(20px);border-radius:22px 22px 0 0;padding:6px 12px 14px;display:flex;justify-content:space-around;border-top:1px solid var(--bd)}
+.nav{flex-shrink:0;background:rgba(11,14,45,.92);backdrop-filter:blur(20px);border-radius:22px 22px 0 0;padding:6px 12px calc(14px + env(safe-area-inset-bottom,0px));display:flex;justify-content:space-around;border-top:1px solid var(--bd)}
 .ni{display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:none;cursor:pointer;padding:8px 16px;border-radius:14px;transition:.2s;color:var(--txd);font-family:'Nunito'}.ni.a{color:var(--moon);background:rgba(255,248,220,.07)}
 .ni-l{font-size:10px;font-weight:700}
 .card{background:var(--gl);backdrop-filter:blur(10px);border-radius:var(--rm);padding:18px;margin-bottom:12px;border:1px solid var(--bd)}
 .ct{font-family:'Baloo 2',cursive;font-size:17px;font-weight:700;margin-bottom:3px;display:flex;align-items:center;gap:6px}.cs{font-size:13px;color:var(--txs)}
-.sr{display:flex;gap:14px;align-items:center;cursor:pointer;padding:14px;border-radius:var(--rm);background:var(--gl);margin-bottom:10px;transition:.25s;border:1px solid var(--bd)}.sr:hover{background:var(--glh)}.sr.sel{border-color:rgba(197,179,230,.4);background:rgba(197,179,230,.08)}
+.sr{display:flex;gap:14px;align-items:center;cursor:pointer;padding:14px 16px;border-radius:var(--rm);background:var(--gl);margin-bottom:10px;transition:.25s;border:1px solid var(--bd)}.sr:hover{background:var(--glh);transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,.15)}.sr.sel{border-color:rgba(197,179,230,.4);background:rgba(197,179,230,.08)}
 .se{width:54px;height:54px;display:flex;align-items:center;justify-content:center;background:rgba(255,248,220,.06);border-radius:14px;flex-shrink:0}.si{flex:1;min-width:0}.sn{font-family:'Baloo 2',cursive;font-size:15px;font-weight:700;line-height:1.2}.sd{font-size:11px;color:var(--txd);margin-top:2px}
 .badge{display:inline-block;padding:1px 7px;border-radius:6px;font-size:9px;font-weight:700;text-transform:uppercase;margin-top:3px}
 .b-ft{background:rgba(85,230,193,.1);color:var(--teal)}.b-fb{background:rgba(255,212,162,.1);color:var(--warm)}.b-bt{background:rgba(197,179,230,.1);color:var(--lav)}
@@ -85,7 +85,7 @@ body{font-family:'Nunito',sans-serif;background:var(--nd);color:var(--tx);-webki
 @keyframes spin{to{transform:rotate(360deg)}}
 .genst .done{color:var(--teal);display:flex;align-items:center;justify-content:center;gap:6px}
 .wel{display:flex;flex-direction:column;justify-content:center;align-items:center;min-height:100%;padding:40px 24px;text-align:center}
-.wbx{background:rgba(20,24,69,.8);backdrop-filter:blur(20px);border-radius:var(--rl);padding:24px 20px;width:100%;max-width:340px;border:1px solid var(--bd)}
+.wbx{background:rgba(20,24,69,.8);backdrop-filter:blur(20px);border-radius:var(--rl);padding:24px 20px;width:100%;max-width:380px;border:1px solid var(--bd)}
 .flt{display:flex;gap:7px;overflow-x:auto;padding-bottom:3px;margin-bottom:10px;scrollbar-width:none;flex-shrink:0}.flt::-webkit-scrollbar{display:none}
 .fc{padding:7px 14px;border-radius:50px;border:1px solid var(--bd);background:var(--gl);font-family:'Nunito';font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;transition:.2s;color:var(--txs)}.fc:hover{background:var(--glh)}.fc.a{background:rgba(167,139,204,.18);color:var(--lav);border-color:rgba(167,139,204,.3)}
 .steps{display:flex;gap:7px;margin-bottom:16px}.step{flex:1;height:4px;border-radius:2px;background:rgba(255,255,255,.05);transition:.3s}.step.a{background:var(--lavs)}.step.d{background:var(--teal)}
@@ -120,7 +120,16 @@ body{font-family:'Nunito',sans-serif;background:var(--nd);color:var(--tx);-webki
 [dir=rtl] .sr{flex-direction:row-reverse}[dir=rtl] .si{text-align:right}[dir=rtl] .vc{flex-direction:row-reverse}[dir=rtl] .ct{flex-direction:row-reverse}[dir=rtl] .sh{flex-direction:row-reverse}[dir=rtl] .nav{flex-direction:row-reverse}[dir=rtl] .ddmenu{right:auto;left:16px}[dir=rtl] .ddi{flex-direction:row-reverse;text-align:right}[dir=rtl] .ver-btns{flex-direction:row-reverse}[dir=rtl] .main{direction:rtl}[dir=rtl] .fi{direction:rtl}[dir=rtl] .ss{text-align:right}[dir=rtl] .ra{direction:rtl}[dir=rtl] .ra p{text-align:right;direction:rtl}[dir=rtl] .genst{direction:rtl}[dir=rtl] .card{direction:rtl}[dir=rtl] .prewarm{direction:rtl}[dir=rtl] .info{direction:rtl;text-align:right}[dir=rtl] .flt{direction:rtl}[dir=rtl] .cmtabs{direction:rtl}
 .tl-spinner{display:inline-flex;align-items:center;gap:6px;padding:10px 16px;border-radius:10px;background:rgba(139,111,192,.1);color:var(--lav);font-size:12px;font-weight:600;margin:10px 0}
 .tl-spinner .spinner{width:14px;height:14px;border:2px solid rgba(197,179,230,.3);border-top-color:var(--lav);border-radius:50%;animation:spin 1s linear infinite}
-@media(max-width:380px){.hdr{padding:10px 14px}.main{padding:0 14px}}
+.vsample{width:36px;height:36px;border-radius:50%;border:1px solid rgba(85,230,193,.2);background:rgba(85,230,193,.06);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:.2s;flex-shrink:0;margin-left:auto}.vsample:hover{background:rgba(85,230,193,.15);border-color:rgba(85,230,193,.4)}.vsample:active{transform:scale(.9)}
+.vsample.playing{animation:vpulse 1s ease-in-out infinite;border-color:rgba(85,230,193,.5);background:rgba(85,230,193,.15)}
+@keyframes vpulse{0%,100%{box-shadow:0 0 0 0 rgba(85,230,193,.3)}50%{box-shadow:0 0 0 8px rgba(85,230,193,0)}}
+.vsample-tip{font-size:10px;color:var(--txd);text-align:center;margin-top:4px;opacity:.6}
+.seed-overlay{position:fixed;inset:0;z-index:100;background:rgba(7,10,31,.95);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:24px}
+.seed-progress{width:200px;height:6px;background:rgba(255,255,255,.08);border-radius:3px;overflow:hidden}.seed-fill{height:100%;background:linear-gradient(90deg,var(--lavs),var(--teal));border-radius:3px;transition:width .3s}
+@media(max-width:380px){.hdr{padding:10px 14px}.main{padding:0 14px}.pti{font-size:18px}.ra{font-size:14px;padding:14px}}
+@media(min-width:481px){.app{max-width:540px}}
+@media(min-width:768px){.app{max-width:600px}.sr{padding:16px}.card{padding:20px}.ra{font-size:16px;line-height:1.9}.pti{font-size:24px}}
+@media(min-width:1024px){.app{max-width:680px}.pb{padding:32px 28px}}
 </style>
 </head>
 <body>
@@ -192,6 +201,36 @@ const UI={
 };
 function makeT(lang){return(key)=>(UI[lang]&&UI[lang][key])||UI.en[key]||key}
 function getLangDir(lang){const l=LANGS.find(x=>x.c===lang);return l?l.d:'ltr'}
+
+// Voice sample sentences — 10 per language, for testing voices
+const VOICE_SAMPLES={
+en:["Once upon a time, in a land far, far away, the stars began to sing.","The little bear yawned and snuggled into his cozy blanket.","Goodnight moon, goodnight stars, goodnight little ones everywhere.","A gentle breeze carried the fireflies across the sleepy meadow.","The wise old owl watched over the forest as everyone fell asleep.","Twinkle twinkle little star, how I wonder what you are.","The bunny hopped softly through the moonlit garden.","And they all lived happily ever after. The end.","Close your eyes and dream of magical adventures.","The night sky sparkled with a thousand tiny diamonds."],
+he:["פעם, בארץ רחוקה מאוד, הכוכבים התחילו לשיר.","הדובון הקטן פיהק והתכרבל בשמיכה החמימה שלו.","לילה טוב ירח, לילה טוב כוכבים, לילה טוב ילדים בכל מקום.","רוח עדינה נשאה את הגחליליות מעל השדה הנרדם.","הינשוף הזקן והחכם שמר על היער בזמן שכולם נרדמו.","נצנץ נצנץ כוכב קטן, איך אני תוהה מה אתה.","הארנבון קפץ בשקט דרך הגינה מוארת הירח.","וכולם חיו באושר ובעושר לעד. הסוף.","עצמו את העיניים וחלמו על הרפתקאות קסומות.","שמי הלילה נצצו באלף יהלומים קטנטנים."],
+es:["Érase una vez, en una tierra muy lejana, las estrellas comenzaron a cantar.","El osito bostezó y se acurrucó en su manta acogedora.","Buenas noches luna, buenas noches estrellas, buenas noches pequeños.","Una brisa suave llevó las luciérnagas por el prado dormido.","El viejo búho sabio vigilaba el bosque mientras todos dormían.","Brilla brilla estrellita, cómo me pregunto qué serás.","El conejito saltó suavemente por el jardín iluminado por la luna.","Y todos vivieron felices para siempre. Fin.","Cierra los ojos y sueña con aventuras mágicas.","El cielo nocturno brillaba con mil pequeños diamantes."],
+fr:["Il était une fois, dans un pays lointain, les étoiles se mirent à chanter.","Le petit ours bâilla et se blottit dans sa couverture douillette.","Bonne nuit lune, bonne nuit étoiles, bonne nuit les petits.","Une brise douce portait les lucioles à travers la prairie endormie.","Le vieux hibou sage veillait sur la forêt pendant que tous dormaient.","Brille brille petite étoile, comme je me demande ce que tu es.","Le petit lapin sautillait doucement dans le jardin éclairé par la lune.","Et ils vécurent tous heureux pour toujours. Fin.","Ferme les yeux et rêve d'aventures magiques.","Le ciel nocturne scintillait de mille petits diamants."],
+ar:["ذات مرة، في أرض بعيدة جداً، بدأت النجوم تغني.","تثاءب الدب الصغير وتلحف ببطانيته الدافئة.","تصبحون على خير يا قمر، يا نجوم، يا أطفال في كل مكان.","نسيم لطيف حمل اليراعات عبر المرج النائم.","البومة العجوزة الحكيمة حرست الغابة بينما نام الجميع.","لمعي لمعي أيتها النجمة الصغيرة، كم أتساءل ما أنتِ.","قفز الأرنب بهدوء عبر الحديقة المضاءة بالقمر.","وعاشوا جميعاً بسعادة للأبد. النهاية.","أغمض عينيك واحلم بمغامرات سحرية.","سماء الليل تلألأت بألف ماسة صغيرة."],
+ru:["Давным-давно, в далёкой стране, звёзды начали петь.","Маленький медвежонок зевнул и укутался в уютное одеяло.","Спокойной ночи, луна, спокойной ночи, звёзды, спокойной ночи, малыши.","Нежный ветерок нёс светлячков через сонный луг.","Мудрая старая сова охраняла лес, пока все засыпали.","Мерцай, мерцай, маленькая звезда, как мне интересно, что ты такое.","Зайчик тихо прыгал по лунному саду.","И жили они долго и счастливо. Конец.","Закрой глаза и мечтай о волшебных приключениях.","Ночное небо сверкало тысячей маленьких бриллиантов."],
+pt:["Era uma vez, numa terra muito distante, as estrelas começaram a cantar.","O ursinho bocejou e se aconchegou em seu cobertor quentinho.","Boa noite lua, boa noite estrelas, boa noite pequeninos.","Uma brisa suave carregou os vaga-lumes pelo prado adormecido.","A velha coruja sábia vigiava a floresta enquanto todos dormiam.","Brilha brilha estrelinha, como eu me pergunto o que você é.","O coelhinho pulou suavemente pelo jardim iluminado pela lua.","E todos viveram felizes para sempre. Fim.","Feche os olhos e sonhe com aventuras mágicas.","O céu noturno brilhava com mil pequenos diamantes."],
+zh:["从前，在一个遥远的地方，星星开始唱歌了。","小熊打了个哈欠，缩进了温暖的毯子里。","晚安月亮，晚安星星，晚安所有的小朋友。","一阵轻柔的微风把萤火虫吹过了沉睡的草地。","聪明的老猫头鹰守护着森林，看着大家入睡。","一闪一闪亮晶晶，满天都是小星星。","小兔子在月光下的花园里轻轻地跳着。","从此他们幸福地生活在一起。结局。","闭上眼睛，梦想神奇的冒险吧。","夜空闪烁着无数小钻石般的光芒。"]
+};
+let sampleAudioPlaying=null;
+function playVoiceSample(lang,voiceBlob){
+  // Stop any currently playing sample
+  if(sampleAudioPlaying){try{sampleAudioPlaying.cancel?sampleAudioPlaying.cancel():sampleAudioPlaying.pause?.()}catch(e){}sampleAudioPlaying=null}
+  const sentences=VOICE_SAMPLES[lang]||VOICE_SAMPLES.en;
+  const text=sentences[Math.floor(Math.random()*sentences.length)];
+  // Use device TTS for instant preview
+  const synth=window.speechSynthesis;if(!synth)return;
+  synth.cancel();
+  const u=new SpeechSynthesisUtterance(text);u.rate=0.9;u.pitch=1.0;
+  const lc=lang==='zh'?'zh-CN':lang;
+  const vs=synth.getVoices();
+  const pk=vs.find(v=>v.lang.startsWith(lc)&&/female|samantha|karen|tessa/i.test(v.name))||vs.find(v=>v.lang.startsWith(lc))||vs.find(v=>v.lang.startsWith('en'))||vs[0];
+  if(pk)u.voice=pk;
+  sampleAudioPlaying=synth;synth.speak(u);
+  u.onend=()=>{sampleAudioPlaying=null};u.onerror=()=>{sampleAudioPlaying=null};
+  return text;
+}
 
 // Translated story titles & authors per language
 const SN={
@@ -443,20 +482,23 @@ async function dbGet(s,k){const db=await openDB();return new Promise((res,rej)=>
 async function dbDel(s,k){const db=await openDB();return new Promise(res=>{const tx=db.transaction(s,'readwrite');tx.objectStore(s).delete(k);tx.oncomplete=()=>res()})}
 async function dbGetAll(s){const db=await openDB();return new Promise((res,rej)=>{const tx=db.transaction(s,'readonly');const r=tx.objectStore(s).getAll();r.onsuccess=()=>res(r.result||[]);r.onerror=e=>rej(e)})}
 
-// Translation via MyMemory free API (cached in IndexedDB)
+// Translation — embedded for built-in stories, Claude API for custom stories only
+// Purge any poisoned MyMemory translations from cache on startup
+(async()=>{try{const db=await openDB();const tx=db.transaction('translations','readwrite');const store=tx.objectStore('translations');const req=store.getAll();req.onsuccess=()=>{const all=req.result||[];let purged=0;for(const r of all){if(r.text&&typeof r.text==='string'&&(r.text.includes('MYMEMORY')||r.text.includes('QUOTA EXCEEDED')||r.text.includes('QUERY LENGTH LIMIT')||r.text.includes('NO QUERY SPECIFIED')||r.text.toUpperCase()===r.text&&r.text.length>50)){store.delete(r.key);purged++}}if(purged)console.log('[i18n] Purged',purged,'poisoned translation cache entries')}}catch(e){}})();
+
 async function translateText(text,from,to){
   if(from===to)return text;
+  // Only used for custom stories — use Claude API
   const key=`${from}_${to}_${hashCode(text)}`;
-  const cached=await dbGet('translations',key);
-  if(cached)return cached.text;
+  const cached=await dbGet('translations',key).catch(()=>null);
+  if(cached&&!cached.text?.includes('MYMEMORY'))return cached.text;
   try{
-    const chunks=text.split('\n\n');const translated=[];
-    for(const chunk of chunks){
-      const r=await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(chunk)}&langpair=${from}|${to}`);
-      const d=await r.json();translated.push(d?.responseData?.translatedText||chunk);
-      await new Promise(r=>setTimeout(r,500));
-    }
-    const result=translated.join('\n\n');
+    const resp=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:4000,
+        messages:[{role:'user',content:`Translate the following bedtime story from ${from} to ${to}. Keep the same paragraph structure (separated by double newlines). Output ONLY the translated text, nothing else:\n\n${text}`}]})
+    });
+    const d=await resp.json();const result=d?.content?.[0]?.text||text;
     await dbPut('translations',{key,text:result,from,to,ts:Date.now()});
     return result;
   }catch(e){console.warn('Translation failed:',e);return text}
@@ -769,7 +811,10 @@ function TutWelcome({onDone,lang,setLang,t}){
 }
 
 // Tutorial Step 2: Voice
-function TutVoice({voices,onSave,onSelect,selected,onNext,pw,t}){
+function TutVoice({voices,onSave,onSelect,selected,onNext,pw,t,lang}){
+  const[samplePlaying,setSamplePlaying]=useState(null);
+  const testVoice=(e,v)=>{e.stopPropagation();setSamplePlaying(v.id);
+    playVoiceSample(lang);setTimeout(()=>setSamplePlaying(null),3000)};
   return(<div className="fi"><TutStepper step={1}/>
     <div className="tut-title">{t('setupVoice')}</div>
     <div className="tut-sub">{t('voiceSub')}</div>
@@ -779,8 +824,9 @@ function TutVoice({voices,onSave,onSelect,selected,onNext,pw,t}){
     {voices.length>0&&<><div className="sh" style={{fontSize:16,marginTop:12}}><Icon name="brain" size={18} color="var(--teal)"/> {t('clonedVoices')}</div>
       {voices.map(v=><div key={v.id} className={`vc ${selected?.id===v.id?'sel':''}`} onClick={()=>onSelect(v)}>
         <div className="va va-u"><Icon name="mic" size={20} color="var(--teal)"/></div>
-        <div><div className="vn">{v.name}</div><div className="vd">{t('aiClone')}</div></div>
-        {selected?.id===v.id&&<span style={{marginLeft:'auto'}}><Icon name="check" size={18} color="var(--teal)"/></span>}
+        <div style={{flex:1,minWidth:0}}><div className="vn">{v.name}</div><div className="vd">{t('aiClone')}</div></div>
+        <button className={`vsample ${samplePlaying===v.id?'playing':''}`} onClick={e=>testVoice(e,v)} title={t('testVoice')||'Test voice'}><Icon name="play" size={14} color="var(--teal)"/></button>
+        {selected?.id===v.id&&<span><Icon name="check" size={18} color="var(--teal)"/></span>}
       </div>)}</>}
     <button className="btn bp bw" style={{marginTop:16}} onClick={onNext} disabled={!selected}>{t('continue')} <Icon name="right" size={18} color="#fff"/></button>
   </div>);
@@ -963,6 +1009,7 @@ function App(){
   const[tlCache,setTlCache]=useState({});
   const[customStories,setCustomStories]=useState([]);
   const[createMode,setCreateMode]=useState(null); // null | 'write' | 'generate'
+  const[samplePl,setSamplePl]=useState(null);
   const[csTitle,setCsTitle]=useState('');
   const[csText,setCsText]=useState('');
   const[genDesc,setGenDesc]=useState('');
@@ -1013,28 +1060,45 @@ function App(){
 
   // Background pre-translate ALL built-in stories for current language
   const preTranslateRef=useRef(null);
+  const[seedProg,setSeedProg]=useState(null); // null=done, {done,total}=in progress
   useEffect(()=>{
-    if(lang==='en'){preTranslateRef.current=null;return}
-    // Cancel previous pre-translate
+    if(lang==='en'){preTranslateRef.current=null;setSeedProg(null);return}
     let cancelled=false;preTranslateRef.current=lang;
     (async()=>{
+      // Count how many need translation
+      const total=S.length*2;let done=0;let needsWork=false;
+      for(const story of S){
+        for(const ver of['short','long']){
+          const key=`${story.id}_${ver}_${lang}`;
+          const cached=await dbGet('translations',key).catch(()=>null);
+          if(cached&&!cached.text?.includes('MYMEMORY')){
+            setTlCache(p=>({...p,[key]:cached.text}));done++;
+          }else{needsWork=true}
+        }
+      }
+      if(!needsWork||cancelled){setSeedProg(null);return}
+      setSeedProg({done,total});
       for(const story of S){
         if(cancelled||preTranslateRef.current!==lang)return;
         for(const ver of['short','long']){
           if(cancelled)return;
           const key=`${story.id}_${ver}_${lang}`;
+          // Skip if already in cache
+          if(tlCache[key]){done++;setSeedProg({done,total});continue}
           const cached=await dbGet('translations',key).catch(()=>null);
-          if(cached){setTlCache(p=>({...p,[key]:cached.text}));continue}
+          if(cached&&!cached.text?.includes('MYMEMORY')){
+            setTlCache(p=>({...p,[key]:cached.text}));done++;setSeedProg({done,total});continue}
           try{
             const src=ver==='long'?story.txL:story.txS;
             const result=await translateText(src,'en',lang);
-            if(!cancelled)setTlCache(p=>({...p,[key]:result}));
-          }catch(e){console.warn('Pre-translate failed for',story.id,ver,e)}
-          // Small delay to avoid rate limiting
-          await new Promise(r=>setTimeout(r,300));
+            // Store with STORY-BASED key in DB (not just hash key)
+            await dbPut('translations',{key,text:result,from:'en',to:lang,ts:Date.now()}).catch(()=>{});
+            if(!cancelled){setTlCache(p=>({...p,[key]:result}));done++;setSeedProg({done,total})}
+          }catch(e){console.warn('Pre-translate failed for',story.id,ver,e);done++;setSeedProg({done,total})}
+          await new Promise(r=>setTimeout(r,200));
         }
       }
-      if(!cancelled)console.log('[i18n] Pre-translation complete for',lang);
+      if(!cancelled){setSeedProg(null);console.log('[i18n] Pre-translation complete for',lang)}
     })();
     return()=>{cancelled=true};
   },[lang]);
@@ -1102,7 +1166,7 @@ function App(){
   if(!tutDone)return(<><BG dim/><div className="app" dir={dir} key={lang}>
     <div className="hdr"><div className="logo"><LogoHeader/></div><span style={{fontSize:12,color:'var(--txd)',fontWeight:600}}>{t('hi')}, {name}</span></div>
     <div className="main" style={{overflowY:'auto'}}>
-      {tutStep===0&&<TutVoice voices={voices} onSave={saveVoice} onSelect={selectVoice} selected={sv} onNext={()=>setTutStep(1)} pw={pw} t={t}/>}
+      {tutStep===0&&<TutVoice voices={voices} onSave={saveVoice} onSelect={selectVoice} selected={sv} onNext={()=>setTutStep(1)} pw={pw} t={t} lang={lang}/>}
       {tutStep===1&&<TutStory onSelect={setSs} selected={ss} onNext={()=>{setTutStep(2);finishTut()}} getVer={getVer} setVer={setVer} t={t} lang={lang}/>}
     </div><Toast msg={toast}/></div></>);
 
@@ -1121,6 +1185,11 @@ function App(){
         </div></>}
     </div>
     <div className="main">
+      {seedProg&&seedProg.done<seedProg.total&&<div style={{flexShrink:0,padding:'8px 14px',background:'rgba(139,111,192,.1)',borderRadius:12,marginBottom:8,display:'flex',alignItems:'center',gap:10,fontSize:12,color:'var(--lav)',fontWeight:600}}>
+        <span className="spinner" style={{width:14,height:14,border:'2px solid rgba(197,179,230,.3)',borderTopColor:'var(--lav)',borderRadius:'50%',animation:'spin 1s linear infinite',flexShrink:0}}/>
+        <span style={{flex:1}}>{t('translating')||'Translating stories...'} {seedProg.done}/{seedProg.total}</span>
+        <div style={{width:60,height:4,background:'rgba(255,255,255,.08)',borderRadius:2,overflow:'hidden'}}><div style={{height:'100%',background:'var(--lav)',borderRadius:2,width:(seedProg.done/seedProg.total*100)+'%',transition:'width .3s'}}/></div>
+      </div>}
       {tab==='stories'&&<div className="fi">
         <div className="sh"><Icon name="book" size={22} color="var(--moon)"/> {t('bedtimeStories')}</div>
         <div className="ss">{t('chooseAdventure')}</div>
@@ -1173,8 +1242,9 @@ function App(){
         <div className="vlist">
         {voices.length>0&&<><div className="sh" style={{fontSize:16,marginTop:12}}><Icon name="brain" size={18} color="var(--teal)"/> {t('clonedVoices')}</div>
           {voices.map(v=><div key={v.id} className={`vc ${sv?.id===v.id?'sel':''}`} onClick={()=>selectVoice(v)}>
-            <div className="va va-u"><Icon name="mic" size={20} color="var(--teal)"/></div><div><div className="vn">{v.name}</div><div className="vd">{t('aiClone')}</div></div>
-            {sv?.id===v.id&&<span style={{marginLeft:'auto'}}><Icon name="check" size={18} color="var(--teal)"/></span>}
+            <div className="va va-u"><Icon name="mic" size={20} color="var(--teal)"/></div><div style={{flex:1,minWidth:0}}><div className="vn">{v.name}</div><div className="vd">{t('aiClone')}</div></div>
+            <button className={`vsample ${samplePl===v.id?'playing':''}`} onClick={e=>{e.stopPropagation();setSamplePl(v.id);playVoiceSample(lang);setTimeout(()=>setSamplePl(null),3000)}} title={t('testVoice')||'Test voice'}><Icon name="play" size={14} color="var(--teal)"/></button>
+            {sv?.id===v.id&&<span><Icon name="check" size={18} color="var(--teal)"/></span>}
             <button className="vx" onClick={e=>{e.stopPropagation();delVoice(v.id)}}><Icon name="trash" size={14}/></button></div>)}</>}
         {voices.length===0&&<div className="info" style={{marginTop:8}}>{t('recSub')}</div>}
         </div>
