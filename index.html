@@ -154,8 +154,8 @@ if(window.ort){
   // Mobile browsers lack SharedArrayBuffer (needs COOP/COEP headers), so use single thread
   const hasSharedArrayBuffer=typeof SharedArrayBuffer!=='undefined';
   ort.env.wasm.numThreads=hasSharedArrayBuffer?Math.min(navigator.hardwareConcurrency||2,4):1;
-  ort.env.wasm.proxy=false;
-  console.log('[ORT] Configured: threads='+ort.env.wasm.numThreads+', SharedArrayBuffer='+hasSharedArrayBuffer);
+  ort.env.wasm.proxy=true; // Run inference in Web Worker — prevents UI freeze
+  console.log('[ORT] Configured: threads='+ort.env.wasm.numThreads+', SharedArrayBuffer='+hasSharedArrayBuffer+', proxy=true');
 }else{console.error('[ORT] onnxruntime-web NOT loaded — window.ort is undefined')}
 </script>
 <script type="text/babel">
@@ -676,11 +676,12 @@ async function initF5(progressCb){
     // Step 2: Detect GPU → choose FP16 or FP32 transformer
     let hasWebGPU=false;
     try{
-      if(navigator.gpu){const a=await navigator.gpu.requestAdapter();if(a){hasWebGPU=true}}
-    }catch(e){}
-    f5UseFP16=hasWebGPU&&hasFloat16;
-    if(f5UseFP16)console.log('[F5] WebGPU + Float16Array → using FP16 transformer (~85MB)');
-    else console.log('[F5] Using WASM + FP32 transformer (~170MB)'+(hasWebGPU?' (WebGPU available but no Float16Array)':''));
+      if(navigator.gpu){const a=await navigator.gpu.requestAdapter();if(a){hasWebGPU=true;console.log('[F5] WebGPU adapter:',a.name||'(unnamed)')}}
+    }catch(e){console.log('[F5] WebGPU check failed:',e.message)}
+    // Use FP16 with WebGPU (we handle FP16↔FP32 conversion manually via Uint16Array)
+    f5UseFP16=hasWebGPU;
+    if(f5UseFP16)console.log('[F5] WebGPU available → using FP16 transformer (~85MB)');
+    else console.log('[F5] No WebGPU → using WASM + FP32 transformer (~170MB)');
     const tfPath=f5UseFP16?'onnx/transformer_fp16.onnx':'onnx/transformer_fp32.onnx';
 
     const pg={e:0,t:0,d:0,v:0};
@@ -875,7 +876,7 @@ async function generateChunk(text,voiceBlob,langCode){
     // Run inference
     console.log('[F5] Generating speech for:',text.substring(0,60)+'...');
     const t0=Date.now();
-    const audioF32=await f5Infer(refF32,refText,text);
+    const audioF32=await f5Infer(refF32,refText,text,1.0,f5UseFP16?8:4);
     // Audio quality check
     let mn=Infinity,mx=-Infinity,sq=0;
     for(let i=0;i<audioF32.length;i++){const v=audioF32[i];if(v<mn)mn=v;if(v>mx)mx=v;sq+=v*v}
@@ -1194,7 +1195,7 @@ function Player({story,voice,ver,onBack,show,t,text,lang}){
     try{const d=await dbGet('voices',voice.id);vb=d?.blob;console.log('[TTS] Voice blob:',vb?.size,vb?.type)}
     catch(e){console.warn('Voice DB error:',e)}
     if(!vb){show(t('voiceFailed'));setStatus('idle');return}
-    const chunks=chunkText(content,280);allChunks.current=chunks;computeChunkOffsets(chunks);let started=false;
+    const chunks=chunkText(content,120);allChunks.current=chunks;computeChunkOffsets(chunks);let started=false;
     // Show download progress if models not yet cached
     let dlUnsub=null;
     if(!f5Ready){
