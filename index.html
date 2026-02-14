@@ -146,10 +146,17 @@ body{font-family:var(--ff);background:var(--nd);color:var(--tx);-webkit-font-smo
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/onnxruntime-web@1.22.0/dist/ort.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/onnxruntime-web@1.22.0/dist/ort.min.js" crossorigin="anonymous" onerror="console.error('[ORT] Failed to load onnxruntime-web from CDN')"></script>
 <script>
 // Configure ONNX Runtime WASM paths
-if(window.ort){ort.env.wasm.wasmPaths='https://cdn.jsdelivr.net/npm/onnxruntime-web@1.22.0/dist/';ort.env.wasm.numThreads=navigator.hardwareConcurrency||4}
+if(window.ort){
+  ort.env.wasm.wasmPaths='https://cdn.jsdelivr.net/npm/onnxruntime-web@1.22.0/dist/';
+  // Mobile browsers lack SharedArrayBuffer (needs COOP/COEP headers), so use single thread
+  const hasSharedArrayBuffer=typeof SharedArrayBuffer!=='undefined';
+  ort.env.wasm.numThreads=hasSharedArrayBuffer?Math.min(navigator.hardwareConcurrency||2,4):1;
+  ort.env.wasm.proxy=false;
+  console.log('[ORT] Configured: threads='+ort.env.wasm.numThreads+', SharedArrayBuffer='+hasSharedArrayBuffer);
+}else{console.error('[ORT] onnxruntime-web NOT loaded — window.ort is undefined')}
 </script>
 <script type="text/babel">
 const{useState,useEffect,useRef,useCallback,useMemo}=React;
@@ -623,55 +630,101 @@ function notifyF5(p){f5DownloadProgress=p;f5DownloadCbs.forEach(fn=>fn(p))}
 // Cached fetch with progress — uses Cache API for persistent storage
 async function f5Fetch(path,onProg){
   const url=F5_CDN+path;
-  try{const cache=await caches.open('f5-tts-v1');
+  console.log('[F5] Fetching:',url);
+  try{
+    const cache=await caches.open('f5-tts-v1');
     const cached=await cache.match(url);
-    if(cached){console.log('[F5] Cache hit:',path);if(onProg)onProg(1);return cached.arrayBuffer()}
-    console.log('[F5] Downloading:',path);
-    const res=await fetch(url);if(!res.ok)throw new Error('HTTP '+res.status);
+    if(cached){console.log('[F5] Cache hit:',path,'size:',cached.headers.get('content-length'));if(onProg)onProg(1);return cached.arrayBuffer()}
+    console.log('[F5] Cache miss, downloading:',path);
+    const res=await fetch(url);
+    if(!res.ok)throw new Error('HTTP '+res.status+' '+res.statusText+' for '+path);
     const total=parseInt(res.headers.get('content-length'),10);
     const reader=res.body.getReader();const chunks=[];let got=0;
     while(true){const{done,value}=await reader.read();if(done)break;chunks.push(value);got+=value.length;if(onProg&&total)onProg(got/total)}
+    console.log('[F5] Downloaded:',path,'size:',got);
     const blob=new Blob(chunks);
     try{await cache.put(url,new Response(blob.slice()))}catch(e){console.warn('[F5] Cache put failed:',e)}
     return blob.arrayBuffer();
-  }catch(e){console.warn('[F5] Cache API unavailable, fetching directly:',e);
-    const res=await fetch(F5_CDN+path);if(!res.ok)throw new Error('HTTP '+res.status);return res.arrayBuffer()}
+  }catch(e){
+    console.warn('[F5] Cache API unavailable, direct fetch:',e.message);
+    const res=await fetch(url);if(!res.ok)throw new Error('HTTP '+res.status+' for '+path);
+    const buf=await res.arrayBuffer();console.log('[F5] Direct download:',path,'size:',buf.byteLength);
+    return buf;
+  }
 }
 
 // Initialize F5-TTS — downloads models + creates ONNX sessions
 async function initF5(progressCb){
-  if(f5Ready)return true;
+  if(f5Ready){console.log('[F5] Already ready');return true}
   if(f5Loading)return new Promise(r=>f5Waiters.push(r));
   f5Loading=true;
   try{
-    if(!window.ort)throw new Error('ONNX Runtime not loaded');
-    const pg={e:0,t:0,d:0};const up=()=>{const p=pg.e*.03+pg.t*.92+pg.d*.03+.02*(f5V?1:0);notifyF5(p);if(progressCb)progressCb(p)};
-    console.log('[F5] Loading models from',F5_CDN);
-    // Download all files (transformer is ~170MB, others are small)
-    const[eBuf,tBuf,dBuf,vBuf]=await Promise.all([
-      f5Fetch(F5_FILES.enc,p=>{pg.e=p;up()}),
-      f5Fetch(F5_FILES.tf,p=>{pg.t=p;up()}),
-      f5Fetch(F5_FILES.dec,p=>{pg.d=p;up()}),
-      f5Fetch(F5_FILES.voc).then(b=>new TextDecoder().decode(b))
-    ]);
-    // Detect execution providers
+    // Step 1: Check ORT
+    if(!window.ort){
+      throw new Error('ONNX Runtime Web not loaded — CDN script may have failed. Check network tab for ort.min.js');
+    }
+    console.log('[F5] ORT version check passed, ort object available');
+
+    const pg={e:0,t:0,d:0,v:0};
+    const up=()=>{const p=pg.e*.03+pg.t*.92+pg.d*.03+pg.v*.02;notifyF5(p);if(progressCb)progressCb(p)};
+
+    // Step 2: Download all files
+    console.log('[F5] Starting model downloads from',F5_CDN);
+    let eBuf,tBuf,dBuf,vocText;
+    try{
+      [eBuf,tBuf,dBuf,vocText]=await Promise.all([
+        f5Fetch(F5_FILES.enc,p=>{pg.e=p;up()}),
+        f5Fetch(F5_FILES.tf,p=>{pg.t=p;up()}),
+        f5Fetch(F5_FILES.dec,p=>{pg.d=p;up()}),
+        f5Fetch(F5_FILES.voc).then(b=>{pg.v=1;up();return new TextDecoder().decode(b)})
+      ]);
+    }catch(dlErr){
+      throw new Error('Model download failed: '+dlErr.message);
+    }
+    console.log('[F5] All downloads complete. Sizes: enc='+eBuf.byteLength+' tf='+tBuf.byteLength+' dec='+dBuf.byteLength+' voc='+vocText.length+'chars');
+
+    // Step 3: Detect execution providers
     let eps=['wasm'];
-    if(navigator.gpu){try{const a=await navigator.gpu.requestAdapter();if(a){eps=['webgpu','wasm'];console.log('[F5] WebGPU available')}}catch(e){}}
-    console.log('[F5] Using providers:',eps);
-    const so={executionProviders:eps,graphOptimizationLevel:'all'};
-    // Create sessions
-    f5S.enc=await ort.InferenceSession.create(new Uint8Array(eBuf),so);
-    f5S.tf=await ort.InferenceSession.create(new Uint8Array(tBuf),so);
-    f5S.dec=await ort.InferenceSession.create(new Uint8Array(dBuf),so);
-    console.log('[F5] Sessions created. Encoder inputs:',f5S.enc.inputNames,'outputs:',f5S.enc.outputNames);
-    console.log('[F5] Transformer inputs:',f5S.tf.inputNames,'outputs:',f5S.tf.outputNames);
-    console.log('[F5] Decoder inputs:',f5S.dec.inputNames,'outputs:',f5S.dec.outputNames);
-    // Load vocab
-    f5V={};vBuf.split('\n').forEach((c,i)=>{const ch=c.replace(/\r/g,'').trim?c.replace(/\r/g,''):c;if(ch)f5V[ch]=i});
-    console.log('[F5] Vocab loaded:',Object.keys(f5V).length,'chars');
+    try{
+      if(navigator.gpu){const a=await navigator.gpu.requestAdapter();if(a){eps=['webgpu','wasm'];console.log('[F5] WebGPU available, using it')}}
+    }catch(gpuErr){console.log('[F5] WebGPU not available:',gpuErr.message)}
+    console.log('[F5] Execution providers:',eps);
+
+    const so={executionProviders:eps};
+
+    // Step 4: Create sessions one at a time (to reduce peak memory)
+    console.log('[F5] Creating encoder session...');
+    f5S.enc=await ort.InferenceSession.create(eBuf,so);
+    console.log('[F5] Encoder ready. Inputs:',f5S.enc.inputNames,'Outputs:',f5S.enc.outputNames);
+
+    console.log('[F5] Creating transformer session (this may take a moment)...');
+    f5S.tf=await ort.InferenceSession.create(tBuf,so);
+    console.log('[F5] Transformer ready. Inputs:',f5S.tf.inputNames,'Outputs:',f5S.tf.outputNames);
+
+    console.log('[F5] Creating decoder session...');
+    f5S.dec=await ort.InferenceSession.create(dBuf,so);
+    console.log('[F5] Decoder ready. Inputs:',f5S.dec.inputNames,'Outputs:',f5S.dec.outputNames);
+
+    // Step 5: Load vocab (char → index map)
+    f5V={};
+    const vocLines=vocText.split('\n');
+    vocLines.forEach((line,i)=>{
+      // Each line is a single character. Handle \r and avoid trimming space chars.
+      const ch=line.replace(/\r/g,'');
+      if(ch.length>0)f5V[ch]=i;
+    });
+    console.log('[F5] Vocab loaded:',Object.keys(f5V).length,'chars. Space mapped:',f5V[' ']!==undefined);
+
     f5Ready=true;f5Loading=false;notifyF5(1);
-    f5Waiters.forEach(r=>r(true));f5Waiters=[];return true;
-  }catch(e){console.error('[F5] Init failed:',e);f5Loading=false;f5Waiters.forEach(r=>r(false));f5Waiters=[];throw e}
+    f5Waiters.forEach(r=>r(true));f5Waiters=[];
+    console.log('[F5] ✅ Initialization complete! Voice cloning ready.');
+    return true;
+  }catch(e){
+    console.error('[F5] ❌ Init FAILED:',e.message,e);
+    f5Loading=false;f5Ready=false;
+    f5Waiters.forEach(r=>r(false));f5Waiters=[];
+    throw e;
+  }
 }
 
 // Tensor math on raw Float32Arrays
@@ -683,12 +736,16 @@ async function f5Infer(refF32,refText,genText,speed=1.0,nfe=16){
   const{enc,tf,dec}=f5S;const hop=256,tgtRMS=0.1;
   // Normalize RMS
   let audio=refF32;const rms=arrRMS(audio);
+  console.log('[F5] Ref audio: samples='+audio.length+' rms='+rms.toFixed(4));
   if(rms>0&&rms<tgtRMS){audio=new Float32Array(audio.length);for(let i=0;i<refF32.length;i++)audio[i]=refF32[i]/(rms*tgtRMS)}
   // To int16
   const i16=arrToInt16(audio);
   const audioT=new ort.Tensor('int16',i16,[1,1,i16.length]);
   // Tokenize
-  const combined=refText+' '+genText;const toks=Int32Array.from([...combined].map(c=>f5V[c]||0));
+  const combined=refText+' '+genText;
+  const toks=Int32Array.from([...combined].map(c=>f5V[c]||0));
+  const unkCount=[...combined].filter(c=>!f5V[c]).length;
+  if(unkCount>0)console.warn('[F5] Unknown chars:',unkCount,'/',combined.length);
   const textT=new ort.Tensor('int32',toks,[1,toks.length]);
   // Duration
   const refLen=Math.trunc(audio.length/hop);
@@ -696,11 +753,13 @@ async function f5Infer(refF32,refText,genText,speed=1.0,nfe=16){
   const durT=new ort.Tensor('int64',new BigInt64Array([BigInt(dur)]),[1]);
   console.log('[F5] ref frames:',refLen,'total dur:',dur,'text:',genText.length,'chars');
   // Stage 1: Encoder
+  console.log('[F5] Running encoder...');
   const eI={};eI[enc.inputNames[0]]=audioT;eI[enc.inputNames[1]]=textT;eI[enc.inputNames[2]]=durT;
   const eO=await enc.run(eI);
   let noise=eO[enc.outputNames[0]],rcq=eO[enc.outputNames[1]],rsq=eO[enc.outputNames[2]],
       rck=eO[enc.outputNames[3]],rsk=eO[enc.outputNames[4]],cmt=eO[enc.outputNames[5]],
       cmtd=eO[enc.outputNames[6]],rsl=eO[enc.outputNames[7]];
+  console.log('[F5] Encoder done. Noise shape:',noise.dims);
   // Stage 2: Transformer NFE loop
   let ts=new ort.Tensor('int32',new Int32Array([0]),[1]);
   for(let s=0;s<nfe-1;s++){
@@ -709,17 +768,19 @@ async function f5Infer(refF32,refText,genText,speed=1.0,nfe=16){
     tI[tf.inputNames[6]]=cmtd;tI[tf.inputNames[7]]=ts;
     const tO=await tf.run(tI);noise=tO[tf.outputNames[0]];ts=tO[tf.outputNames[1]];
     if(s%4===0)console.log('[F5] NFE step',s+1,'/',nfe);
-    // Yield to UI thread
     if(s%2===0)await new Promise(r=>setTimeout(r,0));
   }
+  console.log('[F5] Transformer done, running decoder...');
   // Stage 3: Decoder
   const dI={};dI[dec.inputNames[0]]=noise;dI[dec.inputNames[1]]=rsl;
   const dO=await dec.run(dI);
   const raw=dO[dec.outputNames[0]].data;
+  console.log('[F5] Decoder output: samples='+raw.length+' type='+typeof raw[0]);
   const out=new Float32Array(raw.length);
   for(let i=0;i<raw.length;i++)out[i]=(typeof raw[i]==='number'?raw[i]:Number(raw[i]))/32767.0;
   // Revert RMS
   if(rms>0&&rms<tgtRMS){for(let i=0;i<out.length;i++)out[i]*=(rms/tgtRMS)}
+  console.log('[F5] ✅ Generated',out.length,'samples ('+(out.length/24000).toFixed(1)+'s)');
   return out;
 }
 
@@ -768,14 +829,20 @@ async function generateChunk(text,voiceBlob,langCode){
       console.log('[F5] First use — loading voice engine...');
       await initF5(p=>console.log('[F5] Download:',Math.round(p*100)+'%'));
     }
+    if(!f5Ready)throw new Error('F5-TTS failed to initialize');
     // Get reference audio (decoded & cached)
+    console.log('[F5] Decoding reference audio...');
     const refF32=await getRefAudio(voiceBlob,'current');
+    console.log('[F5] Ref audio decoded:',refF32.length,'samples ('+(refF32.length/24000).toFixed(1)+'s)');
     // Run inference
-    console.log('[F5] Generating:',text.substring(0,60)+'...');
+    console.log('[F5] Generating speech for:',text.substring(0,60)+'...');
     const t0=Date.now();
     const audioF32=await f5Infer(refF32,refText,text,1.0,16);
-    console.log('[F5] Generated',audioF32.length,'samples in',(Date.now()-t0)/1000,'s');
+    console.log('[F5] ✅ Generated',audioF32.length,'samples in',(Date.now()-t0)/1000,'s');
     return f32ToWav(audioF32,24000);
+  }catch(err){
+    console.error('[F5] ❌ generateChunk failed:',err.message,err);
+    throw err;
   }finally{generateLock=false}
 }
 function chunkText(text,maxLen=280){const sentences=text.match(/[^.!?。！？]+[.!?。！？]+[\s"]*/g)||[text];const chunks=[];let cur='';for(const s of sentences){if((cur+s).length>maxLen&&cur){chunks.push(cur.trim());cur=s}else cur+=s}if(cur.trim())chunks.push(cur.trim());return chunks}
@@ -1084,13 +1151,21 @@ function Player({story,voice,ver,onBack,show,t,text,lang}){
     catch(e){console.warn('Voice DB error:',e)}
     if(!vb){show(t('voiceFailed'));setStatus('idle');return}
     const chunks=chunkText(content,280);allChunks.current=chunks;computeChunkOffsets(chunks);let started=false;
-    for(let i=0;i<chunks.length;i++){if(stopped.current)return;
-      setGenMsg(t('cloningPart')+' '+(i+1)+'/'+chunks.length);
-      try{const blob=await generateChunk(chunks[i],vb,lang);chunksAudio.current[i]=URL.createObjectURL(blob);
+    // Show download progress if models not yet cached
+    let dlUnsub=null;
+    if(!f5Ready){
+      setGenMsg(t('gpuWake'));
+      dlUnsub=onF5Progress(p=>{setGenMsg(t('gpuWake')+' '+Math.round(p*100)+'%')});
+    }
+    for(let i=0;i<chunks.length;i++){if(stopped.current){if(dlUnsub)dlUnsub();return;}
+      if(f5Ready)setGenMsg(t('cloningPart')+' '+(i+1)+'/'+chunks.length);
+      try{const blob=await generateChunk(chunks[i],vb,lang);
+        if(dlUnsub){dlUnsub();dlUnsub=null;setGenMsg(t('cloningPart')+' '+(i+1)+'/'+chunks.length)}
+        chunksAudio.current[i]=URL.createObjectURL(blob);
         const tmp=new Audio(chunksAudio.current[i]);
         await new Promise(r=>{tmp.onloadedmetadata=()=>{chunkDurations.current[i]=tmp.duration;r()};tmp.onerror=r;setTimeout(r,3000)});
         if(!started&&!stopped.current){started=true;setStatus('playing');setGenMsg('');playChunk(0)}
-      }catch(e){console.error('Gen error',i,':',e);if(i===0){show(t('voiceFailed'));setStatus('playing');fallbackTTS(0);return}chunksAudio.current[i]=null}}
+      }catch(e){if(dlUnsub){dlUnsub();dlUnsub=null}console.error('[TTS] ❌ Generation error chunk',i,':',e.message||e);if(i===0){show(t('voiceFailed')+' ('+((e.message||'').substring(0,60))+')');setStatus('playing');fallbackTTS(0);return}chunksAudio.current[i]=null}}
     if(!started&&!stopped.current){show(t('voiceFailed'));setStatus('playing');fallbackTTS(0)}
   },[content,voice,show,t]);
 
@@ -1269,7 +1344,8 @@ function App(){
     const lv=localStorage.getItem('tat_lastVoice');if(lv&&lv.startsWith('v-')){const f=vl.find(v=>v.id===lv);if(f)setSv(f)}
     else{localStorage.removeItem('tat_lastVoice')}}catch{}
     speechSynthesis?.getVoices();if(speechSynthesis)speechSynthesis.onvoiceschanged=()=>speechSynthesis.getVoices();
-    initF5().then(ok=>{if(ok)setGOk(true)}).catch(()=>{});
+    // F5-TTS will be initialized on-demand when voice cloning is first used
+    console.log('[App] ORT available:',!!window.ort);
     dbGetAll('customStories').then(cs=>setCustomStories(cs||[])).catch(()=>{});
     return onPreWarmChange(s=>setPw(s));},[]);
 
