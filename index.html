@@ -648,10 +648,49 @@ async function setCachedAudio(voiceId,text,blob){
   try{await dbPut('audioCache',{key:audioCacheKey(voiceId,text),blob,ts:Date.now()})}catch(e){console.warn('[Cache] Write failed:',e)}
 }
 
+// ===== Convert any audio blob to WAV using Web Audio API =====
+async function blobToWav(blob){
+  if(blob.type==='audio/wav'||blob.type==='audio/wave')return blob;
+  console.log('[TTS] Converting',blob.type,'to WAV...');
+  const ctx=new (window.AudioContext||window.webkitAudioContext)();
+  const arrayBuf=await blob.arrayBuffer();
+  const audioBuf=await ctx.decodeAudioData(arrayBuf);
+  // Encode as 16-bit PCM WAV
+  const numCh=audioBuf.numberOfChannels;
+  const sr=audioBuf.sampleRate;
+  const length=audioBuf.length;
+  const bytesPerSample=2;
+  const dataSize=length*numCh*bytesPerSample;
+  const buffer=new ArrayBuffer(44+dataSize);
+  const view=new DataView(buffer);
+  // WAV header
+  const writeStr=(off,str)=>{for(let i=0;i<str.length;i++)view.setUint8(off+i,str.charCodeAt(i))};
+  writeStr(0,'RIFF');view.setUint32(4,36+dataSize,true);writeStr(8,'WAVE');
+  writeStr(12,'fmt ');view.setUint32(16,16,true);view.setUint16(20,1,true);
+  view.setUint16(22,numCh,true);view.setUint32(24,sr,true);
+  view.setUint32(28,sr*numCh*bytesPerSample,true);view.setUint16(32,numCh*bytesPerSample,true);
+  view.setUint16(34,16,true);writeStr(36,'data');view.setUint32(40,dataSize,true);
+  // Interleave channels and write samples
+  let off=44;
+  for(let i=0;i<length;i++){
+    for(let ch=0;ch<numCh;ch++){
+      let s=audioBuf.getChannelData(ch)[i];
+      s=Math.max(-1,Math.min(1,s));
+      view.setInt16(off,s<0?s*0x8000:s*0x7FFF,true);
+      off+=2;
+    }
+  }
+  ctx.close();
+  console.log('[TTS] WAV conversion done:',Math.round(buffer.byteLength/1024)+'KB');
+  return new Blob([buffer],{type:'audio/wav'});
+}
+
 // ===== Upload file to HF Space (Gradio 5 API) =====
 async function hfUpload(blob,filename){
+  // Convert to WAV first — Chatterbox requires actual WAV, not webm/ogg
+  const wavBlob=await blobToWav(blob);
   const form=new FormData();
-  form.append('files',blob,filename||'voice.wav');
+  form.append('files',wavBlob,filename||'voice.wav');
   // Gradio 5 uses /gradio_api/upload, older uses /upload — try both
   let r=await fetch(HF_SPACE+'/gradio_api/upload',{method:'POST',body:form});
   if(!r.ok){
@@ -746,8 +785,16 @@ async function callHFSpace(text,voiceBlob,langCode){
           }
           if(line.startsWith('event: error')){
             clearTimeout(timeout);
-            const errData=lines.find(l=>l.startsWith('data:'));
-            reject(new Error('HF Space error: '+(errData||'unknown')));
+            // Next data line has the error details
+            const nextDataLine=lines.slice(lines.indexOf(line)+1).find(l=>l.startsWith('data:'));
+            const errMsg=nextDataLine?nextDataLine.substring(5).trim():'unknown error';
+            reject(new Error('HF Space error: '+errMsg));
+            return;
+          }
+          // Also catch inline error data
+          if(line.startsWith('data: ')&&buf.includes('event: error')){
+            clearTimeout(timeout);
+            reject(new Error('HF Space error: '+line.substring(6)));
             return;
           }
         }
