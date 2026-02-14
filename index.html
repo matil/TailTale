@@ -754,6 +754,7 @@ async function callHFSpace(text,voiceBlob,langCode){
       const reader=r.body.getReader();
       const decoder=new TextDecoder();
       let buf='';
+      let currentEvent='';
       while(true){
         const{done,value}=await reader.read();
         if(done)break;
@@ -761,41 +762,61 @@ async function callHFSpace(text,voiceBlob,langCode){
         const lines=buf.split('\n');
         buf=lines.pop()||'';
         for(const line of lines){
-          if(line.startsWith('data: ')){
-            const raw=line.substring(6);
-            try{
-              const data=JSON.parse(raw);
-              if(Array.isArray(data)&&data[0]){
-                const out=data[0];
-                let audioUrl=null;
-                if(typeof out==='string')audioUrl=out;
-                else if(out.url)audioUrl=out.url;
-                else if(out.path)audioUrl=HF_SPACE+'/gradio_api/file='+out.path;
-                if(audioUrl){
+          const trimmed=line.trim();
+          if(!trimmed)continue; // skip blank lines (event separators)
+          console.log('[SSE]',trimmed);
+          
+          if(trimmed.startsWith('event:')){
+            currentEvent=trimmed.substring(6).trim();
+            continue;
+          }
+          if(trimmed.startsWith('data:')){
+            const raw=trimmed.substring(5).trim();
+            
+            if(currentEvent==='error'){
+              clearTimeout(timeout);
+              reject(new Error('HF Space error ('+currentEvent+'): '+raw));
+              return;
+            }
+            
+            if(currentEvent==='complete'){
+              try{
+                const data=JSON.parse(raw);
+                // Check for error in complete event
+                if(data&&typeof data==='object'&&!Array.isArray(data)&&data.error){
                   clearTimeout(timeout);
-                  if(audioUrl.startsWith('/'))audioUrl=HF_SPACE+audioUrl;
-                  console.log('[TTS] Got audio URL:',audioUrl.substring(0,80)+'...');
-                  const ar=await fetch(audioUrl);
-                  if(!ar.ok)reject(new Error('Audio download failed: '+ar.status));
-                  else resolve(await ar.blob());
+                  reject(new Error('HF Space error: '+JSON.stringify(data.error)));
                   return;
                 }
+                // data should be an array with audio output
+                if(Array.isArray(data)&&data[0]){
+                  const out=data[0];
+                  let audioUrl=null;
+                  if(typeof out==='string')audioUrl=out;
+                  else if(out.url)audioUrl=out.url;
+                  else if(out.path)audioUrl=HF_SPACE+'/gradio_api/file='+out.path;
+                  if(audioUrl){
+                    clearTimeout(timeout);
+                    if(audioUrl.startsWith('/'))audioUrl=HF_SPACE+audioUrl;
+                    console.log('[TTS] Got audio URL:',audioUrl.substring(0,80)+'...');
+                    const ar=await fetch(audioUrl);
+                    if(!ar.ok)reject(new Error('Audio download failed: '+ar.status));
+                    else resolve(await ar.blob());
+                    return;
+                  }
+                }
+                // If we got complete but no audio data
+                clearTimeout(timeout);
+                reject(new Error('HF Space: complete but no audio data: '+raw.substring(0,200)));
+                return;
+              }catch(e){
+                clearTimeout(timeout);
+                reject(new Error('HF Space: parse error on complete: '+raw.substring(0,200)));
+                return;
               }
-            }catch(e){/* not JSON, skip */}
-          }
-          if(line.startsWith('event: error')){
-            clearTimeout(timeout);
-            // Next data line has the error details
-            const nextDataLine=lines.slice(lines.indexOf(line)+1).find(l=>l.startsWith('data:'));
-            const errMsg=nextDataLine?nextDataLine.substring(5).trim():'unknown error';
-            reject(new Error('HF Space error: '+errMsg));
-            return;
-          }
-          // Also catch inline error data
-          if(line.startsWith('data: ')&&buf.includes('event: error')){
-            clearTimeout(timeout);
-            reject(new Error('HF Space error: '+line.substring(6)));
-            return;
+            }
+            // For other events (heartbeat, etc), just continue
+            currentEvent='';
           }
         }
       }
