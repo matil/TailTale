@@ -429,8 +429,8 @@ function StoryIcon({id,size=48}){
 }
 
 // IndexedDB
-const DB='tailatale';const DBV=3;
-function openDB(){return new Promise((res,rej)=>{const r=indexedDB.open(DB,DBV);r.onupgradeneeded=e=>{const db=e.target.result;if(!db.objectStoreNames.contains('voices'))db.createObjectStore('voices',{keyPath:'id'});if(!db.objectStoreNames.contains('audioCache'))db.createObjectStore('audioCache',{keyPath:'key'});if(!db.objectStoreNames.contains('translations'))db.createObjectStore('translations',{keyPath:'key'});if(!db.objectStoreNames.contains('customStories'))db.createObjectStore('customStories',{keyPath:'id'})};r.onsuccess=e=>res(e.target.result);r.onerror=e=>rej(e)})}
+const DB='tailatale';const DBV=4;
+function openDB(){return new Promise((res,rej)=>{const r=indexedDB.open(DB,DBV);r.onupgradeneeded=e=>{const db=e.target.result;if(!db.objectStoreNames.contains('voices'))db.createObjectStore('voices',{keyPath:'id'});if(!db.objectStoreNames.contains('audioCache'))db.createObjectStore('audioCache',{keyPath:'key'});if(!db.objectStoreNames.contains('translations'))db.createObjectStore('translations',{keyPath:'key'});if(!db.objectStoreNames.contains('customStories'))db.createObjectStore('customStories',{keyPath:'id'});if(!db.objectStoreNames.contains('settings'))db.createObjectStore('settings',{keyPath:'key'})};r.onsuccess=e=>res(e.target.result);r.onerror=e=>rej(e)})}
 async function dbPut(s,d){const db=await openDB();return new Promise((res,rej)=>{const tx=db.transaction(s,'readwrite');tx.objectStore(s).put(d);tx.oncomplete=()=>res();tx.onerror=e=>rej(e)})}
 async function dbGet(s,k){const db=await openDB();return new Promise((res,rej)=>{const tx=db.transaction(s,'readonly');const r=tx.objectStore(s).get(k);r.onsuccess=()=>res(r.result||null);r.onerror=e=>rej(e)})}
 async function dbDel(s,k){const db=await openDB();return new Promise(res=>{const tx=db.transaction(s,'readwrite');tx.objectStore(s).delete(k);tx.oncomplete=()=>res()})}
@@ -778,16 +778,18 @@ function Player({story,voice,ver,onBack,show,t,text,lang}){
     if(pausedRef.current){pausedRef.current=false;setPaused(false);if(audioRef.current?.paused){audioRef.current.play();rafRef.current=requestAnimationFrame(updateProgress)}else window.speechSynthesis?.resume()}
     else{pausedRef.current=true;setPaused(true);stopRAF();if(audioRef.current&&!audioRef.current.paused)audioRef.current.pause();else window.speechSynthesis?.pause()}};
   const stopAll=()=>{stopped.current=true;stopRAF();if(audioRef.current){audioRef.current.pause();audioRef.current.src=''}window.speechSynthesis?.cancel();setStatus('idle');setProgress(0);setHighlight(-1);setPaused(false);setElapsed(0)};
-  const handleSeek=(e)=>{if(status!=='playing'||!allChunks.current.length)return;
-    const rect=e.currentTarget.getBoundingClientRect();const cx=e.touches?e.touches[0].clientX:e.clientX;
+  const handleSeek=(e)=>{if(!allChunks.current.length||!chunksAudio.current.some(Boolean))return;
+    const rect=e.currentTarget.getBoundingClientRect();
+    const cx=e.changedTouches?e.changedTouches[0].clientX:e.touches?e.touches[0].clientX:e.clientX;
     const pct=Math.max(0,Math.min(1,(cx-rect.left)/rect.width));
     let td=0;for(let i=0;i<allChunks.current.length;i++)td+=(chunkDurations.current[i]||3);
     const tt=pct*td;let ac=0;let ti=0;let st=0;
     for(let i=0;i<allChunks.current.length;i++){const d=chunkDurations.current[i]||3;if(ac+d>tt){ti=i;st=tt-ac;break}ac+=d;ti=i;st=0}
     stopRAF();if(audioRef.current){audioRef.current.pause();audioRef.current.src=''}window.speechSynthesis?.cancel();
+    stopped.current=false;
     if(chunksAudio.current[ti]){currentIdx.current=ti;audioRef.current.src=chunksAudio.current[ti];
-      audioRef.current.onloadedmetadata=()=>{audioRef.current.currentTime=Math.min(st,audioRef.current.duration-0.1);audioRef.current.play().then(()=>{rafRef.current=requestAnimationFrame(updateProgress)})};
-      audioRef.current.onended=()=>playChunk(ti+1);audioRef.current.onerror=()=>playChunk(ti+1);audioRef.current.load()}else playChunk(ti)};
+      audioRef.current.onloadedmetadata=()=>{audioRef.current.currentTime=Math.min(st,audioRef.current.duration-0.1);audioRef.current.play().then(()=>{setStatus('playing');setPaused(false);pausedRef.current=false;rafRef.current=requestAnimationFrame(updateProgress)})};
+      audioRef.current.onended=()=>playChunk(ti+1);audioRef.current.onerror=()=>playChunk(ti+1);audioRef.current.load()}else{setStatus('playing');setPaused(false);pausedRef.current=false;playChunk(ti)}};
   useEffect(()=>{if(highlight>=0&&readingRef.current){const ps=readingRef.current.querySelectorAll('p');if(ps[highlight])ps[highlight].scrollIntoView({behavior:'smooth',block:'center'})}},[highlight]);
   useEffect(()=>()=>{stopped.current=true;stopRAF();window.speechSynthesis?.cancel()},[]);
   const isClone=voice?.id?.startsWith('v-');const fmtSec=(s)=>Math.floor(s/60)+':'+String(s%60).padStart(2,'0');
@@ -796,7 +798,7 @@ function Player({story,voice,ver,onBack,show,t,text,lang}){
     <button className="btn bg2 bsm" onClick={()=>{stopAll();onBack()}} style={{marginBottom:10}}><Icon name="back" size={16}/> {t('back')}</button>
     <div className="pc"><div className="pb">
       <div className="pti">{getStoryTitle(story?.id,lang)||story?.t||t('story')}</div><div className="pau">{getStoryAuthor(story?.a||'',lang)}</div>
-      <div className="pbar" onClick={handleSeek} onTouchEnd={e=>{e.preventDefault();handleSeek(e)}}><div className="pbtr"><div className="pbfl" style={{width:progress+'%'}}><div className="pbth"/></div></div></div>
+      <div className="pbar" onClick={handleSeek} onTouchStart={e=>{e.preventDefault();handleSeek(e)}} onTouchMove={e=>{e.preventDefault();handleSeek(e)}} onTouchEnd={e=>e.preventDefault()}><div className="pbtr"><div className="pbfl" style={{width:progress+'%'}}><div className="pbth"/></div></div></div>
       <div className="ptm"><span>{fmtSec(elapsed)}</span><span>~{storyMin}:00</span></div>
       <div className="pcc">
         {status==='idle'&&<button className="cb pp" onClick={generateAndPlay}><Icon name="play" size={26} color="#fff"/></button>}
@@ -836,9 +838,15 @@ function App(){
   const t=makeT(lang);
   const dir=getLangDir(lang);
 
-  const setLang=(l)=>{setLangState(l);localStorage.setItem('tat_lang',l)};
+  const setLang=(l)=>{setLangState(l);localStorage.setItem('tat_lang',l);
+    const un=localStorage.getItem('tat_name');if(un)dbPut('settings',{key:'user_'+un,lang:l,ts:Date.now()}).catch(()=>{})};
 
   useEffect(()=>{document.documentElement.dir=dir;document.documentElement.lang=lang},[lang,dir]);
+
+  // Load user settings (including lang) from DB on name set
+  useEffect(()=>{if(!name)return;
+    dbGet('settings','user_'+name).then(s=>{if(s?.lang&&s.lang!==lang){setLangState(s.lang);localStorage.setItem('tat_lang',s.lang)}}).catch(()=>{})
+  },[name]);
   const setVer=(sid,ver)=>{const nv={...verPrefs,[sid]:ver};setVerPrefs(nv);localStorage.setItem('tat_verPrefs',JSON.stringify(nv))};
   const getVer=(sid)=>verPrefs[sid]||'short';
 
@@ -874,9 +882,10 @@ function App(){
   // Pre-translate selected story when entering player
   const[playerText,setPlayerText]=useState(null);
   const playStory=async()=>{if(!ss){show(t('noneSelected'));return}
-    if(lang!=='en'){setTab('player');setPlayerText(null);setTranslating(true);
+    if(lang!=='en'){
+      setTranslating(true);
       const txt=await getTranslatedText(ss.id,getVer(ss.id));
-      setPlayerText(txt);setTranslating(false);
+      setPlayerText(txt);setTranslating(false);setTab('player');
     }else{setPlayerText(null);setTab('player')}};
 
   const show=m=>{setToast(m);setTimeout(()=>setToast(''),2800)};
@@ -897,10 +906,11 @@ function App(){
     if(ss?.id===id)setSs(null);show('Removed')};
   const allStories=useMemo(()=>[...customStories,...S],[customStories]);
   const filtered=filter==='all'?allStories:filter==='custom'?customStories:allStories.filter(s=>s.c===filter);
-  const finishName=(n)=>{setName(n);localStorage.setItem('tat_name',n);localStorage.setItem('tat_v','5')};
+  const finishName=(n)=>{setName(n);localStorage.setItem('tat_name',n);localStorage.setItem('tat_v','5');
+    dbPut('settings',{key:'user_'+n,lang,ts:Date.now()}).catch(()=>{})};
   const finishTut=async()=>{setTutDone(true);localStorage.setItem('tat_tut','1');
-    if(lang!=='en'&&ss){setTab('player');setPlayerText(null);setTranslating(true);
-      const txt=await getTranslatedText(ss.id,getVer(ss.id));setPlayerText(txt);setTranslating(false);
+    if(lang!=='en'&&ss){setTranslating(true);
+      const txt=await getTranslatedText(ss.id,getVer(ss.id));setPlayerText(txt);setTranslating(false);setTab('player');
     }else{setTab('player')}};
   const doLogout=()=>{localStorage.removeItem('tat_name');localStorage.removeItem('tat_v');localStorage.removeItem('tat_tut');setName('');setTutDone(false);setTutStep(0);setSv(null);setSs(null);speechSynthesis?.cancel();setMenu(false)};
 
@@ -981,14 +991,15 @@ function App(){
               <button className={`vbtn ${getVer(ss.id)==='long'?'va2':''}`} onClick={()=>setVer(ss.id,'long')}>{t('long')} ~{ss.mL}m</button>
             </div>}</div>
             <button className="btn bg2 bsm" onClick={()=>setTab('stories')}>{ss?t('change'):t('pick')}</button></div></div>
-        <button className="btn bp bw" onClick={playStory} disabled={!ss||!sv} style={{marginTop:8,fontSize:18,padding:'16px 24px'}}><Icon name="play" size={18} color="#fff"/> {t('beginStory')}</button>
+        <button className="btn bp bw" onClick={playStory} disabled={!ss||!sv||translating} style={{marginTop:8,fontSize:18,padding:'16px 24px'}}>
+          {translating?<><span className="spinner" style={{width:18,height:18,border:'2px solid rgba(255,255,255,.3)',borderTopColor:'#fff',borderRadius:'50%',display:'inline-block'}}/> {t('translating')}</>
+          :<><Icon name="play" size={18} color="#fff"/> {t('beginStory')}</>}</button>
         {pw.active&&<div className="prewarm" style={{marginTop:10}}><span className="spinner"/> {t('warming')}</div>}
         {pw.done&&!pw.active&&<div className="prewarm" style={{marginTop:10,color:'var(--teal)',borderColor:'rgba(85,230,193,.2)'}}><Icon name="check" size={14} color="var(--teal)"/> {t('cloneReady')}</div>}
         <div className="info" style={{marginTop:12}}><b>{gOk?t('connected'):t('connecting')}</b><br/>
           {sv?t('cloneMsg'):t('recSub')}</div></div>}
 
-      {tab==='player'&&ss&&<>{translating&&!playerText&&<div className="tl-spinner"><span className="spinner"/> {t('translating')||'Translating story...'}</div>}
-        <Player story={ss} voice={sv} ver={getVer(ss.id)} text={playerText} onBack={()=>{setTab('play');setPlayerText(null)}} show={show} t={t} lang={lang}/></>}
+      {tab==='player'&&ss&&<Player story={ss} voice={sv} ver={getVer(ss.id)} text={playerText} onBack={()=>{setTab('play');setPlayerText(null)}} show={show} t={t} lang={lang}/>}
     </div>
     {tab!=='player'&&<div className="nav">
       <button className={`ni ${tab==='stories'?'a':''}`} onClick={()=>setTab('stories')}><Icon name="book" size={22} color={tab==='stories'?'var(--moon)':'var(--txd)'}/><span className="ni-l">{t('stories')}</span></button>
