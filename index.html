@@ -67,17 +67,17 @@ body{font-family:'Nunito',sans-serif;background:var(--nd);color:var(--tx);-webki
 .va{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}.va-u{background:rgba(85,230,193,.1);border:1px solid rgba(85,230,193,.12)}.va-f{background:rgba(255,212,162,.1);border:1px solid rgba(255,212,162,.12)}
 .vn{font-weight:700;font-size:14px}.vd{font-size:11px;color:var(--txd)}
 .vx{margin-left:auto;background:none;border:none;cursor:pointer;opacity:.3;padding:4px;color:var(--txd)}.vx:hover{opacity:.7}
-.pc{border-radius:28px;overflow:hidden;margin-top:6px}.pb{background:linear-gradient(160deg,#1A0A3E,#120835 40%,#0D0628);padding:28px 20px;position:relative;border:1px solid rgba(255,255,255,.05)}
-.pti{font-family:'Baloo 2',cursive;font-size:22px;font-weight:700;color:var(--moon);text-align:center}.pau{font-size:12px;color:rgba(255,255,255,.3);text-align:center;margin-top:2px}
-.pbar{margin:22px 0 6px;padding:6px 0;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.pc{border-radius:28px;overflow:hidden;margin-top:6px}.pb{background:linear-gradient(160deg,#1A0A3E,#120835 40%,#0D0628);padding:28px 20px;position:relative;border:1px solid rgba(255,255,255,.05);direction:ltr}
+.pti{font-family:'Baloo 2',cursive;font-size:22px;font-weight:700;color:var(--moon);text-align:center;direction:auto;unicode-bidi:plaintext}.pau{font-size:12px;color:rgba(255,255,255,.3);text-align:center;margin-top:2px}
+.pbar{margin:22px 0 6px;padding:10px 0;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:none}
 .pbtr{width:100%;height:6px;background:rgba(255,255,255,.08);border-radius:3px;position:relative}
-.pbfl{height:100%;background:linear-gradient(90deg,var(--lavs),var(--wg));border-radius:3px;transition:width .05s linear;position:relative;will-change:width}
+.pbfl{height:100%;background:linear-gradient(90deg,var(--lavs),var(--wg));border-radius:3px;position:relative;will-change:width}
 .pbth{position:absolute;right:-8px;top:50%;transform:translateY(-50%);width:18px;height:18px;background:var(--moon);border-radius:50%;box-shadow:0 0 8px rgba(255,248,220,.3)}
 .ptm{display:flex;justify-content:space-between;font-size:11px;color:rgba(255,255,255,.25);font-weight:600;font-variant-numeric:tabular-nums}
 .pcc{display:flex;align-items:center;justify-content:center;gap:20px;margin-top:20px}
 .cb{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.07);color:rgba(255,255,255,.6);width:46px;height:46px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.2s}.cb:hover{background:rgba(255,255,255,.1);color:#fff}.cb:active{transform:scale(.93)}
 .cb.pp{width:64px;height:64px;background:linear-gradient(135deg,var(--lavs),var(--lavd));color:#fff;box-shadow:0 0 25px rgba(167,139,204,.25);border:none}
-.pvb{text-align:center;margin-top:16px;font-size:11px;color:rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;gap:4px}.pvb b{color:var(--wg)}
+.pvb{text-align:center;margin-top:16px;font-size:11px;color:rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;gap:4px;direction:ltr}.pvb b{color:var(--wg)}
 .ra{background:rgba(20,24,69,.5);border-radius:var(--rm);padding:20px;margin-top:14px;max-height:280px;overflow-y:auto;font-size:15px;line-height:1.85;color:rgba(232,228,240,.8);border:1px solid var(--bd);scroll-behavior:smooth}
 .ra p{margin-bottom:14px;transition:color .3s}.ra p:last-child{margin-bottom:0}.ra p.hl2{color:var(--wg);font-weight:700;text-shadow:0 0 12px rgba(255,190,118,.2)}
 .genst{background:rgba(139,111,192,.12);border:1px solid rgba(139,111,192,.2);border-radius:var(--rs);padding:14px;margin-top:12px;text-align:center;font-size:13px;color:var(--lav);line-height:1.5}
@@ -117,7 +117,7 @@ body{font-family:'Nunito',sans-serif;background:var(--nd);color:var(--tx);-webki
 .ddi{display:flex;align-items:center;gap:8px;padding:10px 14px;border-radius:10px;cursor:pointer;font-size:13px;font-weight:600;color:var(--txs);transition:.15s;width:100%;background:none;border:none;font-family:'Nunito';text-align:left}.ddi:hover{background:var(--gl);color:var(--tx)}
 .ddiv{height:1px;background:var(--bd);margin:4px 8px}
 .langsel{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}.langopt{padding:6px 14px;border-radius:10px;border:1px solid var(--bd);background:var(--gl);font-size:12px;font-weight:700;cursor:pointer;transition:.2s;color:var(--txs);font-family:'Nunito'}.langopt:hover{background:var(--glh)}.langopt.a{background:rgba(167,139,204,.2);color:var(--lav);border-color:rgba(167,139,204,.3)}
-[dir=rtl] .sr{flex-direction:row-reverse}[dir=rtl] .si{text-align:right}[dir=rtl] .vc{flex-direction:row-reverse}[dir=rtl] .ct{flex-direction:row-reverse}[dir=rtl] .sh{flex-direction:row-reverse}[dir=rtl] .nav{flex-direction:row-reverse}[dir=rtl] .ddmenu{right:auto;left:16px}[dir=rtl] .ddi{flex-direction:row-reverse;text-align:right}[dir=rtl] .ver-btns{flex-direction:row-reverse}[dir=rtl] .pvb{flex-direction:row-reverse}[dir=rtl] .main{direction:rtl}[dir=rtl] .fi{direction:rtl}[dir=rtl] .ss{text-align:right}[dir=rtl] .ra p{text-align:right;direction:rtl}[dir=rtl] .genst{direction:rtl}[dir=rtl] .card{direction:rtl}[dir=rtl] .prewarm{direction:rtl}[dir=rtl] .info{direction:rtl;text-align:right}[dir=rtl] .flt{direction:rtl}
+[dir=rtl] .sr{flex-direction:row-reverse}[dir=rtl] .si{text-align:right}[dir=rtl] .vc{flex-direction:row-reverse}[dir=rtl] .ct{flex-direction:row-reverse}[dir=rtl] .sh{flex-direction:row-reverse}[dir=rtl] .nav{flex-direction:row-reverse}[dir=rtl] .ddmenu{right:auto;left:16px}[dir=rtl] .ddi{flex-direction:row-reverse;text-align:right}[dir=rtl] .ver-btns{flex-direction:row-reverse}[dir=rtl] .main{direction:rtl}[dir=rtl] .fi{direction:rtl}[dir=rtl] .ss{text-align:right}[dir=rtl] .ra{direction:rtl}[dir=rtl] .ra p{text-align:right;direction:rtl}[dir=rtl] .genst{direction:rtl}[dir=rtl] .card{direction:rtl}[dir=rtl] .prewarm{direction:rtl}[dir=rtl] .info{direction:rtl;text-align:right}[dir=rtl] .flt{direction:rtl}[dir=rtl] .cmtabs{direction:rtl}
 .tl-spinner{display:inline-flex;align-items:center;gap:6px;padding:10px 16px;border-radius:10px;background:rgba(139,111,192,.1);color:var(--lav);font-size:12px;font-weight:600;margin:10px 0}
 .tl-spinner .spinner{width:14px;height:14px;border:2px solid rgba(197,179,230,.3);border-top-color:var(--lav);border-radius:50%;animation:spin 1s linear infinite}
 @media(max-width:380px){.hdr{padding:10px 14px}.main{padding:0 14px 16px}}
@@ -784,28 +784,30 @@ function Player({story,voice,ver,onBack,show,t,text,lang}){
   const[paused,setPaused]=useState(false);const[elapsed,setElapsed]=useState(0);
   const audioRef=useRef(null);const chunksAudio=useRef([]);const chunkDurations=useRef([]);
   const stopped=useRef(false);const pausedRef=useRef(false);const currentIdx=useRef(0);
-  const allChunks=useRef([]);const rafRef=useRef(null);const readingRef=useRef(null);
+  const allChunks=useRef([]);const timerRef=useRef(null);const readingRef=useRef(null);
   const content=text||(ver==='long'?story?.txL:story?.txS)||'';const paragraphs=content.split('\n\n');
   const storyMin=(ver==='long'?story?.mL:story?.mS)||4;
   const charToPara=(pos)=>{let p=0;for(let i=0;i<paragraphs.length;i++){p+=paragraphs[i].length+2;if(pos<p)return i}return paragraphs.length-1};
-  const updateProgress=useCallback(()=>{
-    if(stopped.current||!audioRef.current)return;const audio=audioRef.current;const total=allChunks.current.length;if(!total)return;
+  const doProgress=()=>{
+    if(stopped.current||pausedRef.current||!audioRef.current)return;
+    const audio=audioRef.current;const total=allChunks.current.length;if(!total)return;
     const idx=currentIdx.current;let ct=0;for(let i=0;i<idx;i++)ct+=(chunkDurations.current[i]||3);
     const cd=audio.duration||3;const cc=audio.currentTime||0;ct+=cc;
     let td=0;for(let i=0;i<total;i++)td+=(chunkDurations.current[i]||(i<idx?3:cd));
-    setProgress(Math.min(99.5,(ct/td)*100));setElapsed(Math.round(ct));
+    if(td>0)setProgress(Math.min(99.5,(ct/td)*100));
+    setElapsed(Math.round(ct));
     let cp=0;for(let i=0;i<idx;i++)cp+=(allChunks.current[i]?.length||0);
     cp+=Math.round((allChunks.current[idx]?.length||0)*(cd>0?cc/cd:0));setHighlight(charToPara(cp));
-    rafRef.current=requestAnimationFrame(updateProgress);
-  },[]);
-  const stopRAF=()=>{if(rafRef.current){cancelAnimationFrame(rafRef.current);rafRef.current=null}};
+  };
+  const startTimer=()=>{stopTimer();timerRef.current=setInterval(doProgress,200)};
+  const stopTimer=()=>{if(timerRef.current){clearInterval(timerRef.current);timerRef.current=null}};
   const playChunk=(idx)=>{
-    if(stopped.current||idx>=allChunks.current.length){setStatus('done');setProgress(100);setHighlight(-1);stopRAF();return}
+    if(stopped.current||idx>=allChunks.current.length){setStatus('done');setProgress(100);setHighlight(-1);stopTimer();return}
     currentIdx.current=idx;const url=chunksAudio.current[idx];if(!url){playChunk(idx+1);return}
     if(audioRef.current){audioRef.current.src=url;
       audioRef.current.onloadedmetadata=()=>{chunkDurations.current[idx]=audioRef.current.duration};
       audioRef.current.onended=()=>playChunk(idx+1);audioRef.current.onerror=()=>playChunk(idx+1);
-      audioRef.current.play().then(()=>{stopRAF();rafRef.current=requestAnimationFrame(updateProgress)}).catch(()=>playChunk(idx+1))}
+      audioRef.current.play().then(()=>startTimer()).catch(()=>playChunk(idx+1))}
   };
   const generateAndPlay=useCallback(async()=>{
     stopped.current=false;pausedRef.current=false;setPaused(false);
@@ -836,9 +838,9 @@ function Player({story,voice,ver,onBack,show,t,text,lang}){
       const vs=synth.getVoices();const pk=vs.find(v=>v.lang.startsWith(lc))||vs.find(v=>/Google/i.test(v.name)&&v.lang.startsWith(lc))||vs.find(v=>v.lang.startsWith('en'))||vs[0];
       if(pk)u.voice=pk;u.onend=()=>next(idx+1);u.onerror=e=>{if(e.error!=='canceled')next(idx+1)};synth.speak(u)};next(0)};
   const togglePause=()=>{if(status!=='playing')return;
-    if(pausedRef.current){pausedRef.current=false;setPaused(false);if(audioRef.current?.paused){audioRef.current.play();rafRef.current=requestAnimationFrame(updateProgress)}else window.speechSynthesis?.resume()}
-    else{pausedRef.current=true;setPaused(true);stopRAF();if(audioRef.current&&!audioRef.current.paused)audioRef.current.pause();else window.speechSynthesis?.pause()}};
-  const stopAll=()=>{stopped.current=true;stopRAF();if(audioRef.current){audioRef.current.pause();audioRef.current.src=''}window.speechSynthesis?.cancel();setStatus('idle');setProgress(0);setHighlight(-1);setPaused(false);setElapsed(0)};
+    if(pausedRef.current){pausedRef.current=false;setPaused(false);if(audioRef.current?.paused){audioRef.current.play();startTimer()}else window.speechSynthesis?.resume()}
+    else{pausedRef.current=true;setPaused(true);stopTimer();if(audioRef.current&&!audioRef.current.paused)audioRef.current.pause();else window.speechSynthesis?.pause()}};
+  const stopAll=()=>{stopped.current=true;stopTimer();if(audioRef.current){audioRef.current.pause();audioRef.current.src=''}window.speechSynthesis?.cancel();setStatus('idle');setProgress(0);setHighlight(-1);setPaused(false);setElapsed(0)};
   const handleSeek=(e)=>{if(!allChunks.current.length||!chunksAudio.current.some(Boolean))return;
     const rect=e.currentTarget.getBoundingClientRect();
     const cx=e.changedTouches?e.changedTouches[0].clientX:e.touches?e.touches[0].clientX:e.clientX;
@@ -846,13 +848,26 @@ function Player({story,voice,ver,onBack,show,t,text,lang}){
     let td=0;for(let i=0;i<allChunks.current.length;i++)td+=(chunkDurations.current[i]||3);
     const tt=pct*td;let ac=0;let ti=0;let st=0;
     for(let i=0;i<allChunks.current.length;i++){const d=chunkDurations.current[i]||3;if(ac+d>tt){ti=i;st=tt-ac;break}ac+=d;ti=i;st=0}
-    stopRAF();if(audioRef.current){audioRef.current.pause();audioRef.current.src=''}window.speechSynthesis?.cancel();
+    stopTimer();if(audioRef.current){audioRef.current.pause();audioRef.current.src=''}window.speechSynthesis?.cancel();
     stopped.current=false;
     if(chunksAudio.current[ti]){currentIdx.current=ti;audioRef.current.src=chunksAudio.current[ti];
-      audioRef.current.onloadedmetadata=()=>{audioRef.current.currentTime=Math.min(st,audioRef.current.duration-0.1);audioRef.current.play().then(()=>{setStatus('playing');setPaused(false);pausedRef.current=false;rafRef.current=requestAnimationFrame(updateProgress)})};
+      audioRef.current.onloadedmetadata=()=>{audioRef.current.currentTime=Math.min(st,audioRef.current.duration-0.1);audioRef.current.play().then(()=>{setStatus('playing');setPaused(false);pausedRef.current=false;startTimer()})};
       audioRef.current.onended=()=>playChunk(ti+1);audioRef.current.onerror=()=>playChunk(ti+1);audioRef.current.load()}else{setStatus('playing');setPaused(false);pausedRef.current=false;playChunk(ti)}};
   useEffect(()=>{if(highlight>=0&&readingRef.current){const ps=readingRef.current.querySelectorAll('p');if(ps[highlight])ps[highlight].scrollIntoView({behavior:'smooth',block:'center'})}},[highlight]);
-  useEffect(()=>()=>{stopped.current=true;stopRAF();window.speechSynthesis?.cancel()},[]);
+  // Cleanup only on actual unmount, not visibility change
+  useEffect(()=>()=>{stopped.current=true;stopTimer();window.speechSynthesis?.cancel()},[]);
+  // Keep audio playing in background - resume timer when visible
+  useEffect(()=>{const onVis=()=>{if(document.hidden)stopTimer();
+    else if(!stopped.current&&!pausedRef.current&&audioRef.current&&!audioRef.current.paused)startTimer()};
+    document.addEventListener('visibilitychange',onVis);return()=>document.removeEventListener('visibilitychange',onVis)},[]);
+  // Media Session API — lock screen / notification controls
+  useEffect(()=>{if(!('mediaSession' in navigator)||status==='idle')return;
+    const title=getStoryTitle(story?.id,lang)||story?.t||'Bedtime Story';
+    navigator.mediaSession.metadata=new MediaMetadata({title,artist:'Tail a Tale',album:voice?.name||''});
+    navigator.mediaSession.setActionHandler('play',()=>{if(pausedRef.current)togglePause()});
+    navigator.mediaSession.setActionHandler('pause',()=>{if(!pausedRef.current)togglePause()});
+    navigator.mediaSession.setActionHandler('stop',stopAll);
+  },[status,story,lang]);
   const isClone=voice?.id?.startsWith('v-');const fmtSec=(s)=>Math.floor(s/60)+':'+String(s%60).padStart(2,'0');
   return(<div className="fi">
     <audio ref={audioRef} style={{display:'none'}}/>
