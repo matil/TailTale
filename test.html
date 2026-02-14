@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html><head><title>F5-TTS Audio Test</title>
+<script src="https://cdn.jsdelivr.net/npm/onnxruntime-web@1.21.0/dist/ort.min.js"></script>
+<style>
+body{font-family:system-ui;padding:20px;max-width:800px;margin:auto;background:#1a1a2e;color:#eee}
+button{padding:10px 20px;margin:5px;border-radius:8px;border:none;cursor:pointer;font-size:16px;background:#0f3460;color:white}
+button:disabled{opacity:0.4}button:hover:not(:disabled){background:#16213e}
+.red{background:#e94560}pre{background:#0a0a1a;padding:15px;border-radius:8px;overflow:auto;max-height:400px;font-size:12px;color:#0f0}
+select,input{padding:8px;border-radius:6px;border:1px solid #333;background:#16213e;color:white;font-size:14px}
+label{display:block;margin:10px 0 5px}
+audio{width:100%;margin:10px 0}
+.status{padding:10px;margin:10px 0;border-radius:8px;background:#0f3460;text-align:center}
+</style>
+</head><body>
+<h2>F5-TTS Audio Quality Test</h2>
+<div class="status" id="status">Load models first, then record and generate.</div>
+
+<div>
+<button onclick="loadModels()" id="btnLoad">1. Load Models (~200MB)</button>
+<span id="loadProg"></span>
+</div>
+
+<div style="margin-top:20px">
+<label>Reference text (read this while recording):</label>
+<input type="text" id="refText" value="The stars twinkled brightly as the little bear drifted off to sleep in the magical forest." style="width:100%;box-sizing:border-box">
+</div>
+
+<div style="margin-top:10px">
+<button onclick="toggleRec()" id="btnRec" disabled class="red">2. Hold to Record (6-10s)</button>
+<audio id="refAudio" controls></audio>
+</div>
+
+<div style="margin-top:10px">
+<label>Text to generate:</label>
+<input type="text" id="genText" value="Once upon a time, there was a little bear who loved to explore the forest at night." style="width:100%;box-sizing:border-box">
+</div>
+
+<div style="margin-top:10px">
+<label>NFE Steps: <select id="nfe">
+<option value="4">4 (fast, low quality)</option>
+<option value="8">8 (medium)</option>
+<option value="16" selected>16 (good)</option>
+<option value="24">24 (better)</option>
+<option value="32">32 (best, slow)</option>
+</select></label>
+</div>
+
+<div style="margin-top:10px">
+<button onclick="generate()" id="btnGen" disabled>3. Generate Speech</button>
+</div>
+
+<div style="margin-top:10px">
+<audio id="outAudio" controls></audio>
+</div>
+
+<pre id="log"></pre>
+
+<script>
+const CDN='https://huggingface.co/nsarang/F5-TTS-ONNX/resolve/main/';
+const logEl=document.getElementById('log');
+function L(m){logEl.textContent+=m+'\n';logEl.scrollTop=logEl.scrollHeight;console.log(m)}
+
+let sessions={enc:null,tf:null,dec:null},vocab=null,ready=false;
+let mediaRec=null,recChunks=[],recBlob=null;
+
+async function fetchBuf(path,onProg){
+  const cache=await caches.open('f5-test-v2');
+  const url=CDN+path;
+  let res=await cache.match(url);
+  if(res){if(onProg)onProg(1);return res.arrayBuffer()}
+  res=await fetch(url);
+  const total=parseInt(res.headers.get('content-length'),10);
+  const reader=res.body.getReader();const chunks=[];let got=0;
+  while(true){const{done,value}=await reader.read();if(done)break;chunks.push(value);got+=value.length;if(onProg&&total)onProg(got/total)}
+  const blob=new Blob(chunks);
+  try{await cache.put(url,new Response(blob.slice()))}catch(e){}
+  return blob.arrayBuffer();
+}
+
+async function loadModels(){
+  document.getElementById('btnLoad').disabled=true;
+  const stat=document.getElementById('status');
+  const prog=document.getElementById('loadProg');
+  logEl.textContent='';
+  try{
+    stat.textContent='Downloading models...';
+    let gpu=false;
+    try{if(navigator.gpu){const a=await navigator.gpu.requestAdapter();if(a)gpu=true}}catch(e){}
+    L('WebGPU: '+(gpu?'YES':'NO'));
+    
+    const p={e:0,t:0,d:0};
+    const up=()=>{const pct=Math.round((p.e*0.03+p.t*0.92+p.d*0.05)*100);prog.textContent=pct+'%';stat.textContent='Downloading... '+pct+'%'};
+    
+    const [eBuf,tBuf,dBuf,vocBuf]=await Promise.all([
+      fetchBuf('onnx/encoder_fp32.onnx',v=>{p.e=v;up()}),
+      fetchBuf('onnx/transformer_fp32.onnx',v=>{p.t=v;up()}),
+      fetchBuf('onnx/decoder_fp32.onnx',v=>{p.d=v;up()}),
+      fetchBuf('vocab.txt')
+    ]);
+    
+    stat.textContent='Creating sessions...';
+    const eps=gpu?['webgpu','wasm']:['wasm'];
+    L('Execution providers: '+eps.join(', '));
+    
+    sessions.enc=await ort.InferenceSession.create(eBuf,{executionProviders:eps});
+    L('Encoder: in='+sessions.enc.inputNames+' out='+sessions.enc.outputNames);
+    sessions.tf=await ort.InferenceSession.create(tBuf,{executionProviders:eps});
+    L('Transformer: in='+sessions.tf.inputNames+' out='+sessions.tf.outputNames);
+    sessions.dec=await ort.InferenceSession.create(dBuf,{executionProviders:eps});
+    L('Decoder: in='+sessions.dec.inputNames+' out='+sessions.dec.outputNames);
+    
+    const vocText=new TextDecoder().decode(vocBuf);
+    vocab={};vocText.split('\n').forEach((l,i)=>{const c=l.replace(/\r/g,'');if(c.length>0)vocab[c]=i});
+    L('Vocab: '+Object.keys(vocab).length+' chars');
+    
+    ready=true;
+    stat.textContent='Models loaded! Now record your voice.';
+    document.getElementById('btnRec').disabled=false;
+    L('✅ Ready');
+  }catch(e){
+    stat.textContent='Error: '+e.message;
+    L('❌ '+e.message+'\n'+e.stack);
+    document.getElementById('btnLoad').disabled=false;
+  }
+}
+
+function toggleRec(){
+  if(mediaRec&&mediaRec.state==='recording'){
+    mediaRec.stop();
+    document.getElementById('btnRec').textContent='2. Hold to Record (6-10s)';
+    return;
+  }
+  recChunks=[];
+  navigator.mediaDevices.getUserMedia({audio:{sampleRate:24000,channelCount:1}}).then(stream=>{
+    mediaRec=new MediaRecorder(stream);
+    mediaRec.ondataavailable=e=>{if(e.data.size>0)recChunks.push(e.data)};
+    mediaRec.onstop=()=>{
+      stream.getTracks().forEach(t=>t.stop());
+      recBlob=new Blob(recChunks,{type:'audio/webm'});
+      document.getElementById('refAudio').src=URL.createObjectURL(recBlob);
+      document.getElementById('btnGen').disabled=false;
+      document.getElementById('status').textContent='Voice recorded! Click Generate.';
+      L('Recorded: '+Math.round(recBlob.size/1024)+'KB');
+    };
+    mediaRec.start();
+    document.getElementById('btnRec').textContent='⏹ Stop Recording';
+  });
+}
+
+async function decodeAudio(blob){
+  const ctx=new AudioContext({sampleRate:24000});
+  const ab=await blob.arrayBuffer();
+  const audio=await ctx.decodeAudioData(ab);
+  ctx.close();
+  let mono;
+  if(audio.numberOfChannels===1)mono=new Float32Array(audio.getChannelData(0));
+  else{
+    mono=new Float32Array(audio.length);
+    for(let ch=0;ch<audio.numberOfChannels;ch++){
+      const d=audio.getChannelData(ch);
+      for(let i=0;i<audio.length;i++)mono[i]+=d[i];
+    }
+    for(let i=0;i<mono.length;i++)mono[i]/=audio.numberOfChannels;
+  }
+  // Trim to 10s max
+  if(mono.length>240000)mono=mono.slice(0,240000);
+  return mono;
+}
+
+function f32ToWav(samples,sr=24000){
+  const buf=new ArrayBuffer(44+samples.length*2);const v=new DataView(buf);
+  const ws=(o,s)=>{for(let i=0;i<s.length;i++)v.setUint8(o+i,s.charCodeAt(i))};
+  ws(0,'RIFF');v.setUint32(4,36+samples.length*2,true);ws(8,'WAVE');ws(12,'fmt ');
+  v.setUint32(16,16,true);v.setUint16(20,1,true);v.setUint16(22,1,true);v.setUint32(24,sr,true);
+  v.setUint32(28,sr*2,true);v.setUint16(32,2,true);v.setUint16(34,16,true);
+  ws(36,'data');v.setUint32(40,samples.length*2,true);
+  let o=44;
+  for(let i=0;i<samples.length;i++){
+    const s=Math.max(-1,Math.min(1,samples[i]));
+    v.setInt16(o,s<0?s*0x8000:s*0x7FFF,true);o+=2;
+  }
+  return new Blob([buf],{type:'audio/wav'});
+}
+
+async function generate(){
+  if(!ready||!recBlob)return;
+  const stat=document.getElementById('status');
+  const btnGen=document.getElementById('btnGen');
+  btnGen.disabled=true;
+  const nfe=parseInt(document.getElementById('nfe').value);
+  const refText=document.getElementById('refText').value;
+  const genText=document.getElementById('genText').value;
+  
+  try{
+    stat.textContent='Decoding reference audio...';
+    const refF32=await decodeAudio(recBlob);
+    L('Ref audio: '+refF32.length+' samples ('+(refF32.length/24000).toFixed(1)+'s)');
+    let rms=0;for(let i=0;i<refF32.length;i++)rms+=refF32[i]*refF32[i];rms=Math.sqrt(rms/refF32.length);
+    L('Ref RMS: '+rms.toFixed(4));
+    
+    // Convert to int16 (simple linear)
+    const i16=new Int16Array(refF32.length);
+    for(let i=0;i<refF32.length;i++)i16[i]=Math.max(-32768,Math.min(32767,Math.round(refF32[i]*32767)));
+    const audioT=new ort.Tensor('int16',i16,[1,1,i16.length]);
+    L('Audio tensor: '+audioT.type+' '+JSON.stringify(audioT.dims));
+    
+    // Tokenize
+    const combined=(refText+' '+genText).toLowerCase();
+    const toks=Int32Array.from([...combined].map(c=>vocab[c]||0));
+    const unk=[...combined].filter(c=>!vocab[c]);
+    if(unk.length>0)L('⚠ Unknown chars ('+unk.length+'): '+JSON.stringify([...new Set(unk)]));
+    const textT=new ort.Tensor('int32',toks,[1,toks.length]);
+    
+    // Duration
+    const hop=256;
+    const refLen=Math.trunc(refF32.length/hop);
+    const dur=refLen+Math.trunc(((refLen/(refText.length+1))*genText.length)/1.0);
+    const durT=new ort.Tensor('int64',new BigInt64Array([BigInt(dur)]),[1]);
+    L('Frames: ref='+refLen+' total='+dur+' | NFE='+nfe);
+    
+    // Stage 1: Encoder
+    stat.textContent='Running encoder...';
+    const t0=Date.now();
+    const{enc,tf,dec}=sessions;
+    const eI={};eI[enc.inputNames[0]]=audioT;eI[enc.inputNames[1]]=textT;eI[enc.inputNames[2]]=durT;
+    const eO=await enc.run(eI);
+    let noise=eO[enc.outputNames[0]];
+    const rcq=eO[enc.outputNames[1]],rsq=eO[enc.outputNames[2]],
+          rck=eO[enc.outputNames[3]],rsk=eO[enc.outputNames[4]],
+          cmt=eO[enc.outputNames[5]],cmtd=eO[enc.outputNames[6]],
+          rsl=eO[enc.outputNames[7]];
+    L('Encoder: '+(Date.now()-t0)+'ms. noise='+JSON.stringify(noise.dims));
+    
+    // Stage 2: Transformer
+    stat.textContent='Running transformer ('+nfe+' steps)...';
+    const t2=Date.now();
+    let ts=new ort.Tensor('int32',new Int32Array([0]),[1]);
+    for(let s=0;s<nfe-1;s++){
+      const st=Date.now();
+      const tI={};
+      tI[tf.inputNames[0]]=noise;tI[tf.inputNames[1]]=rcq;tI[tf.inputNames[2]]=rsq;
+      tI[tf.inputNames[3]]=rck;tI[tf.inputNames[4]]=rsk;tI[tf.inputNames[5]]=cmt;
+      tI[tf.inputNames[6]]=cmtd;tI[tf.inputNames[7]]=ts;
+      const tO=await tf.run(tI);
+      noise=tO[tf.outputNames[0]];ts=tO[tf.outputNames[1]];
+      // Log noise stats
+      const nd=noise.data;let mn=Infinity,mx=-Infinity;
+      for(let i=0;i<Math.min(nd.length,2000);i++){const v=nd[i];if(v<mn)mn=v;if(v>mx)mx=v}
+      const tsVal=ts.data[0];
+      stat.textContent='Transformer step '+(s+1)+'/'+(nfe-1)+' ('+(Date.now()-st)+'ms) ts='+tsVal;
+      L('  Step '+(s+1)+': '+(Date.now()-st)+'ms noise=['+mn.toFixed(3)+','+mx.toFixed(3)+'] ts='+tsVal);
+      await new Promise(r=>setTimeout(r,0));
+    }
+    L('Transformer total: '+((Date.now()-t2)/1000).toFixed(1)+'s');
+    
+    // Stage 3: Decoder
+    stat.textContent='Running decoder...';
+    const t3=Date.now();
+    const dI={};dI[dec.inputNames[0]]=noise;dI[dec.inputNames[1]]=rsl;
+    const dO=await dec.run(dI);
+    const raw=dO[dec.outputNames[0]];
+    L('Decoder: '+(Date.now()-t3)+'ms. type='+raw.type+' dims='+JSON.stringify(raw.dims));
+    
+    const rd=raw.data;
+    let mn=Infinity,mx=-Infinity,sq=0;
+    for(let i=0;i<rd.length;i++){const v=Number(rd[i]);if(v<mn)mn=v;if(v>mx)mx=v;sq+=v*v}
+    L('Output range: ['+mn+', '+mx+'] rms='+Math.sqrt(sq/rd.length).toFixed(1));
+    
+    // Convert to float
+    const outF32=new Float32Array(rd.length);
+    for(let i=0;i<rd.length;i++)outF32[i]=Number(rd[i])/32767.0;
+    
+    // Create WAV and play
+    const wav=f32ToWav(outF32,24000);
+    document.getElementById('outAudio').src=URL.createObjectURL(wav);
+    stat.textContent='Done! Total: '+((Date.now()-t0)/1000).toFixed(1)+'s. Listen above.';
+    L('✅ Total: '+((Date.now()-t0)/1000).toFixed(1)+'s, output: '+(rd.length/24000).toFixed(1)+'s audio');
+    
+  }catch(e){
+    stat.textContent='Error: '+e.message;
+    L('❌ '+e.message+'\n'+e.stack);
+  }
+  btnGen.disabled=false;
+}
+</script></body></html>
