@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#0B0E2D">
 <title>Tail a Tale - Bedtime Stories in Your Voice</title>
-<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&family=Inter:wght@400;500;600;700&family=Heebo:wght@400;500;600;700&family=Cairo:wght@400;600;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&family=Inter:wght@400;500;600;700&family=Heebo:wght@400;500;600;700&family=Cairo:wght@400;600;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet" crossorigin="anonymous">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -143,9 +143,9 @@ body{font-family:var(--ff);background:var(--nd);color:var(--tx);-webkit-font-smo
 </head>
 <body>
 <div id="root"></div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web@1.22.0/dist/ort.min.js" crossorigin="anonymous" onerror="console.error('[ORT] Failed to load onnxruntime-web from CDN')"></script>
 <script>
 // Configure ONNX Runtime WASM paths
@@ -626,7 +626,7 @@ Requirements:
 const F5_REPO='nsarang/F5-TTS-ONNX';
 const F5_CDN=`https://huggingface.co/${F5_REPO}/resolve/main/`;
 let f5S={enc:null,tf:null,dec:null},f5V=null,f5Loading=false,f5Ready=false,f5Waiters=[];
-let f5UseFP16=false; // set during init if WebGPU fp16 is available
+let f5HasWebGPU=false; // set during init
 let f5DownloadProgress=0,f5DownloadCbs=[];
 function onF5Progress(fn){f5DownloadCbs.push(fn);return()=>{f5DownloadCbs=f5DownloadCbs.filter(f=>f!==fn)}}
 function notifyF5(p){f5DownloadProgress=p;f5DownloadCbs.forEach(fn=>fn(p))}
@@ -677,16 +677,16 @@ async function initF5(progressCb){
     if(!window.ort)throw new Error('ONNX Runtime Web not loaded — check network tab for ort.min.js');
     console.log('[F5] ORT available ✓');
 
-    // Step 2: Detect GPU → choose FP16 or FP32 transformer
+    // Step 2: Detect GPU for execution provider
     let hasWebGPU=false;
     try{
       if(navigator.gpu){const a=await navigator.gpu.requestAdapter();if(a){hasWebGPU=true;console.log('[F5] WebGPU adapter:',a.name||'(unnamed)')}}
     }catch(e){console.log('[F5] WebGPU check failed:',e.message)}
-    // Use FP16 with WebGPU (we handle FP16↔FP32 conversion manually via Uint16Array)
-    f5UseFP16=hasWebGPU;
-    if(f5UseFP16)console.log('[F5] WebGPU available → using FP16 transformer (~85MB)');
-    else console.log('[F5] No WebGPU → using WASM + FP32 transformer (~170MB)');
-    const tfPath=f5UseFP16?'onnx/transformer_fp16.onnx':'onnx/transformer_fp32.onnx';
+    f5HasWebGPU=hasWebGPU;
+    // Always use FP32 transformer — FP16 model requires Float16Array tensors which
+    // no browser supports natively. WebGPU still accelerates FP32 inference significantly.
+    console.log('[F5] Using FP32 transformer (~170MB)'+(hasWebGPU?' + WebGPU acceleration':' + WASM'));
+    const tfPath='onnx/transformer_fp32.onnx';
 
     const pg={e:0,t:0,d:0,v:0};
     const up=()=>{const p=pg.e*.03+pg.t*.92+pg.d*.03+pg.v*.02;notifyF5(p);if(progressCb)progressCb(p)};
@@ -742,9 +742,6 @@ async function initF5(progressCb){
 function arrRMS(d){let s=0;for(let i=0;i<d.length;i++)s+=d[i]*d[i];return Math.sqrt(s/d.length)}
 function arrToInt16(d,q=0.999){const a=Float32Array.from(d,v=>Math.abs(v));a.sort();const mx=a[Math.min(Math.floor(a.length*q),a.length-1)];const sc=mx>0?32767/mx:1;const r=new Int16Array(d.length);for(let i=0;i<d.length;i++)r[i]=Math.max(-32768,Math.min(32767,Math.round(d[i]*sc)));return r}
 
-// FP16 tensor conversion — NOT NEEDED: ORT WebGPU handles FP16 models with FP32 input tensors internally
-// The FP16 model is just smaller to download; ORT does the precision conversion on the GPU
-
 // F5-TTS 3-stage inference pipeline
 async function f5Infer(refF32,refText,genText,speed=1.0,nfe=8){
   const{enc,tf,dec}=f5S;const hop=256,tgtRMS=0.1;
@@ -765,7 +762,7 @@ async function f5Infer(refF32,refText,genText,speed=1.0,nfe=8){
   const refLen=Math.trunc(audio.length/hop);
   const dur=refLen+Math.trunc(((refLen/(refText.length+1))*genText.length)/speed);
   const durT=new ort.Tensor('int64',new BigInt64Array([BigInt(dur)]),[1]);
-  console.log('[F5] Frames: ref='+refLen+' total='+dur+' | NFE='+nfe+' | model='+(f5UseFP16?'fp16':'fp32'));
+  console.log('[F5] Frames: ref='+refLen+' total='+dur+' | NFE='+nfe+' | WebGPU='+f5HasWebGPU);
 
   // Stage 1: Encoder (always fp32)
   console.log('[F5] Stage 1/3: Encoder...');
@@ -860,7 +857,7 @@ async function generateChunk(text,voiceBlob,langCode){
     // Run inference
     console.log('[F5] Generating speech for:',text.substring(0,60)+'...');
     const t0=Date.now();
-    const audioF32=await f5Infer(refF32,refText,text,1.0,f5UseFP16?8:4);
+    const audioF32=await f5Infer(refF32,refText,text,1.0,f5HasWebGPU?8:4);
     // Audio quality check
     let mn=Infinity,mx=-Infinity,sq=0;
     for(let i=0;i<audioF32.length;i++){const v=audioF32[i];if(v<mn)mn=v;if(v>mx)mx=v;sq+=v*v}
